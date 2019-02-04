@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="chmod.md 修改文件或目录的访问权限。 12345678910111213141516171819chmod --helpUsage: chmod [OPTION]... MODE[,MODE]... FILE...  or:  chmod [OPTION]... OCTAL-MODE FILE...  or:  chmod [OPTION]... --reference=RFILE FI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="th2zz">
+<meta property="og:url" content="http://yoursite.com/2015/05/17/chmod/index.html">
+<meta property="og:site_name" content="th2zz">
+<meta property="og:description" content="chmod.md 修改文件或目录的访问权限。 12345678910111213141516171819chmod --helpUsage: chmod [OPTION]... MODE[,MODE]... FILE...  or:  chmod [OPTION]... OCTAL-MODE FILE...  or:  chmod [OPTION]... --reference=RFILE FI">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2015/05/17/chmod/chmod-regexp.png">
+<meta property="og:updated_time" content="2015-05-18T03:47:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="th2zz">
+<meta name="twitter:description" content="chmod.md 修改文件或目录的访问权限。 12345678910111213141516171819chmod --helpUsage: chmod [OPTION]... MODE[,MODE]... FILE...  or:  chmod [OPTION]... OCTAL-MODE FILE...  or:  chmod [OPTION]... --reference=RFILE FI">
+<meta name="twitter:image" content="http://yoursite.com/2015/05/17/chmod/chmod-regexp.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/05/17/chmod/"/>
+
+
+
+
+
+  <title> | th2zz</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">th2zz</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">th2zz's notes</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/17/chmod/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tinghe Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="th2zz">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-05-17T22:47:02-05:00">
+                2015-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="chmodmd"><a class="markdownIt-Anchor" href="#chmodmd"></a> <a href="http://chmod.md" target="_blank" rel="noopener">chmod.md</a></h1>
+<p>修改文件或目录的访问权限。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">chmod --help</span><br><span class="line"></span><br><span class="line">Usage: chmod [OPTION]... MODE[,MODE]... FILE...</span><br><span class="line">  or:  chmod [OPTION]... OCTAL-MODE FILE...</span><br><span class="line">  or:  chmod [OPTION]... --reference=RFILE FILE...</span><br><span class="line">Change the mode of each FILE to MODE.</span><br><span class="line">With --reference, change the mode of each FILE to that of RFILE.</span><br><span class="line"></span><br><span class="line">  -c, --changes          like verbose but report only when a change is made</span><br><span class="line">  -f, --silent, --quiet  suppress most error messages</span><br><span class="line">  -v, --verbose          output a diagnostic for every file processed</span><br><span class="line">      --no-preserve-root  do not treat '/' specially (the default)</span><br><span class="line">      --preserve-root    fail to operate recursively on '/'</span><br><span class="line">      --reference=RFILE  use RFILE's mode instead of MODE values</span><br><span class="line">  -R, --recursive        change files and directories recursively</span><br><span class="line">      --help     display this help and exit</span><br><span class="line">      --version  output version information and exit</span><br><span class="line"></span><br><span class="line">Each MODE is of the form '[ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+'.</span><br></pre></td></tr></table></figure>
+<p><a href="https://en.wikipedia.org/wiki/File_system_permissions" title="File_system_permissions" target="_blank" rel="noopener">文件系统权限</a> 是 <a href="https://en.wikipedia.org/wiki/File_system" title="File_system" target="_blank" rel="noopener">文件系统</a> 用来管理用户和用户组对文件或目录的访问权限的规则。</p>
+<p>###用户</p>
+<p>文件和目录归属于用户(owner)，<br>
+分配给用户组(group)，owner 是 group 的成员；<br>
+非 owner 和非 group 成员的用户属于其他用户(others)；<br>
+还有所有用户(all)。</p>
+<p>###访问权限</p>
+<ul>
+<li>read 读取文件（当作用与目录时，仅能获取目录下所有文件的文件名）；</li>
+<li>write 修改文件（当作用与目录时，可以对文件执行创建、删除和重命名操作）；</li>
+<li>execute 执行文件（shell 脚本或可执行文件。当作用与目录时，可以获得文件内容和元信息，但不能获得文件列表）</li>
+</ul>
+<p>###符号模式</p>
+<p>r read;<br>
+w write;<br>
+x execute.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -l</span><br><span class="line"></span><br><span class="line">-rw-r--r-- 1 hu hu  0  3月 31 15:19 test.txt</span><br></pre></td></tr></table></figure>
+<p><code>-rw-r--r--</code> 代表了文件类型和文件权限：</p>
+<p>第一位 <code>-</code> 代表了文件为普通文件（参考 <a href="https://en.wikipedia.org/wiki/Unix_file_types" title="Unix_file_types" target="_blank" rel="noopener">文件类型</a>）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- Regular file</span><br><span class="line">d Directory</span><br><span class="line">l Symbolic link</span><br><span class="line">p Named pipe</span><br><span class="line">s Socket</span><br><span class="line">c Device file(character device)</span><br><span class="line">b Device file(block device)</span><br><span class="line">D Door</span><br></pre></td></tr></table></figure>
+<p>后面九位分成三段，分别代表了 owner/group/others 三类用户的访问权限，<code>-</code> 代表没有对应权限：<br>
+owner 拥有 read/write 权限；group 和 others 只拥有 read 权限。</p>
+<p>###数字模式</p>
+<p>| 符号 | 代码 | 权限 |<br>
+|  |  |  |<br>
+| r | 4/100 | read |<br>
+| w | 2/10 | write |<br>
+| x | 1/1 | execute |<br>
+| - | 0/0 | - |</p>
+<p><code>-rw-r--r--</code> 可以用数字表示为 <code>0644</code>。</p>
+<p>###MODE 规则</p>
+<p><code>[ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+</code> 被用来校验 <code>chmod</code> 命令中的 MODE 参数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">u user 所有者</span><br><span class="line">g group 所有者所在分组</span><br><span class="line">o others 所有其他用户</span><br><span class="line">a all 所有用户（等同于 ugo）</span><br><span class="line"></span><br><span class="line">+ 添加权限</span><br><span class="line">- 删除权限</span><br><span class="line">= 设置权限</span><br></pre></td></tr></table></figure>
+<p><img src="./chmod-regexp.png" alt="chmod-regexp"></p>
+<p>可能的 MODE 参数：</p>
+<ul>
+<li><code>chmod a+w test.txt</code> 给所有用户添加 test.txt 的写权限；</li>
+<li><code>chmod u=rwx app.js app.js</code> 的所有者拥有对该文件的读写和执行权限；</li>
+<li><code>chmod 624 app.js</code> 分别给三组用户不同的权限（u: rw, g: w, o: r）；</li>
+<li><code>chmod 755 ~/works</code> 分别给三组用户不同的权限（u: rwx, g: rx, o: rx）。</li>
+</ul>
+<p>###参考</p>
+<p><a href="https://zh.wikipedia.org/wiki/Chmod" target="_blank" rel="noopener">wiki: Chmod</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/21/link/" rel="prev" title="link.md">
+                link.md <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tinghe Zhang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#chmodmd"><span class="nav-number">1.</span> <span class="nav-text"> chmod.md</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tinghe Zhang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
