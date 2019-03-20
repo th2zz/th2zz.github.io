@@ -5742,25 +5742,25 @@ Further more there is a minimized dfa having precisely one state for each equiva
 <a href="https://courses.cs.washington.edu/courses/cse322/05wi/handouts/MyhillNerode.pdf" target="_blank" rel="noopener">https://courses.cs.washington.edu/courses/cse322/05wi/handouts/MyhillNerode.pdf</a><br>
 Regular: we can use above algorithm on DFA minimization to find out each equivalence classes<br>
 Nonregular:<br>
-<img src="" alt="Uploading file..._rcxfszpoo"></p>
+<img src="https://imgur.com/bQqPrIC" alt=""></p>
 <h4 id="pumping-lemma-prove-nonregular-language"><a class="markdownIt-Anchor" href="#pumping-lemma-prove-nonregular-language"></a> <strong>Pumping lemma prove nonregular language</strong></h4>
 <p><img src="https://i.imgur.com/rcf9bT8.png" alt=""></p>
 <p>Testing regularity finite language is regular  infinite language can be tested by pumping lemma</p>
 <h4 id="testing-whether-a-language-is-regular-or-not"><a class="markdownIt-Anchor" href="#testing-whether-a-language-is-regular-or-not"></a> <strong>Testing whether a language is regular or not</strong></h4>
 <p><a href="https://www.youtube.com/watch?v=KSczX111n3U" target="_blank" rel="noopener">https://www.youtube.com/watch?v=KSczX111n3U</a></p>
 <h4 id="cfg-design-regular-language-to-cfg"><a class="markdownIt-Anchor" href="#cfg-design-regular-language-to-cfg"></a> <strong>CFG DESIGN  Regular language to CFG,</strong></h4>
-<img width="1000" src="../img/9.png">
-对每一个dfa的state设计一个nonterminal variable；
-对于每个transition  add 相应的rule   （根据不同的input）
-对于accepting state的nonterminal variable 让他生成空的string 
-This cfg generates the same language that dfa recognizes.
+<p><img src="https://s2.ax1x.com/2019/03/21/A1pSy9.png" alt="A1pSy9.png"><br>
+对每一个dfa的state设计一个nonterminal variable；<br>
+对于每个transition  add 相应的rule   （根据不同的input）<br>
+对于accepting state的nonterminal variable 让他生成空的string<br>
+This cfg generates the same language that dfa recognizes.</p>
 <h4 id="ambiguity"><a class="markdownIt-Anchor" href="#ambiguity"></a> <strong>AMBIGUITY</strong></h4>
 <p>A string is derived ambiguously if it has one or more left/right most derivation tree.<br>
 A Grammar G is ambiguous if it generates some string ambiguously.</p>
 <h4 id="chompsky-normal-form"><a class="markdownIt-Anchor" href="#chompsky-normal-form"></a> <strong>Chompsky Normal Form</strong></h4>
 <p>(CFG simplification: removal of null ε production + unit production elimination + adding auxiliary variable &amp; rewrite)<br>
 <a href="https://www.youtube.com/watch?v=EF09zxzpVbk&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;t=5s&amp;index=76" target="_blank" rel="noopener">https://www.youtube.com/watch?v=EF09zxzpVbk&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;t=5s&amp;index=76</a><br>
-<img width="1000" src="../img/10.png"></p>
+<a href="https://imgchr.com/i/A1SjWF" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/03/21/A1SjWF.png" alt="A1SjWF.png"></a></p>
 <img width="1000" src="../img/11.png">
 <img width="1000" src="../img/12.png">
 For each direct null production A-> null , look for all productions whose right hand side contains A. Replace each occurrences of A in these production with null.  By each occurences, it means all possible location of A that can be nullified. Finsh the resulting productions without A->null, looking for the next one for ex B->null until no null productions exist.
