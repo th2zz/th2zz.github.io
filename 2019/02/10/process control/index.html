@@ -420,10 +420,10 @@ height:50vh;
 <p>例子： mac os X 10.4里的launchd process</p>
 <p>通常每个unix系统有自己的内核进程， 有的系统pid2时pagedaemon 负责支持系统虚拟内存paging</p>
 <p>以下所有函数都没有error return</p>
-![](https://i.imgur.com/Y98USS7.png)
+![](/img/a1.png)
 <h2 id="fork"><a class="markdownIt-Anchor" href="#fork"></a> fork</h2>
 <p>现存进程可以用fork来创建新进程</p>
-![](https://i.imgur.com/TSdjfrm.png)
+![](/img/a2.png)
 <p>这个函数被call一次会返回两次</p>
 <p>在子进程中返回值为0 原因：子进程只能有一个父进程 可以getppid来获得</p>
 <p>parent process返回值为子进程pid 原因：避免子进程pid被其他进程获
@@ -431,7 +431,7 @@ height:50vh;
 <p>子进程父进程在fork之后会继续执行接下来的命令</p>
 <p>The child is a copy of the parent. For example, the child gets a copy of the parent’s data space, heap, and stack. 但是会share text segment</p>
 <p>Modern implementations don’t perform a complete copy of the parent’s data, stack, and heap, since a fork is often followed by an exec. Instead, a technique called copy-on-write (COW) is used. These regions are shared by the parent and the child and have their protection changed by the kernel to read-only. If either process tries to modify these regions, the kernel then makes a copy of that piece of memory only, typically a ‘‘page’’ in a virtual memory system. </p>
-![](https://i.imgur.com/nQhAZPp.png)
+![](/img/a3.png)
 <p>通常父子进程执行顺序是nondeterministic的 这取决与kernel的调度算法</p>
 <p>若需要sychronize action 可以使用如上代码中的sleep来使父进程等待子进程的执行， 但我们没有保证2秒的时间是合适的</p>	
 <p>其他同步方式 race conditions section 8.9  signal section 10.16</p>
@@ -446,7 +446,7 @@ height:50vh;
 <p>这是fork的一个特性： all file descriptors that are open in the parent are duplicated in the child. The parent and the child share a file table entry for every open descriptor </p>
 <p>也就是说 父子进程同时进行输出到stdout时 一定要共享file offset. 若父进程输出被重定向，我们需要子进程在输出到stdout时更新父进程file offset。 这样不仅子进程可以在父进程wait时候输出到stdout，在子进程结束输出时父进程可以在同位置继续之前的输出。 如果没有共享file offset 
 这种互动会很难实现</p>
-![](https://i.imgur.com/idaasXG.png)
+![](/img/a4.png)
 <p>通常有两种情况来处理 fork之后的descriptors的使用</p>
 <ol>
 	<li>父进程等待子进程结束：parent need to do nothing. 任何共享的descriptors会被子进程更新</li>
@@ -503,10 +503,10 @@ height:50vh;
     <!-- license  -->
     
         <div class="license-wrapper">
-            <p>Author：<a href="http://yoursite.com">th2zz</a>
-            <p>原文链接：<a href="http://yoursite.com/2019/02/10/process control/">http://yoursite.com/2019/02/10/process control/</a>
-            <p>发表日期：<a href="http://yoursite.com/2019/02/10/process control/">February 10th 2019, 2:15:32 pm</a>
-            <p>更新日期：<a href="http://yoursite.com/2019/02/10/process control/">March 20th 2019, 2:48:28 pm</a>
+            <p>Author：<a href="http://th2zz.github.io">th2zz</a>
+            <p>原文链接：<a href="http://th2zz.github.io/2019/02/10/process control/">http://th2zz.github.io/2019/02/10/process control/</a>
+            <p>发表日期：<a href="http://th2zz.github.io/2019/02/10/process control/">February 10th 2019, 2:15:32 pm</a>
+            <p>更新日期：<a href="http://th2zz.github.io/2019/02/10/process control/">March 20th 2019, 3:44:25 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -683,6 +683,28 @@ top:50vh;
     <div class="sidebar-content sidebar-content-show-archive">
           <div class="sidebar-panel-archives">
     <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
