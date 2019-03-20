@@ -87,15 +87,10 @@
 <meta property="og:site_name" content="th2zz">
 <meta property="og:description" content="进程控制  	pid 	fork 	wait 	exec   pid 每一个进程都有一个独特的非负整型pid pid可以用来生成独特的文件名 进程终止时 pid会被回收重用 大部分unix系统会有代码来延迟重用从而保证新创建的进程和刚刚终止的进程pid相同 pid 1 通常为init process， 会在启动结束时被kernel invoke 	其program file在/etc/init">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2019/02/10/a1.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/10/a2.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/10/a3.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/10/a4.png">
-<meta property="og:updated_time" content="2019-03-20T19:20:47.164Z">
+<meta property="og:updated_time" content="2019-03-20T19:48:28.862Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Process Control">
 <meta name="twitter:description" content="进程控制  	pid 	fork 	wait 	exec   pid 每一个进程都有一个独特的非负整型pid pid可以用来生成独特的文件名 进程终止时 pid会被回收重用 大部分unix系统会有代码来延迟重用从而保证新创建的进程和刚刚终止的进程pid相同 pid 1 通常为init process， 会在启动结束时被kernel invoke 	其program file在/etc/init">
-<meta name="twitter:image" content="http://yoursite.com/2019/02/10/a1.png">
 
 
 
@@ -324,10 +319,10 @@
 <p>例子： mac os X 10.4里的launchd process</p>
 <p>通常每个unix系统有自己的内核进程， 有的系统pid2时pagedaemon 负责支持系统虚拟内存paging</p>
 <p>以下所有函数都没有error return</p>
-<img src="../a1.png">
+![](https://i.imgur.com/Y98USS7.png)
 <h2 id="fork"><a class="markdownIt-Anchor" href="#fork"></a> fork</h2>
 <p>现存进程可以用fork来创建新进程</p>
-<img src="../a2.png">
+![](https://i.imgur.com/TSdjfrm.png)
 <p>这个函数被call一次会返回两次</p>
 <p>在子进程中返回值为0 原因：子进程只能有一个父进程 可以getppid来获得</p>
 <p>parent process返回值为子进程pid 原因：避免子进程pid被其他进程获
@@ -335,7 +330,7 @@
 <p>子进程父进程在fork之后会继续执行接下来的命令</p>
 <p>The child is a copy of the parent. For example, the child gets a copy of the parent’s data space, heap, and stack. 但是会share text segment</p>
 <p>Modern implementations don’t perform a complete copy of the parent’s data, stack, and heap, since a fork is often followed by an exec. Instead, a technique called copy-on-write (COW) is used. These regions are shared by the parent and the child and have their protection changed by the kernel to read-only. If either process tries to modify these regions, the kernel then makes a copy of that piece of memory only, typically a ‘‘page’’ in a virtual memory system. </p>
-<img src="../a3.png">
+![](https://i.imgur.com/nQhAZPp.png)
 <p>通常父子进程执行顺序是nondeterministic的 这取决与kernel的调度算法</p>
 <p>若需要sychronize action 可以使用如上代码中的sleep来使父进程等待子进程的执行， 但我们没有保证2秒的时间是合适的</p>	
 <p>其他同步方式 race conditions section 8.9  signal section 10.16</p>
@@ -350,7 +345,7 @@
 <p>这是fork的一个特性： all file descriptors that are open in the parent are duplicated in the child. The parent and the child share a file table entry for every open descriptor </p>
 <p>也就是说 父子进程同时进行输出到stdout时 一定要共享file offset. 若父进程输出被重定向，我们需要子进程在输出到stdout时更新父进程file offset。 这样不仅子进程可以在父进程wait时候输出到stdout，在子进程结束输出时父进程可以在同位置继续之前的输出。 如果没有共享file offset 
 这种互动会很难实现</p>
-<img src="../a4.png">
+![](https://i.imgur.com/idaasXG.png)
 <p>通常有两种情况来处理 fork之后的descriptors的使用</p>
 <ol>
 	<li>父进程等待子进程结束：parent need to do nothing. 任何共享的descriptors会被子进程更新</li>
@@ -442,7 +437,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/02/17/Network/" rel="prev" title="Computer Networking">
+              <a href="/2019/03/17/Computer Networking/" rel="prev" title="Computer Networking">
                 Computer Networking <i class="fa fa-chevron-right"></i>
               </a>
             

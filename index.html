@@ -5280,7 +5280,7 @@ when collisions happen increment k value and maps it elsewhere</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/17/Network/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/Computer Networking/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tinghe Zhang">
@@ -5299,7 +5299,7 @@ when collisions happen increment k value and maps it elsewhere</p>
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/02/17/Network/" itemprop="url">Computer Networking</a></h1>
+                <a class="post-title-link" href="/2019/03/17/Computer Networking/" itemprop="url">Computer Networking</a></h1>
         
 
         <div class="post-meta">
@@ -5311,8 +5311,8 @@ when collisions happen increment k value and maps it elsewhere</p>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-17T13:00:41-06:00">
-                2019-02-17
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-17T18:00:41-05:00">
+                2019-03-17
               </time>
             
 
@@ -5351,18 +5351,35 @@ when collisions happen increment k value and maps it elsewhere</p>
       
         
           
-            <img width="1000" src="../network/1.png">
-<img width="1000" src="../network/2.png">
-<img width="1000" src="../network/3.png">
-<img width="1000" src="../network/4.png">
-<img width="1000" src="../network/5.png">
-<img width="1000" src="../network/6.png">
-<img width="1000" src="../network/7.png">
-<img width="1000" src="../network/8.png">
-<img width="1000" src="../network/9.png">
-<img width="1000" src="../network/10.png">
-<img width="1000" src="../network/11.png">
-<img width="1000" src="../network/12.png">
+            <p><img src="https://i.imgur.com/HA8hDiL.png" alt=""><br>
+<img src="https://i.imgur.com/vrk4KEm.png" alt=""><br>
+<img src="https://i.imgur.com/kmJsqDd.png" alt=""><br>
+<img src="https://i.imgur.com/5l0eW4C.png" alt=""><br>
+<img src="https://i.imgur.com/aLUIrSU.png" alt=""><br>
+<img src="https://i.imgur.com/sD5jVYl.png" alt=""><br>
+<img src="https://i.imgur.com/gh6WQ2L.png" alt=""><br>
+<img src="https://i.imgur.com/mDh8Ckj.png" alt=""><br>
+<img src="https://i.imgur.com/d5RxyhM.png" alt=""><br>
+<img src="https://i.imgur.com/nWrSq1b.png" alt=""><br>
+<img src="https://i.imgur.com/gazP668.png" alt=""><br>
+<img src="https://i.imgur.com/RAToBWC.png" alt=""><br>
+<img src="https://i.imgur.com/biruMPM.png" alt=""><br>
+<img src="https://i.imgur.com/KaAU46l.png" alt=""><br>
+<img src="https://i.imgur.com/epOUYka.png" alt=""><br>
+<img src="https://i.imgur.com/PDmQPGx.png" alt=""><br>
+<img src="https://i.imgur.com/Te1SIS9.png" alt=""><br>
+<img src="https://i.imgur.com/hT8UIC7.png" alt=""><br>
+<img src="https://i.imgur.com/0JP3EXc.png" alt=""><br>
+<img src="https://i.imgur.com/5EjSXzq.png" alt=""><br>
+<img src="https://i.imgur.com/EmPy9go.png" alt=""><br>
+<img src="https://i.imgur.com/6d0Moaw.png" alt=""><br>
+<img src="https://i.imgur.com/OgN7rAJ.png" alt=""><br>
+<img src="https://i.imgur.com/TZ1Yc2p.png" alt=""><br>
+<img src="https://i.imgur.com/WQqHWrh.png" alt=""><br>
+<img src="https://i.imgur.com/h1UhveR.png" alt=""><br>
+<img src="https://i.imgur.com/JY2uz1o.png" alt=""><br>
+<img src="https://i.imgur.com/GBdyxrD.png" alt=""><br>
+<img src="https://i.imgur.com/DOaekbW.png" alt=""></p>
 
           
         
@@ -5501,10 +5518,10 @@ when collisions happen increment k value and maps it elsewhere</p>
 <p>例子： mac os X 10.4里的launchd process</p>
 <p>通常每个unix系统有自己的内核进程， 有的系统pid2时pagedaemon 负责支持系统虚拟内存paging</p>
 <p>以下所有函数都没有error return</p>
-<img src="../a1.png">
+![](https://i.imgur.com/Y98USS7.png)
 <h2 id="fork"><a class="markdownIt-Anchor" href="#fork"></a> fork</h2>
 <p>现存进程可以用fork来创建新进程</p>
-<img src="../a2.png">
+![](https://i.imgur.com/TSdjfrm.png)
 <p>这个函数被call一次会返回两次</p>
 <p>在子进程中返回值为0 原因：子进程只能有一个父进程 可以getppid来获得</p>
 <p>parent process返回值为子进程pid 原因：避免子进程pid被其他进程获
@@ -5512,7 +5529,7 @@ when collisions happen increment k value and maps it elsewhere</p>
 <p>子进程父进程在fork之后会继续执行接下来的命令</p>
 <p>The child is a copy of the parent. For example, the child gets a copy of the parent’s data space, heap, and stack. 但是会share text segment</p>
 <p>Modern implementations don’t perform a complete copy of the parent’s data, stack, and heap, since a fork is often followed by an exec. Instead, a technique called copy-on-write (COW) is used. These regions are shared by the parent and the child and have their protection changed by the kernel to read-only. If either process tries to modify these regions, the kernel then makes a copy of that piece of memory only, typically a ‘‘page’’ in a virtual memory system. </p>
-<img src="../a3.png">
+![](https://i.imgur.com/nQhAZPp.png)
 <p>通常父子进程执行顺序是nondeterministic的 这取决与kernel的调度算法</p>
 <p>若需要sychronize action 可以使用如上代码中的sleep来使父进程等待子进程的执行， 但我们没有保证2秒的时间是合适的</p>	
 <p>其他同步方式 race conditions section 8.9  signal section 10.16</p>
@@ -5527,7 +5544,7 @@ when collisions happen increment k value and maps it elsewhere</p>
 <p>这是fork的一个特性： all file descriptors that are open in the parent are duplicated in the child. The parent and the child share a file table entry for every open descriptor </p>
 <p>也就是说 父子进程同时进行输出到stdout时 一定要共享file offset. 若父进程输出被重定向，我们需要子进程在输出到stdout时更新父进程file offset。 这样不仅子进程可以在父进程wait时候输出到stdout，在子进程结束输出时父进程可以在同位置继续之前的输出。 如果没有共享file offset 
 这种互动会很难实现</p>
-<img src="../a4.png">
+![](https://i.imgur.com/idaasXG.png)
 <p>通常有两种情况来处理 fork之后的descriptors的使用</p>
 <ol>
 	<li>父进程等待子进程结束：parent need to do nothing. 任何共享的descriptors会被子进程更新</li>
@@ -5710,24 +5727,24 @@ when collisions happen increment k value and maps it elsewhere</p>
 <a href="https://www.cs.dartmouth.edu/~ac/Teach/CS39-Winter09/SlidesAndNotes/lec09dfa2regexp.pdf" target="_blank" rel="noopener">https://www.cs.dartmouth.edu/~ac/Teach/CS39-Winter09/SlidesAndNotes/lec09dfa2regexp.pdf</a><br>
 <a href="https://cs.stackexchange.com/questions/2016/how-to-convert-finite-automata-to-regular-expressions" target="_blank" rel="noopener">https://cs.stackexchange.com/questions/2016/how-to-convert-finite-automata-to-regular-expressions</a></p>
 <h4 id="closure-properties-of-regular-language-regular-expression"><a class="markdownIt-Anchor" href="#closure-properties-of-regular-language-regular-expression"></a> <strong>Closure properties of regular language &amp; regular expression</strong></h4>
-<img width="1000" src="../img/1.png">
-<img width="1000" src="../img/2.png">
-<img width="1000" src="../img/3.png">
+<p><img src="https://i.imgur.com/emWoAER.png" alt=""><br>
+<img src="https://i.imgur.com/FcPkGfq.png" alt=""><br>
+<img src="https://i.imgur.com/U3rBvGe.png" alt=""></p>
 <h4 id="regex-to-nfa-translation"><a class="markdownIt-Anchor" href="#regex-to-nfa-translation"></a> <strong>Regex to nfa translation</strong></h4>
-<img width="1000" src="../img/4.png">
+<p><img src="https://i.imgur.com/eaWNakg.png" alt=""></p>
 <h4 id="dfa-minimization-algorithm"><a class="markdownIt-Anchor" href="#dfa-minimization-algorithm"></a> <strong>Dfa minimization algorithm</strong></h4>
 <p>Minimization of DFA - Table Filling Method (Myhill-Nerode Theorem)<br>
-<img width="1000" src="../img/5.png"></p>
+<img src="https://i.imgur.com/XvBz4wg.png" alt=""></p>
 <h4 id="myhill-nerode-theorem"><a class="markdownIt-Anchor" href="#myhill-nerode-theorem"></a> <strong>Myhill-nerode theorem</strong></h4>
-<img width="1000" src="../img/6.png">
-Further more there is a minimized dfa having precisely one state for each equivalence class!!!
-**equivalence classes classification**: how to tell what equivalence classes are there?
-https://courses.cs.washington.edu/courses/cse322/05wi/handouts/MyhillNerode.pdf
-Regular: we can use above algorithm on DFA minimization to find out each equivalence classes
-Nonregular: 
-<img width="1000" src="../img/7.png">
+<p><img src="https://i.imgur.com/hp8nF6z.png" alt=""><br>
+Further more there is a minimized dfa having precisely one state for each equivalence class!!!<br>
+<strong>equivalence classes classification</strong>: how to tell what equivalence classes are there?<br>
+<a href="https://courses.cs.washington.edu/courses/cse322/05wi/handouts/MyhillNerode.pdf" target="_blank" rel="noopener">https://courses.cs.washington.edu/courses/cse322/05wi/handouts/MyhillNerode.pdf</a><br>
+Regular: we can use above algorithm on DFA minimization to find out each equivalence classes<br>
+Nonregular:<br>
+<img src="" alt="Uploading file..._rcxfszpoo"></p>
 <h4 id="pumping-lemma-prove-nonregular-language"><a class="markdownIt-Anchor" href="#pumping-lemma-prove-nonregular-language"></a> <strong>Pumping lemma prove nonregular language</strong></h4>
-<img width="1000" src="../img/8.png">
+<p><img src="https://i.imgur.com/rcf9bT8.png" alt=""></p>
 <p>Testing regularity finite language is regular  infinite language can be tested by pumping lemma</p>
 <h4 id="testing-whether-a-language-is-regular-or-not"><a class="markdownIt-Anchor" href="#testing-whether-a-language-is-regular-or-not"></a> <strong>Testing whether a language is regular or not</strong></h4>
 <p><a href="https://www.youtube.com/watch?v=KSczX111n3U" target="_blank" rel="noopener">https://www.youtube.com/watch?v=KSczX111n3U</a></p>
