@@ -431,7 +431,17 @@ height:50vh;
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
+	
+	    {% if page.photos.length %}
+      {% include 'includes/gallery.swig' %}
+    {% endif %}
+    {% autoescape false %}{{ page.content }}{% endautoescape %}
+    {% if theme.livere_uid %}
+      <div id="lv-container" data-id="city" data-uid="{{ theme.livere_uid }}"></div>
+    {% endif %}    
+
     </article>
+ 	{% raw %}{% include 'includes/livere.swig' %}{% endraw %}
     <!-- license  -->
     
         <div class="license-wrapper">
@@ -459,6 +469,21 @@ height:50vh;
     <!-- 评论插件 -->
     <!-- 来必力City版安装代码 -->
 
+    <div id="lv-container" data-id="city" data-uid= MTAyMC80MzMwMy8xOTg0NA==>
+        <script type="text/javascript">
+            (function (d, s) {
+                var j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') { return; }
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+    </div>
+
 <!-- City版安装代码已完成 -->
     
     
@@ -471,6 +496,7 @@ height:50vh;
 
     <!-- 评论 -->
 </main>
+
             <!-- profile -->
             
         </div>
@@ -800,6 +826,12 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 16
@@ -923,9 +955,9 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="Math"><span class="iconfont-archer">&#xe606;</span>Math</span>
     
-        <span class="sidebar-tag-name" data-tags="Theory of computation"><span class="iconfont-archer">&#xe606;</span>Theory of computation</span>
-    
         <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="Theory of computation"><span class="iconfont-archer">&#xe606;</span>Theory of computation</span>
     
         <span class="sidebar-tag-name" data-tags="OS"><span class="iconfont-archer">&#xe606;</span>OS</span>
     
