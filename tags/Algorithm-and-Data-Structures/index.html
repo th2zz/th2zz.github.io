@@ -367,27 +367,36 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2017/12/11/Linear-algebra/" >
+        <a class="abstract-title" href = "/2019/03/22/Threaded Binary Tree and Morris Traversal/" >
             
-                <span>Linear algebra</span>
+                <span>Threaded Binary Tree and Morris Traversal</span>
         </a>
         <div class="abstract-content">
-            summary and notes upon compeletion of the course &amp; self study notes.
-https://github.com/th2zz/th2zz.github.io/blob/master/notes/linear_algebra.pdf
-Textbook Reference
-Introduction to Linear Algebra 4th Edition by Gilbert Strang
-Applied Linear Algebra (Undergraduate Texts in Mathematics) 2nd ed...
+             Threaded Binary Tree and Morris Traversal
+ Motivation
+对于有着空的左孩子右孩子指针的节点 内存被浪费了，所以在TBT里我们利用这些内存来储存一些地址
+ Transform a normal binary tree to TBT
+
+最左边最右边的空指针不改动
+将其他的空指针改为：
+
+
+Left ptr = inorder predecessor 因为该节点没有inorder predecessor 中序遍历第一个节点
+
+
+
+Right ptr = inorder successor 因为该节点没有inorder successor 中...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/12/11</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/03/22</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Math">Math</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Algorithm and Data Structures">Algorithm and Data Structures</a>
     
 </div>
             
