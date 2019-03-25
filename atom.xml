@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://th2zz.github.io/"/>
-  <updated>2019-03-22T20:58:39.460Z</updated>
+  <updated>2019-03-25T03:39:11.675Z</updated>
   <id>http://th2zz.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Boyer–Moore majority vote algorithm</title>
+    <link href="http://th2zz.github.io/2019/03/24/Boyer%E2%80%93Moore%20majority%20vote%20algorithm/"/>
+    <id>http://th2zz.github.io/2019/03/24/Boyer–Moore majority vote algorithm/</id>
+    <published>2019-03-25T03:38:32.000Z</published>
+    <updated>2019-03-25T03:39:11.675Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="boyermoore-majority-vote-algorithm"><a class="markdownIt-Anchor" href="#boyermoore-majority-vote-algorithm"></a> Boyer–Moore majority vote algorithm</h1><p>Boyer–Moore majority vote algorithm is an algorithm that finds the majority element and its count from a given sequence in O(N)TIME O(1)SPACE.</p><h2 id="pseudocode"><a class="markdownIt-Anchor" href="#pseudocode"></a> Pseudocode</h2><ul><li>Initialize an element m and a counter i with i = 0</li><li>For each element x of the input sequence:<ul><li>If i = 0, then assign m = x and i = 1</li><li>else if m = x, then assign i = i + 1</li><li>else assign i = i − 1</li></ul></li><li>Return m</li></ul><h2 id="example"><a class="markdownIt-Anchor" href="#example"></a> Example</h2><p>Leetcode 169<br>Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.<br>You may assume that the array is non-empty and the majority element always exist in the array.</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    public int majorityElement(int[] num) &#123;</span><br><span class="line">        int major=num[0], count = 1;</span><br><span class="line">        for(int i=1; i&lt;num.length;i++)&#123;</span><br><span class="line">            if(count==0)&#123;</span><br><span class="line">                count++;</span><br><span class="line">                major=num[i];</span><br><span class="line">            &#125;else if(major==num[i])&#123;</span><br><span class="line">                count++;</span><br><span class="line">            &#125;else count--;</span><br><span class="line">        &#125;</span><br><span class="line">        return major;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>Reference:<br><a href="https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Boyer–Moore_majority_vote_algorithm</a><br><a href="https://www.zhihu.com/question/49973163/answer/235921864" target="_blank" rel="noopener">https://www.zhihu.com/question/49973163/answer/235921864</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;boyermoore-majority-vote-algorithm&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#boyermoore-majority-vote-algorithm&quot;&gt;&lt;/a&gt; Boyer–Moore majorit
+      
+    
+    </summary>
+    
+    
+      <category term="Algorithm and Data Structures" scheme="http://th2zz.github.io/tags/Algorithm-and-Data-Structures/"/>
+    
+  </entry>
   
   <entry>
     <title>Threaded Binary Tree and Morris Traversal</title>
