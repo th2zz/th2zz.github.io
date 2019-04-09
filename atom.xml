@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://th2zz.github.io/"/>
-  <updated>2019-03-29T20:07:06.177Z</updated>
+  <updated>2019-04-09T14:52:56.760Z</updated>
   <id>http://th2zz.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Computer Networking</title>
+    <link href="http://th2zz.github.io/2019/04/09/Computer%20Networking/"/>
+    <id>http://th2zz.github.io/2019/04/09/Computer Networking/</id>
+    <published>2019-04-09T14:52:41.000Z</published>
+    <updated>2019-04-09T14:52:56.760Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/network/1.png" alt=""><br><img src="/network/2.png" alt=""><br><img src="/network/3.png" alt=""><br><img src="/network/4.png" alt=""><br><img src="/network/5.png" alt=""><br><img src="/network/6.png" alt=""><br><img src="/network/7.png" alt=""><br><img src="/network/8.png" alt=""><br><img src="/network/9.png" alt=""><br><img src="/network/10.png" alt=""><br><img src="/network/11.png" alt=""><br><img src="/network/12.png" alt=""><br><img src="/network/13.png" alt=""><br><img src="/network/14.png" alt=""><br><img src="/network/15.png" alt=""><br><img src="/network/16.png" alt=""><br><img src="/network/17.png" alt=""><br><img src="/network/18.png" alt=""><br><img src="/network/19.png" alt=""><br><img src="/network/20.png" alt=""><br><img src="/network/21.png" alt=""><br><img src="/network/22.png" alt=""><br><img src="/network/23.png" alt=""><br><img src="/network/24.png" alt=""><br><img src="/network/25.png" alt=""><br><img src="/network/26.png" alt=""><br><img src="/network/27.png" alt=""><br><img src="/network/28.png" alt=""><br><img src="/network/29.png" alt=""><br><img src="/network/30.png" alt=""><br><img src="/network/31.png" alt=""><br><img src="/network/32.png" alt=""><br><img src="/network/33.png" alt=""><br><img src="/network/34.png" alt=""><br><img src="/network/35.png" alt=""><br><img src="/network/36.png" alt=""><br><img src="/network/37.png" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;img src=&quot;/network/1.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;img src=&quot;/network/2.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;img src=&quot;/network/3.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+&lt;img src=&quot;/network/4.pn
+      
+    
+    </summary>
+    
+    
+      <category term="Computer Network" scheme="http://th2zz.github.io/tags/Computer-Network/"/>
+    
+  </entry>
   
   <entry>
     <title>Operating System</title>
@@ -105,32 +131,6 @@
     
     
       <category term="Computer Science" scheme="http://th2zz.github.io/tags/Computer-Science/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Computer Networking</title>
-    <link href="http://th2zz.github.io/2019/03/17/Computer%20Networking/"/>
-    <id>http://th2zz.github.io/2019/03/17/Computer Networking/</id>
-    <published>2019-03-17T23:00:41.000Z</published>
-    <updated>2019-03-22T21:02:48.681Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="/network/1.png" alt=""><br><img src="/network/2.png" alt=""><br><img src="/network/3.png" alt=""><br><img src="/network/4.png" alt=""><br><img src="/network/5.png" alt=""><br><img src="/network/6.png" alt=""><br><img src="/network/7.png" alt=""><br><img src="/network/8.png" alt=""><br><img src="/network/9.png" alt=""><br><img src="/network/10.png" alt=""><br><img src="/network/11.png" alt=""><br><img src="/network/12.png" alt=""><br><img src="/network/13.png" alt=""><br><img src="/network/14.png" alt=""><br><img src="/network/15.png" alt=""><br><img src="/network/16.png" alt=""><br><img src="/network/17.png" alt=""><br><img src="/network/18.png" alt=""><br><img src="/network/19.png" alt=""><br><img src="/network/20.png" alt=""><br><img src="/network/21.png" alt=""><br><img src="/network/22.png" alt=""><br><img src="/network/23.png" alt=""><br><img src="/network/24.png" alt=""><br><img src="/network/25.png" alt=""><br><img src="/network/26.png" alt=""><br><img src="/network/27.png" alt=""><br><img src="/network/28.png" alt=""><br><img src="/network/29.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;img src=&quot;/network/1.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
-&lt;img src=&quot;/network/2.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
-&lt;img src=&quot;/network/3.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
-&lt;img src=&quot;/network/4.pn
-      
-    
-    </summary>
-    
-    
-      <category term="Computer Network" scheme="http://th2zz.github.io/tags/Computer-Network/"/>
     
   </entry>
   
