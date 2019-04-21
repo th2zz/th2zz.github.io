@@ -11,7 +11,7 @@
 
 
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
     <meta name="author" content="th2zz">
     <meta name="renderer" content="webkit">
@@ -77,8 +77,6 @@
 
     <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
-    
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
@@ -219,13 +217,15 @@
         })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
         ga('create', 'true', 'auto');
         ga('send', 'pageview');
-    </script>
+    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
     
 </head>
 
     
+        <body class="home-body">
     
-<header class="header">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header index-header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
@@ -241,21 +241,34 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 文章页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
             
+            th2zz's blog.
+            <!-- 文章页  -->
+            
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
+            
+            
+                生きるとはつまり螺旋のことだったんだよ！
+            
+            <!-- 文章页  -->
             
         </p>
         <!-- 文章页meta -->
@@ -367,396 +380,142 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2019/04/21/Database Management System - Indexing/" >
+        <a class="abstract-title" href = "/2017/08/12/hello-world/" >
             
-                <span>Database Management System - Indexing</span>
+                <span>Hello world</span>
         </a>
         <div class="abstract-content">
-             Indexing
- 基本概念
-
-search key/搜索码/搜索键  注意这里的码的定义与主码、候 选码以及超码中的码定义不同。这里是泛指。例如如果一个文件上有多个索引，那么它就有多个搜索码。 一个文件可以有多个索引，分别基于不同的搜索码。
-基本的索引类型:
-
-顺序索引。基于值的顺序排序。
-散列索引。基于将值平均分布到若干散列桶中。一个值所属的散列桶是由散列函数觉定。
-
-
-顺序索引与散列索引评价metric。
-
-访问类型: 范围查询？等值查询？
-访问时间:在查询中使用该技术找到一个特定数据项或数据项集所需的时间
-插入时间: 插入一个新数据项所需的时间。该值包括找到插入这个新数据项的正...
+            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+ Quick Start
+ Create a new post
+1$ hexo new "My New Post"
+More info: Writing
+ Run server
+1$ hexo serve...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/04/21</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/08/12</span>
             </div>
             <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Database">Database</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/04/10/Operating System - Persistence/" >
-            
-                <span>Operating System - Persistence</span>
-        </a>
-        <div class="abstract-content">
-             CS537 - Operating System Summary Part 2 Persistence
- Persistence
- IO Device and Communication Protocol
- Motivation
-
-we want hardware that will let us plug in different devices
-we want OS that can interact with different combinations of HW
-
- Hardware support for IO device in system architecture
-
-...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/04/10</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "OS">OS</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/04/09/Computer Networking/" >
-            
-                <span>Computer Networking</span>
-        </a>
-        <div class="abstract-content">
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/04/09</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Computer Network">Computer Network</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/04/02/Operating System - Concurrency/" >
-            
-                <span>Operating System - Concurrency</span>
-        </a>
-        <div class="abstract-content">
-             CS537 - Operating System Summary Part 2 Concurrency
- Concurrency
- Thread
- Processes vs Thread
-
-
-Process
-
-Example: Chrome (process per tab)
-Communicate via pipe() or similar
-Pros: Don’t need new abstractions; good for security
-Cons:
-
-Cumbersome programming
-High communication overheads
-Expensive c...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/04/02</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "OS">OS</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/03/24/Boyer–Moore majority vote algorithm/" >
-            
-                <span>Boyer–Moore majority vote algorithm</span>
-        </a>
-        <div class="abstract-content">
-             Boyer–Moore majority vote algorithm
-Boyer–Moore majority vote algorithm is an algorithm that finds the majority element and its count from a given sequence in O(N)TIME O(1)SPACE.
- Pseudocode
-
-Initialize an element m and a counter i with i = 0
-For each element x of the input sequence:
-
-If i = 0, ...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/03/24</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Algorithm and Data Structures">Algorithm and Data Structures</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/03/22/Threaded Binary Tree and Morris Traversal/" >
-            
-                <span>Threaded Binary Tree and Morris Traversal</span>
-        </a>
-        <div class="abstract-content">
-             Threaded Binary Tree and Morris Traversal
- Motivation
-对于有着空的左孩子右孩子指针的节点 内存被浪费了，所以在TBT里我们利用这些内存来储存一些地址
- Transform a normal binary tree to TBT
-
-最左边最右边的空指针不改动
-将其他的空指针改为：
-
-
-Left ptr = inorder predecessor 因为该节点没有inorder predecessor 中序遍历第一个节点
-
-
-
-Right ptr = inorder successor 因为该节点没有inorder successor 中...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/03/22</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Algorithm and Data Structures">Algorithm and Data Structures</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/03/18/Database/" >
-            
-                <span>Database Management System - Relational Design Theory</span>
-        </a>
-        <div class="abstract-content">
-             CS564 - DBMS - Relational Design Theory
- SQL
- Relational algebra and Calculus
-
- Keys
-
-Asuperkey is a set of one or more attributes that, taken collectively, allow us to identify uniquely a tuple in the relation
-Such minimal superkeys are called candidate keys.
-We shall use the term primary key t...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/03/18</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Database">Database</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/03/15/Operating System - Virtualization/" >
-            
-                <span>Operating System - Virtualization</span>
-        </a>
-        <div class="abstract-content">
-             CS537 - Operating System Summary Part 1 Virtualization
- Virtualization
- Process
- What is a process
-
-A running program is a process
-Stream of executing instructions and their “context”
-
- Thread
-
-Can have multiple threads within a single process
-Lightweight process
-Share an address space
-
- Why do ...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/03/15</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "OS">OS</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2019/02/10/process control/" >
-            
-                <span>Process Control</span>
-        </a>
-        <div class="abstract-content">
-             进程控制
-
-	pid
-	fork
-	wait
-	exec
-
- pid
-每一个进程都有一个独特的非负整型pid
-pid可以用来生成独特的文件名
-进程终止时 pid会被回收重用
-大部分unix系统会有代码来延迟重用从而保证新创建的进程和刚刚终止的进程pid相同
-pid 1 通常为init process， 会在启动结束时被kernel invoke
-	其program file在/etc/init （老版本的UNIX系统）或者/sbin/init   （较新版本。 这个进程负责bring up unix system after kernel has been bootstrapped b...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/02/10</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "OS">OS</a>
-    
-</div>
             
         </div>
     </article>
     
     <!-- paginator  -->
     
+    <nav class="page-nav">
+        <a class="extend prev" rel="prev" href="/page/2/">&#60; PREV</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    </nav>
+    
 </main>
             <!-- profile -->
+            
+            <div class="profile">
+    <img class="profile-avatar" alt="avatar" src= /avatar/torr3.jpg >
+    <div class="profile-name">th2zz</div>
+    
+    <div class="profile-signature">
+        Hello World!
+    </div>
+    
+    
+    <div class="profile-social">
+        
+    
+        
+            
+                <a href="mailto:tzhang329@gmail.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/th2zz" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/qr.png" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/qrqq.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.zhihu.com/people/vince-zzz/" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+            
+                <a href="https://www.douban.com/people/55328071/" class="iconfont-archer douban" target="_blank" title=douban></a>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.instagram.com/th2zz3/" class="iconfont-archer instagram" target="_blank" title=instagram></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://space.bilibili.com/38725165" class="iconfont-archer bilibili" target="_blank" title=bilibili></a>
+            
+        
+    
+        
+    
+        
+            
+                <a href="https://steamcommunity.com/id/th2zz/" class="iconfont-archer steam" target="_blank" title=steam></a>
+            
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+    </div>
+    
+    
+    
+</div>
             
         </div>
         <footer class="footer footer-unloaded">
@@ -1373,7 +1132,24 @@ jsonContent:
         <script src="https://s13.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
         
     </div>
-    <!-- async load share.js -->
+    <!-- async load share.js --><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
      
     </body>
 </html>
