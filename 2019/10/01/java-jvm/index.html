@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="th2zz">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="th2zz">
+    
+    <meta name="keywords" content="th2zz's blog,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>JVM · th2zz&#39;s blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/torr3.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?true";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+    <!-- 谷歌统计  -->
+    
+    <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'true', 'auto');
+        ga('send', 'pageview');
+    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >th2zz&#39;s blog.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">JVM</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>th2zz's blog.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            JVM
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Java">Java</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>Word count: <span class="post-count word-count">4k</span>Reading time: <span class="post-count reading-time">17 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/09/30</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="jvm-architecture"><a class="markdownIt-Anchor" href="#jvm-architecture"></a> JVM architecture</h1>
+<ul>
+<li>
+<p>Main function: load &amp; execute java application</p>
+</li>
+<li>
+<p>Process: edit - javac myapp.java - java myapp (create a jvm instance)</p>
+</li>
+<li>
+<img src="https://s2.ax1x.com/2020/02/08/1WkqSg.png" alt="1WkqSg.png" style="zoom:50%;">
+</li>
+<li>
+<img src="https://s2.ax1x.com/2020/02/08/1WAGnA.png" alt="1WAGnA.png" style="zoom:50%;">
+</li>
+<li>
+<p>components:</p>
+<ul>
+<li>class loader: input .class files output bytecode for execution engine</li>
+<li>Runtime data areas</li>
+<li>execution engine: executes byte code by talking to OS (may use native method calls that will be translated to machine language)</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-class-loader-and-its-subsystem"><a class="markdownIt-Anchor" href="#1-class-loader-and-its-subsystem"></a> 1. Class Loader and its subsystem</h3>
+<ul>
+<li>
+<img src="https://s2.ax1x.com/2020/02/08/1WA2NV.png" alt="1WA2NV.png" style="zoom:50%;">
+</li>
+</ul>
+<h4 id="load"><a class="markdownIt-Anchor" href="#load"></a> Load</h4>
+<ul>
+<li>Load: Load bytecode into memory
+<ul>
+<li>can read from different sources: file system, socket</li>
+<li>can have classNotFound</li>
+<li>Three types of class loaders:
+<ul>
+<li><strong>bootstrap</strong> rt.jar: <strong>load java internal classes</strong></li>
+<li><strong>extension</strong> jre/lib/ext: <strong>load classes from additional application jar in jre/lib</strong></li>
+<li><strong>application</strong> CLASSPATH, -cp: load classes from specified path</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="link"><a class="markdownIt-Anchor" href="#link"></a> Link</h4>
+<ul>
+<li>Link phase
+<ul>
+<li><strong>verify</strong> bytecode compatibility with JVM</li>
+<li><strong>Prepare</strong> allocate memory and init to default value for class (static) variables</li>
+<li><strong>Resolve</strong> resolve symbolic references to other classes / constant pool to actual reference
+<ul>
+<li>classDefNotFound</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="initialize"><a class="markdownIt-Anchor" href="#initialize"></a> Initialize</h4>
+<ul>
+<li>Initialize
+<ul>
+<li>Execute static code block “static initializer”</li>
+<li>actual initialization of static variables</li>
+</ul>
+</li>
+</ul>
+<h4 id="类初始化时机"><a class="markdownIt-Anchor" href="#类初始化时机"></a> 类初始化时机</h4>
+<ol>
+<li>主动引用<br>
+虚拟机规范中并没有强制约束何时进行加载，但是规范严格规定了有且只有下列五种情况必须对类进行初始化（加载、验证、准备都会随之发生）：</li>
+</ol>
+<ul>
+<li>遇到 new、getstatic、putstatic、invokestatic 这四条字节码指令时，如果类没有进行过初始化，则必须先触发其初始化。最常见的生成这 4 条指令的场景是：使用 new 关键字实例化对象的时候；读取或设置一个类的静态字段（被 final 修饰、已在编译期把结果放入常量池的静态字段除外）的时候；以及调用一个类的静态方法的时候。</li>
+<li>使用 java.lang.reflect 包的方法对类进行反射调用的时候，如果类没有进行初始化，则需要先触发其初始化。</li>
+<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化。</li>
+<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类），虚拟机会先初始化这个主类；</li>
+<li>当使用 JDK 1.7 的动态语言支持时，如果一个 java.lang.invoke.MethodHandle 实例最后的解析结果为 REF_getStatic, REF_putStatic, REF_invokeStatic 的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化；</li>
+</ul>
+<ol start="2">
+<li>被动引用<br>
+以上 5 种场景中的行为称为对一个类进行主动引用。除此之外，所有引用类的方式都不会触发初始化，称为被动引用。被动引用的常见例子包括：</li>
+</ol>
+<ul>
+<li>通过子类引用父类的静态字段，不会导致子类初始化。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(SubClass.value);  <span class="comment">// value 字段在 SuperClass 中定义Copy to clipboardErrorCopied</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过数组定义来引用类，不会触发此类的初始化。该过程会对数组类进行初始化，数组类是一个由虚拟机自动生成的、直接继承自 Object 的子类，其中包含了数组的属性和方法。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SuperClass[] sca = <span class="keyword">new</span> SuperClass[<span class="number">10</span>];Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+<ul>
+<li>常量在编译阶段会存入调用类的常量池中，本质上并没有直接引用到定义常量的类，因此不会触发定义常量的类的初始化。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(ConstClass.HELLOWORLD);</span><br></pre></td></tr></table></figure>
+<h3 id="2-runtime-data-areas"><a class="markdownIt-Anchor" href="#2-runtime-data-areas"></a> 2. Runtime data areas</h3>
+<ul>
+<li><strong>per thread means operations in thread local storage are generally safe.</strong></li>
+<li><strong>per JVM means operations in shared data areas such as meatspace, Heap are not thread-safe.</strong></li>
+</ul>
+<h4 id="per-thread"><a class="markdownIt-Anchor" href="#per-thread"></a> Per-thread</h4>
+<img src="https://s2.ax1x.com/2020/02/08/1WmTkn.png" alt="1WmTkn.png" style="zoom:50%;">
+<h5 id="pc-register"><a class="markdownIt-Anchor" href="#pc-register"></a> PC Register</h5>
+<ul>
+<li><strong>PC Register</strong>:  program counter register
+<ul>
+<li>pointer to next instruction <strong>per thread</strong></li>
+</ul>
+</li>
+</ul>
+<h5 id="java-stacks"><a class="markdownIt-Anchor" href="#java-stacks"></a> Java Stacks</h5>
+<ul>
+<li><strong>Java Stacks</strong>: stack frames “chains of stack frames” corresponded to current methods execution <strong>per thread</strong>
+<ul>
+<li>use -Xss to mention size of stacks we want to maintain</li>
+<li>when run out of memory, can have StackOverflowError</li>
+</ul>
+</li>
+</ul>
+<h5 id="native-method-stacks"><a class="markdownIt-Anchor" href="#native-method-stacks"></a> Native method Stacks</h5>
+<ul>
+<li><strong>Native method stacks</strong>: native method stacks if needed / used <strong>per thread</strong>.
+<ul>
+<li>a thread with its method may call a native method such as loading a dll and run something, then the native method stack will be created, and you will get a pointer</li>
+</ul>
+</li>
+</ul>
+<h4 id="per-jvm"><a class="markdownIt-Anchor" href="#per-jvm"></a> Per-JVM</h4>
+<img src="https://s2.ax1x.com/2020/02/08/1WZNA1.md.png" alt="1WZNA1.md.png" style="zoom:80%;">
+<h5 id="metaspace-method-area"><a class="markdownIt-Anchor" href="#metaspace-method-area"></a> Metaspace / Method Area</h5>
+<ul>
+<li>
+<p><strong>Method Area</strong> “PermGen space 64MB”: metadata for class, available for reflection <strong>per JVM</strong>.</p>
+<ul>
+<li>use -XX:MaxPermSize to adjust size if we need to store a lot more classes</li>
+<li><strong>Removed since Java 8</strong></li>
+<li>Now is called: <strong>Metaspace</strong>
+<ul>
+<li>a seperate memory portion in native operating system</li>
+<li>no limit now, can grow infinitely, but can have a limit if tuned.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="heap"><a class="markdownIt-Anchor" href="#heap"></a> Heap</h5>
+<ul>
+<li>
+<p><strong>Heap</strong>: stores Object data such as arrays, objects… <strong>per JVM</strong>.</p>
+<ul>
+<li>now has runtime constant pool and string pool</li>
+<li>use -Xms for min size, -Xms for max size if need to tune.</li>
+</ul>
+</li>
+</ul>
+<h5 id="direct-memory"><a class="markdownIt-Anchor" href="#direct-memory"></a> Direct Memory</h5>
+<ul>
+<li>直接内存: 在 JDK 1.4 中新引入了 NIO 类，它可以使用 Native 函数库直接分配堆外内存，然后通过 Java 堆里的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在堆内存和堆外内存来回拷贝数据。</li>
+</ul>
+<h3 id="3-execution-engine"><a class="markdownIt-Anchor" href="#3-execution-engine"></a> 3. Execution Engine</h3>
+<img src="https://s2.ax1x.com/2020/02/08/1WQdZF.png" alt="1WQdZF.png" style="zoom:50%;">
+<ul>
+<li><strong>Interperter</strong>: interpret &amp; execute bytecode related native operations
+<ul>
+<li>done by interacting with Java Native Method Interface (JNI)
+<ul>
+<li><strong>Platform independent (native) libraries</strong>: ex. in windows JRE /bin you will see .dll files   .so on unix platform</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JIT Compiler</strong> (Just-in-time): do not interpret instructions that will be executed again and agin, compile it on the fly and keep the bytecode to avoid wasteful interpretations.</li>
+<li><strong>Hotspot profiler</strong>: make statistics on hotspot to help JIT compiler.</li>
+<li><strong>Garbage Collector (GC)</strong>: cleans up unused classes / objects in memory areas.</li>
+</ul>
+<h1 id="jvm-gc"><a class="markdownIt-Anchor" href="#jvm-gc"></a> JVM GC</h1>
+<ul>
+<li>Intro
+<ul>
+<li>Memory leak: 内存管理不当导致的“不需要的内存没有被释放” <strong>can have Memory leak in Java</strong></li>
+<li>In C++/C, programmers responsible for manage memory, can easily lead to memory leaks if not handled properly
+<ul>
+<li>malloc() realloc() calloc() free() new and destructors</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Basics
+<ul>
+<li>Live object = reachable (referenced by someone else)</li>
+<li>dead object = unreachable (not referenced anywhere)</li>
+<li><strong>root node = main thread</strong></li>
+<li>Objects e.g. (new xxx) are allocated in the heap, static members, class definitions (metadata) are stored in Permgen / Metaspace</li>
+<li>GC is carried out by a <strong>daemon thread &quot;Garbage collector&quot;</strong></li>
+<li><strong>we cannot force gc to happen</strong> (System.gc()😉</li>
+<li>failed new allocations in heap  = java.lang.OutOfMemoryError</li>
+<li>GC只处理java new出来的对象，但无法关闭其他资源，也无法处理java调用C或其他语言分配出的内存。</li>
+<li>垃圾回收分多级，0级为全部(Full)的垃圾回收，会回收OLD段中的垃圾；1级或以上为部分垃圾回收，只会回收Young中的垃圾。</li>
+<li>System.gc并不保证GC执行，只是向JVM发送建议，并不是命令。</li>
+<li>finalize被调用时代表gc准备回收该对象内存</li>
+</ul>
+</li>
+</ul>
+<h3 id="directed-graph-reachability"><a class="markdownIt-Anchor" href="#directed-graph-reachability"></a> Directed Graph &amp; Reachability</h3>
+<ul>
+<li>.NET的垃圾回收采用引用计数，java的垃圾回收机制采取的是有向图的方式来实现，具体的说，java程序中的每个线程对象就可以看作是一个有向图的起点，有向边从栈中的引用者指向堆中的引用对象。在这个有向图中，如果一个对象和根节点之间是可达的，那么这个对象就是有效的，反之，这个对象就是可以被回收的。采取这样一种机制的优点是可以有效的避免循环引用。</li>
+</ul>
+<h2 id="general-gc-steps-mark-sweep-compact"><a class="markdownIt-Anchor" href="#general-gc-steps-mark-sweep-compact"></a> General GC steps: Mark Sweep Compact</h2>
+<ul>
+<li><strong>Mark</strong>
+<ul>
+<li>Starts from root node (main) walks the object graph, <strong>marks reachable object</strong> as live.</li>
+</ul>
+</li>
+<li><strong>Sweep</strong>/Delete
+<ul>
+<li><strong>clean unreachable objects</strong> and <strong>reclaim memory</strong></li>
+</ul>
+</li>
+<li><strong>Compacting</strong>
+<ul>
+<li>arrange things in order: move objects around to <strong>avoid fragmentation</strong> = make memory contiguous.</li>
+</ul>
+</li>
+</ul>
+<h2 id="java-gc-generational-collectors"><a class="markdownIt-Anchor" href="#java-gc-generational-collectors"></a> Java GC: <strong>Generational collectors</strong></h2>
+<h3 id="heap-division"><a class="markdownIt-Anchor" href="#heap-division"></a> Heap division</h3>
+<ul>
+<li>
+<img src="https://s2.ax1x.com/2020/02/08/1WtC4S.png" alt="1WtC4S.png" style="zoom:80%;">
+</li>
+<li>Young Generation
+<ul>
+<li><strong>Eden space</strong>: new object();</li>
+<li><strong>Survivor space 1 / 2</strong>: used to <strong>move back and force</strong> survivors that survive minor GC each turn
+<ul>
+<li>can <strong>help avoid compacting step</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Old Generation
+<ul>
+<li>objects that survived at least “threshold” rounds of GC</li>
+<li>if full, iincur Major GC</li>
+</ul>
+</li>
+</ul>
+<h3 id="minor-vs-major-gc"><a class="markdownIt-Anchor" href="#minor-vs-major-gc"></a> Minor vs Major GC</h3>
+<ul>
+<li>Minor:
+<ul>
+<li>only Young Generation</li>
+<li>Responsive</li>
+</ul>
+</li>
+<li>Major:
+<ul>
+<li>run through entire heap</li>
+<li>Long pause / latency</li>
+<li>High throughput</li>
+<li>Good for batch processing, jobs in database that that care about throughput &gt; latency</li>
+</ul>
+</li>
+</ul>
+<h3 id="entire-process"><a class="markdownIt-Anchor" href="#entire-process"></a> Entire process</h3>
+<ol>
+<li>new obj allocated in Eden</li>
+<li>Eden full = allocation fail for new obj
+<ol>
+<li>Minor GC run, mark reachable objs</li>
+<li>move reachable obj to survivor 1</li>
+<li>Sweep unreachables</li>
+<li>survivors counters =  “1” means 1 rounds</li>
+</ol>
+</li>
+<li>Now Eden clear, allocate new objs… some in survivor 1 became unreachable… when Eden full,
+<ol>
+<li>minor GC mark and move reachables to survivor 2 <strong>the empty one</strong></li>
+<li>move reachables in S1 to S2, <strong>increment</strong> S1 <strong>survivor counter.</strong>  By moving around this way we <strong>avoids compacting steps.</strong></li>
+</ol>
+</li>
+<li><strong>Repeat</strong>: allocate in Eden, Eden full, mark and move all reachable (Eden or Sx) to the empty S, increment counters, sweep unreachables</li>
+<li>If counter <strong>hit threshold, promote them to Old Generation</strong>.</li>
+<li>If Old Generation is near full, Major GC runs across the entire heap MSC. very time consuming, can lead to pause.</li>
+</ol>
+<h2 id="gc-types-usages"><a class="markdownIt-Anchor" href="#gc-types-usages"></a> GC types &amp; Usages</h2>
+<h3 id="basic-serial-collector"><a class="markdownIt-Anchor" href="#basic-serial-collector"></a> Basic Serial Collector</h3>
+<ul>
+<li>runs in single thread, used for basic applications</li>
+</ul>
+<h3 id="concurrent-collector-cmsc"><a class="markdownIt-Anchor" href="#concurrent-collector-cmsc"></a> Concurrent collector (CMSC)</h3>
+<ul>
+<li>A thread that performs GC concurrently for the app.</li>
+<li>No waiting for the old generation.</li>
+<li><strong>small pause only when mark / remark</strong>. Otherwise no pause “concurrent”.</li>
+<li>use when
+<ul>
+<li>more available memory</li>
+<li>high number of CPUs</li>
+<li>needs responsiveness</li>
+</ul>
+</li>
+</ul>
+<h3 id="parallel-collector-pmsc"><a class="markdownIt-Anchor" href="#parallel-collector-pmsc"></a> Parallel collector (PMSC)</h3>
+<ul>
+<li>use multiple CPU and multiple threads to do MSC (mark sweep compact).</li>
+<li>only runs when heap is full / near full.</li>
+<li><strong>long pause when it runs</strong>.</li>
+<li>use when
+<ul>
+<li>less available memory</li>
+<li>less number of CPUs</li>
+<li>needs high throughput &amp; can withstand pauses</li>
+</ul>
+</li>
+</ul>
+<h3 id="g1-collector-garbage-first-17"><a class="markdownIt-Anchor" href="#g1-collector-garbage-first-17"></a> G1 collector (Garbage - first) 1.7+</h3>
+<ul>
+<li>Divide heap into small regions, each of them can be eden / survivor / old</li>
+<li><strong>Dynamically chose regions with most garbage to GC</strong>
+<ul>
+<li>More predictable GC pauses</li>
+<li>Low pauses and fragmentation</li>
+<li>Parallelism &amp; concurrency together</li>
+<li>Better heap utilization</li>
+</ul>
+</li>
+</ul>
+<h3 id="usage"><a class="markdownIt-Anchor" href="#usage"></a> Usage</h3>
+<p><img src="https://s2.ax1x.com/2020/02/08/1WBMZj.png" alt="1WBMZj.png"></p>
+<ul>
+<li>notice CMS is only in old generation.</li>
+</ul>
+<h2 id="memory-leaks"><a class="markdownIt-Anchor" href="#memory-leaks"></a> Memory Leaks</h2>
+<ul>
+<li>
+<p>内存溢出通常发生于OLD段或Perm段垃圾回收后，仍然无内存空间容纳新的Java对象的情况。</p>
+</li>
+<li>
+<p>建议将不用的对象引用设为null来避免临时的内存泄漏： 将他们标记为可清理对象。</p>
+</li>
+<li>
+<p>常发生于</p>
+<ol>
+<li>使用生命周期较长的单位：单例模式类对象， 静态集合类形成的对象引用   <strong>暂时内存泄漏：只有相应对象/类被释放时才会gc</strong></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Static Vector v = new Vector(); </span><br><span class="line">for (int i = 1; i&lt;100; i++) </span><br><span class="line">&#123; </span><br><span class="line">    Object o = new Object(); </span><br><span class="line">    v.add(o); </span><br><span class="line">    o = null; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>
+<p><strong>使用了各种资源连接忘了关</strong>：数据库连接，网络连接，IO连接等，显式调用close<strong>关闭后才能被GC回收</strong></p>
+</li>
+<li>
+<p>**改变哈希值，**当一个对象被存储进HashSet集合中以后，就不能修改这个对象中的那些参与计算哈希值的字段了，否则，对象修改后的哈希值与最初存储进HashSet集合中时的哈希值就不同了，在这种情况下，即使在contains方法使用该对象的当前引用作为的参数去HashSet集合中检索对象，也将返回找不到对象的结果，这也会导致无法从HashSet集合中单独删除当前对象，造成内存泄露</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">  Set&lt;Person&gt; set = <span class="keyword">new</span> HashSet&lt;Person&gt;();</span><br><span class="line">  Person p1 = <span class="keyword">new</span> Person(<span class="string">"唐僧"</span>,<span class="string">"pwd1"</span>,<span class="number">25</span>);</span><br><span class="line">  Person p2 = <span class="keyword">new</span> Person(<span class="string">"孙悟空"</span>,<span class="string">"pwd2"</span>,<span class="number">26</span>);</span><br><span class="line">  Person p3 = <span class="keyword">new</span> Person(<span class="string">"猪八戒"</span>,<span class="string">"pwd3"</span>,<span class="number">27</span>);</span><br><span class="line">  set.add(p1);</span><br><span class="line">  set.add(p2);</span><br><span class="line">  set.add(p3);</span><br><span class="line">  System.out.println(<span class="string">"总共有:"</span>+set.size()+<span class="string">" 个元素!"</span>); <span class="comment">//结果：总共有:3 个元素!</span></span><br><span class="line">  p3.setAge(<span class="number">2</span>); <span class="comment">//修改p3的年龄,此时p3元素对应的hashcode值发生改变</span></span><br><span class="line">  set.remove(p3); <span class="comment">//此时remove不掉，造成内存泄漏</span></span><br><span class="line">  set.add(p3); <span class="comment">//重新添加，居然添加成功</span></span><br><span class="line">  System.out.println(<span class="string">"总共有:"</span>+set.size()+<span class="string">" 个元素!"</span>); <span class="comment">//结果：总共有:4 个元素!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="java对象引用类别强引用软引用弱引用虚引用"><a class="markdownIt-Anchor" href="#java对象引用类别强引用软引用弱引用虚引用"></a> Java对象引用类别：强引用，软引用，弱引用，虚引用</h2>
+<ul>
+<li>
+<p><strong>强引用</strong>就是平时最常用的引用，当内存空间不足，Java虚拟机宁愿抛出OutOfMemoryError错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足的问题。</p>
+</li>
+<li>
+<p>如果一个对象只具有<strong>软引用</strong>，则内存空间足够，垃圾回收器就不会回收它；如果内存空间不足了，就会回收这些对象的内存。</p>
+</li>
+<li>
+<p>只具有<strong>弱引用</strong>的对象拥有更短暂的生命周期。在垃圾回收器线程扫描它所管辖的内存区域的过程中，一旦发现了只具有弱引用的对象，<strong>不管当前内存空间足够与否，都会回收它的内存</strong>。</p>
+</li>
+<li>
+<p>虚引用，这种引用不常用，主要用途是关联对象，实现对对象引用关系追踪。虚引用并不会决定对象的生命周期。也无法通过虚引用得到一个对象。如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收器回收。</p>
+</li>
+<li>
+<p>几种引用分别位于java.lang.ref.SoftReference; java.lang.ref.WeakReference; 和 java.lang.ref.PhantomReference;</p>
+</li>
+</ul>
+<h2 id="finalize"><a class="markdownIt-Anchor" href="#finalize"></a> finalize( )</h2>
+<ul>
+<li>
+<p>do not use finalizer manually: finalize()</p>
+<ul>
+<li>
+<p>guranteed to be called <strong>only ONCE</strong> at the end of execution when GC is done</p>
+</li>
+<li>
+<p>no gurantee of gc happens</p>
+</li>
+<li>
+<p>do not use finalizer on anything important</p>
+</li>
+<li>
+<p>suppose we try to resurect obj by recreating an object in finalize( ), this = new xxx( );</p>
+<ul>
+<li>obj is recreated in memory at the end of gc = <strong>memory leak</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>finalize被调用时代表gc准备回收该对象内存</p>
+<ul>
+<li>对象不可达，但是调用<strong>finalize之后</strong>又变得可达的情况存在，在finalize函数中通过this指针让其他句柄执行本身即可，但是再下次回收时不会再调用finalize，因为只能调用一次。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected void finalize()</span><br><span class="line">&#123;</span><br><span class="line">     main.ref=this;  // 恢复本对象，让本对象可达</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>垃圾回收器不能对用Java以外的代码编写的Class(比如JNI，C<ins>的new方法分配的内存)进行正确的回收，这时就需要覆盖默认finalize的方法来实现对这部分内存的正确释放和回收(比如C</ins>需要delete)。</li>
+<li>finalize不能等同于C<ins>对象的destructor析构函数，C</ins>析构函数在在对象生命周期结束时会确定执行，而finalize函数的调用具有很大的不确定性。</li>
+</ul>
+<blockquote>
+<p><strong>1、调用时间不确定——有资源浪费的风险</strong></p>
+<p>如果把某些稀缺资源放到finalize()中释放，可能会导致该稀缺资源等上很久很久以后才被释放。造成资源的浪费！另外，某些类对象所携带的资源（比如某些JDBC的类）可能本身就很耗费内存，这些资源的延迟释放会造成很大的性能问题。</p>
+<p><strong>2、可能不被调用——有资源泄漏的风险</strong></p>
+<p>在某些情况下，finalize()压根儿不被调用。比如在JVM退出的当口，内存中那些对象的finalize函数可能就不会被调用了。</p>
+<p>因此一些清理工作如文件的关闭，连接的关闭等不要放到finalize函数中，要在程序中单独进行管理，一般finalize只做C/C++内存的回收。<br>
+<strong>3、对象可能在finalize函数调用时复活——有诈尸的风险</strong>　　<br>
+诈尸的情况比较少见，不过俺还是稍微提一下。<br>
+　　本来，只有当某个对象已经失效（没有引用），垃圾回收器才会调用该对象的finalize函数。但是，万一碰上某个变态的程序员，在finalize()函数内部再把对象自身的引用（也就是this）重新保存在某处，也就相当于把自己复活了（因为这个对象重新有了引用，不再处于失效状态）。这种做法是不是够变态啊</p>
+<p>为了防止发生这种诡异的事情，垃圾回收器只能在每次调用完finalize()之后再次去检查该对象是否还处于失效状态。这无形中又增加了JVM的开销。<br>
+　　随便提一下。由于JDK的文档中规定了（具体见“这里”），JVM对于每一个类对象实例最多只会调用一次finalize()。所以，对于那些诈尸的实例，当它们真正死亡时，finalize()反而不会被调用了。这看起来是不是很奇怪？<br>
+<strong>4、要记得自己做异常捕获</strong><br>
+　　刚才在介绍finalize()调用机制时提到，一旦有异常抛出到finalize函数外面，会被垃圾回收线程捕获并丢弃。也就是说，异常被忽略掉了（异常被忽略的危害，“这里”有提到）。为了防止这种事儿，凡是finalize()中有可能抛出异常的代码，你都得写上try catch语句，自己进行捕获。 　<br>
+<strong>5、要小心线程安全</strong><br>
+　　由于调用finalize()的是垃圾回收线程，和你自己代码的线程不是同一个线程；甚至不同对象的finalize()可能会被不同的垃圾回收线程调用（比如使用“并行收集器”的时候）。所以，当你在finalize()里面访问某些数据的时候，还得时刻留心线程安全的问题。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="常量池总结"><a class="markdownIt-Anchor" href="#常量池总结"></a> 常量池总结</h2>
+<ul>
+<li>
+<p>**class文件常量池 / constant pool：存静态常量,符号引用和字面量 ** 存在于.class文件中</p>
+</li>
+<li>
+<p><strong>运行时常量池</strong>：类加载后，常量池中的数据会在<strong>运行时常量池</strong>中存放！这里所说的常量包括：基本类型包装类**（包装类<strong>不管理浮点型</strong>，整形只会管理-128到127）和<strong>String</strong>（也可以通过String.intern()方法可以强制将String放入常量池）**</p>
+</li>
+<li>
+<p><strong>字符串常量池</strong>： HotSpot VM里，记录interned string的一个全局表叫做StringTable，它本质上就是个HashSet<string>。注意它只存储对java.lang.String实例的引用，而不存储String对象的内容</string></p>
+</li>
+<li>
+<p>运行时常量池和字符串常量池都在堆中。</p>
+</li>
+</ul>
+<h2 id="other-notes"><a class="markdownIt-Anchor" href="#other-notes"></a> Other Notes</h2>
+<ol>
+<li>Tune the heaps</li>
+</ol>
+<img src="https://s2.ax1x.com/2020/02/08/1WspsU.png" alt="1WspsU.png" style="zoom:80%;">
+<ol start="2">
+<li>GC logging with graphical tool if we suspect gc is the problem for performance issues.</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-verbose:gc</span><br><span class="line"></span><br><span class="line">-XX:+PrintGCDetails</span><br><span class="line"></span><br><span class="line">-Xloggc:gc.log</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>jvisualvm: visual gc plugin</li>
+</ol>
+
+	
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>Author：<a href="http://th2zz.github.io">th2zz</a>
+            <p>原文链接：<a href="http://th2zz.github.io/2019/10/01/java-jvm/">http://th2zz.github.io/2019/10/01/java-jvm/</a>
+            <p>发表日期：<a href="http://th2zz.github.io/2019/10/01/java-jvm/">September 30th 2019, 12:34:41 pm</a>
+            <p>更新日期：<a href="http://th2zz.github.io/2019/10/01/java-jvm/">February 9th 2020, 12:17:54 am</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2019/04/22/Database Management System - Indexing/" title= "Database Management System - Indexing">
+                    <div class="prevTitle">Database Management System - Indexing</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80MzMwMy8xOTg0NA==">
+        <script type="text/javascript">
+            (function (d, s) {
+                var j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') { return; }
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+    </div>
+
+<!-- City版安装代码已完成 -->
+
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:tzhang329@gmail.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/th2zz" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/qr.png" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/qrqq.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.zhihu.com/people/vince-zzz/" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+            
+                <a href="https://www.douban.com/people/55328071/" class="iconfont-archer douban" target="_blank" title=douban></a>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.instagram.com/th2zz3/" class="iconfont-archer instagram" target="_blank" title=instagram></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://space.bilibili.com/38725165" class="iconfont-archer bilibili" target="_blank" title=bilibili></a>
+            
+        
+    
+        
+    
+        
+            
+                <a href="https://steamcommunity.com/id/th2zz/" class="iconfont-archer steam" target="_blank" title=steam></a>
+            
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#jvm-architecture"><span class="toc-number">1.</span> <span class="toc-text"> JVM architecture</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-class-loader-and-its-subsystem"><span class="toc-number">1.0.1.</span> <span class="toc-text"> 1. Class Loader and its subsystem</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#load"><span class="toc-number">1.0.1.1.</span> <span class="toc-text"> Load</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#link"><span class="toc-number">1.0.1.2.</span> <span class="toc-text"> Link</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#initialize"><span class="toc-number">1.0.1.3.</span> <span class="toc-text"> Initialize</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#类初始化时机"><span class="toc-number">1.0.1.4.</span> <span class="toc-text"> 类初始化时机</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-runtime-data-areas"><span class="toc-number">1.0.2.</span> <span class="toc-text"> 2. Runtime data areas</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#per-thread"><span class="toc-number">1.0.2.1.</span> <span class="toc-text"> Per-thread</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#pc-register"><span class="toc-number">1.0.2.1.1.</span> <span class="toc-text"> PC Register</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#java-stacks"><span class="toc-number">1.0.2.1.2.</span> <span class="toc-text"> Java Stacks</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#native-method-stacks"><span class="toc-number">1.0.2.1.3.</span> <span class="toc-text"> Native method Stacks</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#per-jvm"><span class="toc-number">1.0.2.2.</span> <span class="toc-text"> Per-JVM</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#metaspace-method-area"><span class="toc-number">1.0.2.2.1.</span> <span class="toc-text"> Metaspace / Method Area</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#heap"><span class="toc-number">1.0.2.2.2.</span> <span class="toc-text"> Heap</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#direct-memory"><span class="toc-number">1.0.2.2.3.</span> <span class="toc-text"> Direct Memory</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-execution-engine"><span class="toc-number">1.0.3.</span> <span class="toc-text"> 3. Execution Engine</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#jvm-gc"><span class="toc-number">2.</span> <span class="toc-text"> JVM GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#directed-graph-reachability"><span class="toc-number">2.0.1.</span> <span class="toc-text"> Directed Graph &amp; Reachability</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#general-gc-steps-mark-sweep-compact"><span class="toc-number">2.1.</span> <span class="toc-text"> General GC steps: Mark Sweep Compact</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java-gc-generational-collectors"><span class="toc-number">2.2.</span> <span class="toc-text"> Java GC: Generational collectors</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#heap-division"><span class="toc-number">2.2.1.</span> <span class="toc-text"> Heap division</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#minor-vs-major-gc"><span class="toc-number">2.2.2.</span> <span class="toc-text"> Minor vs Major GC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#entire-process"><span class="toc-number">2.2.3.</span> <span class="toc-text"> Entire process</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gc-types-usages"><span class="toc-number">2.3.</span> <span class="toc-text"> GC types &amp; Usages</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#basic-serial-collector"><span class="toc-number">2.3.1.</span> <span class="toc-text"> Basic Serial Collector</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#concurrent-collector-cmsc"><span class="toc-number">2.3.2.</span> <span class="toc-text"> Concurrent collector (CMSC)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#parallel-collector-pmsc"><span class="toc-number">2.3.3.</span> <span class="toc-text"> Parallel collector (PMSC)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#g1-collector-garbage-first-17"><span class="toc-number">2.3.4.</span> <span class="toc-text"> G1 collector (Garbage - first) 1.7+</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#usage"><span class="toc-number">2.3.5.</span> <span class="toc-text"> Usage</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#memory-leaks"><span class="toc-number">2.4.</span> <span class="toc-text"> Memory Leaks</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java对象引用类别强引用软引用弱引用虚引用"><span class="toc-number">2.5.</span> <span class="toc-text"> Java对象引用类别：强引用，软引用，弱引用，虚引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#finalize"><span class="toc-number">2.6.</span> <span class="toc-text"> finalize( )</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常量池总结"><span class="toc-number">2.7.</span> <span class="toc-text"> 常量池总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#other-notes"><span class="toc-number">2.8.</span> <span class="toc-text"> Other Notes</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 22
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span><a class="archive-post-title" href= "/2019/10/01/java-jvm/" >JVM</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/21</span><a class="archive-post-title" href= "/2019/04/22/Database Management System - Indexing/" >Database Management System - Indexing</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/10</span><a class="archive-post-title" href= "/2019/04/11/Operating System - Persistence/" >Operating System - Persistence</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/08</span><a class="archive-post-title" href= "/2019/04/09/Computer Networking/" >Computer Networking</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/02</span><a class="archive-post-title" href= "/2019/04/03/Operating System - Concurrency/" >Operating System - Concurrency</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/24</span><a class="archive-post-title" href= "/2019/03/25/Boyer–Moore majority vote algorithm/" >Boyer–Moore majority vote algorithm</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/22</span><a class="archive-post-title" href= "/2019/03/23/Threaded Binary Tree and Morris Traversal/" >Threaded Binary Tree and Morris Traversal</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/18</span><a class="archive-post-title" href= "/2019/03/19/Database/" >Database Management System - Relational Design Theory</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/15</span><a class="archive-post-title" href= "/2019/03/16/Operating System - Virtualization/" >Operating System - Virtualization</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/10</span><a class="archive-post-title" href= "/2019/02/11/process control/" >Process Control</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/24</span><a class="archive-post-title" href= "/2018/12/25/TCS/" >Automata, language, and computational complexity</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2018/12/10/real-analysis/" >real analysis</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2018/12/09/Compiler/" >Programming language and Compiler</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/01</span><a class="archive-post-title" href= "/2018/12/02/probability/" >Math431-probability theory</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/21</span><a class="archive-post-title" href= "/2018/05/22/Digital-system-fundamental/" >Digital system fundamental</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/19</span><a class="archive-post-title" href= "/2018/05/20/ai/" >CS540 Intro to AI Notesheet</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/05</span><a class="archive-post-title" href= "/2018/05/06/algorithm/" >CS577 Algorithm Notesheet</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2017 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/10</span><a class="archive-post-title" href= "/2017/12/12/Linear-algebra/" >Linear algebra</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span><a class="archive-post-title" href= "/2017/09/30/chmod/" >chmod</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/21</span><a class="archive-post-title" href= "/2017/09/22/link/" >link</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/29</span><a class="archive-post-title" href= "/2017/08/30/chown/" >chown</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/12</span><a class="archive-post-title" href= "/2017/08/13/hello-world/" >Hello world</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Compiler"><span class="iconfont-archer">&#xe606;</span>Compiler</span>
+    
+        <span class="sidebar-tag-name" data-tags="Computer Network"><span class="iconfont-archer">&#xe606;</span>Computer Network</span>
+    
+        <span class="sidebar-tag-name" data-tags="Algorithm and Data Structures"><span class="iconfont-archer">&#xe606;</span>Algorithm and Data Structures</span>
+    
+        <span class="sidebar-tag-name" data-tags="Database"><span class="iconfont-archer">&#xe606;</span>Database</span>
+    
+        <span class="sidebar-tag-name" data-tags="Computer Science"><span class="iconfont-archer">&#xe606;</span>Computer Science</span>
+    
+        <span class="sidebar-tag-name" data-tags="Math"><span class="iconfont-archer">&#xe606;</span>Math</span>
+    
+        <span class="sidebar-tag-name" data-tags="OS"><span class="iconfont-archer">&#xe606;</span>OS</span>
+    
+        <span class="sidebar-tag-name" data-tags="Theory of computation"><span class="iconfont-archer">&#xe606;</span>Theory of computation</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="Java"><span class="iconfont-archer">&#xe606;</span>Java</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "th2zz"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    <div style="display: none">
+        <script src="https://s13.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+        
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
+     
+    </body>
+</html>
+
+

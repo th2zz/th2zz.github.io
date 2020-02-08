@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="th2zz">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="th2zz">
+    
+    <meta name="keywords" content="th2zz's blog,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Database Management System - Relational Design Theory · th2zz&#39;s blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/torr3.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?true";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+    <!-- 谷歌统计  -->
+    
+    <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'true', 'auto');
+        ga('send', 'pageview');
+    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >th2zz&#39;s blog.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Database Management System - Relational Design Theory</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>th2zz's blog.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Database Management System - Relational Design Theory
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Database">Database</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>Word count: <span class="post-count word-count">4.9k</span>Reading time: <span class="post-count reading-time">28 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/03/18</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="cs564-dbms-relational-design-theory"><a class="markdownIt-Anchor" href="#cs564-dbms-relational-design-theory"></a> <strong>CS564 - DBMS - Relational Design Theory</strong></h1>
+<h2 id="sql"><a class="markdownIt-Anchor" href="#sql"></a> SQL</h2>
+<h3 id="relational-algebra-and-calculus"><a class="markdownIt-Anchor" href="#relational-algebra-and-calculus"></a> Relational algebra and Calculus</h3>
+<p><img src="https://i.imgur.com/kksvzjk.png" alt=""></p>
+<h3 id="keys"><a class="markdownIt-Anchor" href="#keys"></a> Keys</h3>
+<ul>
+<li>A<strong>superkey</strong> is a set of one or more attributes that, taken collectively, allow us to identify uniquely a tuple in the relation</li>
+<li>Such minimal superkeys are called <strong>candidate keys</strong>.</li>
+<li>We shall use the term <strong>primary key</strong> to denote a candidate key that is chosen by the database designer as the principal means of identifying tuples within a relation.</li>
+<li><strong>Foreign Key</strong> is a set of attributes in a referencing relation, such that for each tuple in the referencing relation, the values of the foreign key attributes are guaranteed to occur as the primary key value of a tuple in the referenced relation.</li>
+</ul>
+<h3 id="join"><a class="markdownIt-Anchor" href="#join"></a> Join</h3>
+<ul>
+<li>natural join combines two tables based on identical columns</li>
+<li>Cartesian product operation combines tuples from two relations, but unlike the join operation, its result contains all pairs of tuples from the two relations</li>
+</ul>
+<h3 id="sql-language"><a class="markdownIt-Anchor" href="#sql-language"></a> SQL Language</h3>
+<ul>
+<li>SQL allows us to use the keyword all to specify explicitly that duplicates are not removed</li>
+<li><strong>varchar(n)</strong>: A variable-length character string with user-specified maximum length n. The full form, character varying, is equivalent.</li>
+<li><strong>numeric(p, d)</strong>:Afixed-point numberwith user-specified precision. The number consists of p digits (plus a sign), and d of the p digits are to the right of the decimal point.</li>
+<li><strong>Percent (%)</strong>: The % character matches any substring.</li>
+<li><strong>Underscore (_)</strong>: The character _ matches any character.</li>
+<li>The set operation automatically eliminates duplicates</li>
+</ul>
+<p><img src="https://i.imgur.com/G2hgY3K.png" alt=""></p>
+<h2 id="database-design-er-model"><a class="markdownIt-Anchor" href="#database-design-er-model"></a> Database Design (ER Model)</h2>
+<h3 id="terms"><a class="markdownIt-Anchor" href="#terms"></a> Terms</h3>
+<ul>
+<li>Entity</li>
+<li>Attribute
+<ul>
+<li>Domain</li>
+<li>Key</li>
+<li>Primary Key can not be null</li>
+</ul>
+</li>
+<li>Relationship
+<ul>
+<li>Descriptive attribute, the attribute of the entity in between two entities</li>
+<li>A relationship should be uniquely identified</li>
+<li>Instance of relationship set is a set of relationships</li>
+<li>Sometimes a relationship can involve two identities in the same enetity set</li>
+</ul>
+</li>
+<li>Constraints
+<ul>
+<li>Participation constraint, total, partial</li>
+<li>weak enetity set</li>
+<li>ISA inheritance relationship set
+<ul>
+<li>specialzation, generalization</li>
+<li>overlap, covering constraint</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="the-relational-model"><a class="markdownIt-Anchor" href="#the-relational-model"></a> The Relational Model</h3>
+<ul>
+<li>Integrity Constriant
+<ul>
+<li>Foreign key constraint</li>
+</ul>
+</li>
+</ul>
+<h2 id="relational-design-theory"><a class="markdownIt-Anchor" href="#relational-design-theory"></a> Relational Design Theory</h2>
+<h3 id="函数依赖-functional-dependency"><a class="markdownIt-Anchor" href="#函数依赖-functional-dependency"></a> 函数依赖 Functional Dependency</h3>
+<ul>
+<li>
+<p>考虑如下的university database schema<br>
+<img src="https://i.imgur.com/rjGtPin.png" width="500" height="200"><br>
+将表instructor和department替换为其自然连接的结果不是一个好的选择<br>
+<img src="https://i.imgur.com/JltoS4y.png" width="400"><br>
+因为对于每个instructor都有部门budget信息大量重复 我们需要保证任何更新操作都要同步budget。 另一个缺点是natural inner join会去除左右两边为null的情况，所以没有instructor的部门就无法在表中被表示。<br>
+<strong>但如果我们先有inst_dept表，我们该如何知道这个设计不好并且应该被分解成instructor和department呢？</strong><br>
+我们需要发现每个department必须只有1个building,每个department必须只有一个budget。<br>
+Not every ER design can be precise enough to avoid such problems，so we need to allow designers to specify rules such as “<strong>each specific value of dept_name corresponds to at most one budget</strong>” even in cases where dept_name is not the primary key for the schema.<br>
+In this case, we need to write a rule “<strong>if there were a schema(dept_name,budget),then dept_name is able to serve as the primary key</strong>.” This rule is specified as a functional dependency:<br>
+<img src="https://i.imgur.com/aaCGsjY.png" width="250"><br>
+This gives sufficient information to recognize the problem of inst_dept schema. Therefore functional dependency says what relational instances are allowed under certain constraints.<br>
+Functional depedency generalizes notions of key in a relation. It depicts relationship between attributes.</p>
+</li>
+<li>
+<p><strong>Definition</strong>: A relational instance satisfies functional dependency from attribute A-&gt;B if (any) two tuples having same value of attribute A also have same value of attribute B. i.e. A uniquely determines B</p>
+</li>
+<li>
+<p><strong>A trivial functional dependency</strong> is the one which will always hold in a relation. <strong>A-&gt;B and B is a subset of A.</strong></p>
+</li>
+<li>
+<p><strong>Non-Trivial functional dependency</strong> may or may not hold in a relation. <strong>A-&gt;B and B is NOT a subset of A.</strong></p>
+</li>
+<li>
+<p><strong>Properties of functional dependency</strong><br>
+“Armstrong’s Axioms”<br>
+<img src="https://i.imgur.com/zkhjneI.png" alt=""><br>
+Other<br>
+<img src="https://i.imgur.com/nNsRewf.png" alt=""><br>
+<img src="https://i.imgur.com/D9pWMoO.png" alt=""></p>
+</li>
+<li>
+<p><strong>&quot;A set of functional dependencies&quot; F</strong> is a set of FD constraints on legal relational instances in a relation.</p>
+</li>
+<li>
+<p><strong>&quot;The closure of FDs set F&quot; F+</strong> is a set of all FDs that can be inferred from given the set F (<strong>Note that this includes all FDs in F itself</strong>).</p>
+</li>
+<li>
+<p><strong>Attribute Closure</strong>: Attribute closure of an attribute set A is a set of all attributes that can be functionally determined from elements of set A (<strong>Note that this includes attributes in A itself</strong>).<br>
+Examples:<br>
+<img src="https://i.imgur.com/hf0hLCc.png" alt=""></p>
+</li>
+<li>
+<p><strong>Determining equivalence of functional dependencies</strong><br>
+Check whether 2 FD sets are subset of each other’s closure.</p>
+</li>
+<li>
+<p><strong>Computing minimal cover</strong><br>
+A minimal cover of a FD set A is the smallest set of FDs that covers A.<br>
+<img src="https://i.imgur.com/ItMURpT.png" alt=""><br>
+<img src="https://i.imgur.com/HOT0QpT.png" alt=""></p>
+</li>
+<li>
+<p><strong>Other notes</strong><br>
+所有非主属性都完全函数依赖于每个候选键<br>
+所有主属性都完全函数依赖于每个不包含它的候选键<br>
+没有任何属性完全函数依赖于非候选键的任何一组属性</p>
+</li>
+</ul>
+<h3 id="数据异常-data-anomalies"><a class="markdownIt-Anchor" href="#数据异常-data-anomalies"></a> 数据异常 Data Anomalies</h3>
+<p>以下的学生课程关系的函数依赖为 Sno, Cname -&gt; Sname, Sdept, Mname, Grade，键码为 {Sno, Cname}。也就是说，确定学生和课程之后，就能确定其它信息。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Sname</th>
+<th style="text-align:center">Sdept</th>
+<th style="text-align:center">Mname</th>
+<th style="text-align:center">Cname</th>
+<th style="text-align:center">Grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">学生-1</td>
+<td style="text-align:center">学院-1</td>
+<td style="text-align:center">院长-1</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">90</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">80</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">学生-3</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">95</td>
+</tr>
+</tbody>
+</table>
+<p>不符合范式的关系，会产生很多异常，主要有以下四种异常：</p>
+<ul>
+<li>冗余数据：例如 <code>学生-2</code> 出现了两次。</li>
+<li>修改异常：修改了一个记录中的信息，但是另一个记录中相同的信息却没有被修改。</li>
+<li>删除异常：删除一个信息，那么也会丢失其它信息。例如删除了 <code>课程-1</code> 需要删除第一行和第三行，那么 <code>学生-1</code> 的信息就会丢失。</li>
+<li>插入异常：例如想要插入一个学生的信息，如果这个学生还没选课，那么就无法插入。</li>
+</ul>
+<h3 id="范式-normal-form"><a class="markdownIt-Anchor" href="#范式-normal-form"></a> 范式 Normal Form</h3>
+<p>范式理论是为了解决以上提到四种异常。<br>
+高级别范式的依赖于低级别的范式，1NF 是最低级别的范式。<br>
+<img src="https://i.imgur.com/v1zy4Cw.png" width="250" height="200"></p>
+<h4 id="分解"><a class="markdownIt-Anchor" href="#分解"></a> 分解</h4>
+<p><strong>Universal Relation:</strong> A relation that captures all the information in schema and is decomposable into smaller relations.</p>
+<ul>
+<li>
+<p>Decomposition of a relation is done when a relation in relational model is not in appropriate normal form. A good/detailed ER model should end up directly as a 3NF or BCNF. The functional dependencies guide us to determine entities and their relationships</p>
+</li>
+<li>
+<p>Ideal decomposition should be <strong>lossless</strong> and <strong>dependency preserving</strong>.<br>
+For relation R decomposed into R1 and R2:<br>
+<img src="https://i.imgur.com/LIH6YcZ.png" width="300"></p>
+</li>
+<li>
+<p>Example:<br>
+<img src="https://i.imgur.com/HRk77Rk.png" width="300"><br>
+<img src="https://i.imgur.com/BKpXIIy.png" width="300"><br>
+employee表被分解为employee1表和employee2表：因为employee可以重名，所以我们将分解结果natural join会无法还原employee表。</p>
+</li>
+<li>
+<p><strong>Lossless decomposition(lossless join decomposition) Requirements</strong><br>
+<img src="https://i.imgur.com/7it87CU.png" alt=""></p>
+</li>
+<li>
+<p><strong>Dependency preserving decomposition</strong><br>
+If we decompose a relation R into relations R1 and R2, All dependencies of R either must be a part of R1 or R2 or must be derivable from combination of FD’s of R1 and R2.</p>
+<ul>
+<li>Example:</li>
+</ul>
+<ol>
+<li>R (A, B, C, D) with FD set{A-&gt;BC} is decomposed into R1(ABC) and R2(AD) which is dependency preserving because FD A-&gt;BC is a part of R1(ABC).</li>
+<li>R(A,B,C,D) and functional dependencies A-&gt;B and C-&gt;D. Then the decomposition of R into R1(AB) and R2(CD) is dependency preserving but not lossless join because it violates the second condition of lossless join and A-&gt;B can be ensured in R1(AB) and C-&gt;D can be ensured in R2(CD). Hence it is dependency preserving decomposition.</li>
+</ol>
+</li>
+</ul>
+<h4 id="1-第一范式-1nf-atomicity原子性"><a class="markdownIt-Anchor" href="#1-第一范式-1nf-atomicity原子性"></a> 1. 第一范式 (1NF) Atomicity(原子性)</h4>
+<p>表的属性不可分（表的属性不可为复合属性）。然而注意复合属性有时也是有用的并被大量实际使用于面向对象数据库。</p>
+<h4 id="2-boycecodd-normal-formbcnf-每个表中只有一个候选键"><a class="markdownIt-Anchor" href="#2-boycecodd-normal-formbcnf-每个表中只有一个候选键"></a> 2. Boyce–Codd normal form(BCNF) 每个表中只有一个候选键</h4>
+<p>BCNF is a slightly stronger version of 3NF.<br>
+Every BCNF satisfies 3NF. It eliminates all redundancy that can be discovered based on functional dependencies.<br>
+<strong>A database design is in BCNF</strong> if each member of the set of relation schemas that constitutes the design is in BCNF.</p>
+<p><strong>Definition：</strong><br>
+A relational schema R is in BCNF with respect to a set of functional dependencies F if for all functional dependencies in F+ of form A-&gt;B where A,B are subsets of R, at least one of the following holds:</p>
+<ul>
+<li>A-&gt;B is a trivial functional dependency (B is a subset of A)</li>
+<li>A is a super key of schema R</li>
+</ul>
+<p><strong>Another equivalent definition (important):</strong><br>
+For all nontrivial FD A-&gt;B, A must be a super key of schema R.<br>
+<strong>The negated definition</strong><br>
+A relational schema R is not in BCNF w.r.t FDs set F if there exists a FD in F+ of form A-&gt;B where A,B are subsets of R s.t.<br>
+A-&gt;B is a nontrivial FD (B is not a subset of A) <strong>AND</strong> A is not a super key of schema R.<br>
+<strong>Example</strong>:<br>
+inst_dept (ID, name, salary, dept_name, building, budget) is not in BCNF because dept_name-&gt;budget is a nontrivial FD and dept_name is not a super key of inst_dept.<br>
+The schema instructor and department are not in BCNF because for all nontrivial FDs, either left side is not super key, or is super key. (in that case: ID, dept_name can be super key for each schema).<br>
+<strong>Decomposing relational schema to BCNF</strong><br>
+For a relational schema R not in BCNF, we must have at least 1 nontrivial FD A-&gt;B s.t. A is not a super key for R.<br>
+We decompose R into 2 schemas:<br>
+<img src="https://i.imgur.com/NbVERSD.png" width="180"><br>
+For inst_dept, A=dept_name, B={building,budget}, it can be decomposed to (dept_name, building, budget) AND (ID,name,salary,dept_name)<br>
+<strong>Problem of BCNF:</strong></p>
+<ul>
+<li>BCNF is not dependency preserving.</li>
+</ul>
+<h4 id="3-第三范式-3nf-2nf消除传递函数依赖"><a class="markdownIt-Anchor" href="#3-第三范式-3nf-2nf消除传递函数依赖"></a> 3. 第三范式 (3NF) 2NF&amp;消除传递函数依赖</h4>
+<p>BCNF requires A to be a superkey for nontrival FD A-&gt;B. 3NF relaxes the constraints by allowing A to not be a super key.<br>
+<strong>Definition：</strong><br>
+A relational schema R is in 3NF with respect to a set of functional dependencies F if for all functional dependencies in F+ of form A-&gt;B where A,B are subsets of R, at least one of the following holds:</p>
+<ul>
+<li>A-&gt;B is a trivial functional dependency (B is a subset of A)</li>
+<li>A is a super key of schema R</li>
+<li>Each attribute X in B-A is contained in a candidate key in R</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Sname</th>
+<th style="text-align:center">Sdept</th>
+<th style="text-align:center">Mname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">学生-1</td>
+<td style="text-align:center">学院-1</td>
+<td style="text-align:center">院长-1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">学生-3</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+</tr>
+</tbody>
+</table>
+<p>存在以下transitive functional dependency：</p>
+<ul>
+<li>Sno -&gt; Sdept -&gt; Mname</li>
+</ul>
+<p>可以进行以下分解：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Sname</th>
+<th style="text-align:center">Sdept</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">学生-1</td>
+<td style="text-align:center">学院-1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">学生-3</td>
+<td style="text-align:center">学院-2</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sdept</th>
+<th style="text-align:center">Mname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">学院-1</td>
+<td style="text-align:center">院长-1</td>
+</tr>
+<tr>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://i.imgur.com/iLeQOu8.png" alt=""></p>
+<h3 id="multi-dimensional-database"><a class="markdownIt-Anchor" href="#multi-dimensional-database"></a> Multi-dimensional database</h3>
+<p><img src="https://i.imgur.com/1RU9DJz.jpg" alt=""></p>
+<p>Think spreadsheets and reporting but generalized.</p>
+<ul>
+<li>A star schema is the simplest form of a dimensional model, in which data is organized into facts and dimensions.  A fact is an event that is counted or measured, such as a sale or login.  A dimension contains reference information about the fact, such as date, product, or customer. A star schema is diagramed by surrounding each fact with its associated dimensions. The resulting diagram resembles a star.<br>
+<img src="https://i.imgur.com/7xGywCG.png" alt=""></li>
+<li>Example:<br>
+<img src="https://i.imgur.com/n4OrKwb.jpg" alt=""></li>
+</ul>
+<h3 id="levels-of-abstraction-in-dbms"><a class="markdownIt-Anchor" href="#levels-of-abstraction-in-dbms"></a> Levels of abstraction in DBMS</h3>
+<ul>
+<li>Physical Schema is the way the relations are actually stored in SSD/HDD. It also defines indexes, statistics etc. defined on the table. (Indexes are defined using DDL.)</li>
+<li>Logical (Conceptual) Schema is the DDL for creating the table. (It can sometimes specify the physical schema.)</li>
+<li>External Schema is the DDL that define’s the external user’s view of the database. Though some “base” tables are directly visible, most of it is protected through views.</li>
+</ul>
+<h2 id="storage-and-file-structure"><a class="markdownIt-Anchor" href="#storage-and-file-structure"></a> Storage and File Structure</h2>
+<h3 id="storage-overview"><a class="markdownIt-Anchor" href="#storage-overview"></a> Storage Overview</h3>
+<ul>
+<li>Persistent storage nonvolatile memory
+<ul>
+<li>Data in a DBMS has to be persistent</li>
+<li>SSD: flash memory based, faster and more expensive</li>
+<li>HDD: magnetic storage, slower and cheaper</li>
+<li>Tapes: disks are the new tapes, still great for archiving</li>
+<li>Cloud server</li>
+</ul>
+</li>
+<li>Volatile storage
+<ul>
+<li>DRAM</li>
+</ul>
+</li>
+</ul>
+<h3 id="memory-hierarchy"><a class="markdownIt-Anchor" href="#memory-hierarchy"></a> Memory hierarchy</h3>
+<p><img src="https://i.imgur.com/1EP43L3.jpg" alt=""></p>
+<h3 id="disk"><a class="markdownIt-Anchor" href="#disk"></a> Disk</h3>
+<p><img src="https://i.imgur.com/RJ2GrlY.png" alt=""></p>
+<ul>
+<li>
+<p>The disk surface is logically divided into tracks, which are subdivided into sectors.</p>
+<ul>
+<li>A <strong>sector</strong> is the smallest unit of information that can be read from or written to the disk.</li>
+<li>The <strong>read–write head</strong> stores information on a sector magnetically as reversals of the direction of magnetization of the magnetic material.</li>
+<li>The <strong>platters</strong> that are <strong>fixed on a spindle rod</strong> spin, say 90 rps</li>
+<li>Arm assembly moves in or out to position a head on desired track.</li>
+<li>The tracks make an imaginary 空心<strong>cylinder</strong>: tracks with the same radius on all surfaces of disks platters     <strong>#cylinder = #tracks/surface</strong></li>
+<li>#surface = #tracks/#cylinder = 2#platters</li>
+<li>Only one head used at a time</li>
+<li><strong>Block size</strong> is a multiple of sector size (fixed, usually 512 bytes)</li>
+<li><strong>capacity</strong> = heads(#surfaces) x cylinder x sectors x 512 (typical size of one sector in bytes) =  #surfaces * #tracks * #sectors per track * bytes per sector</li>
+</ul>
+</li>
+<li>
+<p>Seek time: the time for repositioning the arm to change track.</p>
+</li>
+<li>
+<p>Rotational delay: the time for getting to the right sector = 0.5(60s/磁盘转速rpm)   0.5为average</p>
+</li>
+<li>
+<p>transfer time: actual overhead for transfering data = moving head across block</p>
+</li>
+</ul>
+<p>Seek time + rotational delay is the major contributor to delay.<br>
+<strong>Formatting</strong>: defining polar coordinate system on disk surface.<br>
+<strong>wear leveling</strong>: storing hot data on less weared sectors and storing cold data on more weared sector to extend service time of the disk.</p>
+<ul>
+<li>
+<p>RAID 0 Data stripping<br>
+RAID 0 consists of striping, but no mirroring or parity. Compared to a spanned volume, the capacity of a RAID 0 volume is the same; it is the sum of the capacities of the disks in the set. But because striping distributes the contents of each file among all disks in the set, the failure of any disk causes all files, the entire RAID 0 volume, to be lost. A broken spanned volume at least preserves the files on the unfailing disks. The benefit of RAID 0 is that the throughput of read and write operations to any file is multiplied by the number of disks because, unlike spanned volumes, reads and writes are done concurrently,[11] and the cost is complete vulnerability to drive failures.</p>
+</li>
+<li>
+<p>RAID 1 Mirroring<br>
+RAID 1 consists of data mirroring, without parity or striping. Data is written identically to two drives, thereby producing a “mirrored set” of drives. Thus, any read request can be serviced by any drive in the set. If a request is broadcast to every drive in the set, it can be serviced by the drive that accesses the data first (depending on its seek time and rotational latency), improving performance. Sustained read throughput, if the controller or software is optimized for it, approaches the sum of throughputs of every drive in the set, just as for RAID 0. Actual read throughput of most RAID 1 implementations is slower than the fastest drive. Write throughput is always slower because every drive must be updated, and the slowest drive limits the write performance. The array continues to operate as long as at least one drive is functioning.</p>
+</li>
+<li>
+<p>RAID 5 Stripping with Distributed Parity<br>
+Upon failure of a single drive, subsequent reads can be calculated from the distributed parity such that no data is lost. RAID 5 requires at least three disks.</p>
+</li>
+<li>
+<p>RAID 6 two parity disks<br>
+RAID 6 consists of block-level striping with double distributed parity. Double parity provides fault tolerance up to two failed drives. This makes larger RAID groups more practical, especially for high-availability systems, as large-capacity drives take longer to restore. RAID 6 requires a minimum of four disks. As with RAID 5, a single drive failure results in reduced performance of the entire array until the failed drive has been replaced.[11] With a RAID 6 array, using drives from multiple sources and manufacturers, it is possible to mitigate most of the problems associated with RAID 5. The larger the drive capacities and the larger the array size, the more important it becomes to choose RAID 6 instead of RAID 5.</p>
+</li>
+</ul>
+<h3 id="database-buffer"><a class="markdownIt-Anchor" href="#database-buffer"></a> Database Buffer</h3>
+<ul>
+<li>A major goal of the database system is to minimize the number of block transfers between the disk and memory.</li>
+<li>The subsystem responsible for the allocation of buffer space is called the buffer manager.</li>
+</ul>
+<h3 id="file-organization"><a class="markdownIt-Anchor" href="#file-organization"></a> File Organization</h3>
+<p><img src="https://i.imgur.com/V8RvRQk.jpg" alt=""></p>
+<p><strong>A fixed length record</strong> is one where the length of the fields in each record has been set to be a certain maximum number of characters long. Suppose a field that was going to contain a name was set to be 25 characters long. This means that the field could only ever contain up to 25 characters. If all the fields in the record have a fixed length like this then the record is said to be a fixed length record. The problem with fixed length records is that each field very rarely contains the maximum number of characters allowed. This means that a lot of space is needlessly set aside and wasted. Also, values sometimes cannot be entered because they are too large to fit inside the allowed space in a field. The advantage of fixed length records is that they make file processing much easier because the start and end of each record is always a fixed number of characters apart. This makes it much easier to locate both indicidual records and fields.<br>
+<img src="https://i.imgur.com/FdzIIl7.png" alt=""></p>
+<p><img src="https://i.imgur.com/O6PKrwj.jpg" alt=""><br>
+A <strong>variable length record</strong> is one where the length of a field can change to allow data of any size to fit. The advantage of variable length records is that space is not wasted, only the space needed is ever used. The main problem with variable length records is that it is much more difficult to locate the start and end of individual records and fields. This is because they are not separated by a fixed amount of characters. To separate variable length recordseach field has a special character to mark where it ends- called an end- of- field marker. When records need to be located the computer must count through the end- of- field markers to locate individual records and fields.</p>
+<p><img src="https://i.imgur.com/VBlJR9B.png" alt=""></p>
+<p><img src="https://i.imgur.com/6NoscfG.png" alt=""><br>
+<img src="https://i.imgur.com/TXo6UxW.png" alt=""><br>
+<img src="https://i.imgur.com/t6f8Eqi.png" alt=""><br>
+<img src="https://i.imgur.com/cdRtHS5.png" alt=""></p>
+<ul>
+<li>Columnar storage<br>
+A column-oriented DBMS (or columnar database management system) is a database management system (DBMS) that stores data tables by column rather than by row. Practical use of a column store versus a row store differs little in the relational DBMS world. Both columnar and row databases can use traditional database query languages like SQL to load data and perform queries. Both row and columnar databases can become the backbone in a system to serve data for common extract, transform, load (ETL) and data visualization tools. However, by storing data in columns rather than rows, the database can more precisely access the data it needs to answer a query rather than scanning and discarding unwanted data in rows. Query performance is increased for certain workloads.</li>
+</ul>
+<h3 id="storage-summary"><a class="markdownIt-Anchor" href="#storage-summary"></a> Storage summary</h3>
+<ul>
+<li>Databases must have persistent storage: SSD, HDD Their performance characteristics affect database design</li>
+<li>Buffer manager tries to keep the optimal set of data blocks (pages) in memory to minimize I/O</li>
+<li>must be able to “lock” (pin) a page in memory</li>
+<li>must be able to write / flush page to disk on demand</li>
+<li>Rows comprise both fixed and variable length fields</li>
+<li>Slotted page format is flexible to keep records organized and accessible on a page</li>
+<li>Single column values could be stored in fixed length records, but are usually compressed via encodings</li>
+<li>Compression is used at both column and block level Heap files are ok but most databases use B+ trees</li>
+<li>Columnar storage is another tool in the database tool-kit, soon all DBMS vendors will have it</li>
+</ul>
+<h2 id="indexing-and-hashing"><a class="markdownIt-Anchor" href="#indexing-and-hashing"></a> Indexing and Hashing</h2>
+<h3 id="b-tree"><a class="markdownIt-Anchor" href="#b-tree"></a> B+ tree</h3>
+<ul>
+<li><strong>Properties</strong>
+<ul>
+<li>
+<p>It can be shown that the number of I/O operations needed in the worst case for an insertion is proportional to logn/2(N), where n is the maximum number of pointers in a node, and N is the number of records in the file being indexed.</p>
+</li>
+<li>
+<p>It contains up to n − 1 search-key values K1 , K2 , . . . , Kn − 1 , and n pointers  P1 , P2 , . . . , Pn . The search-key values within a node are kept in sorted order; thus, if i &lt; j, then Ki &lt; Kj<br>
+<img src="https://i.imgur.com/ApVXPRo.png" alt=""></p>
+</li>
+<li>
+<p>Each <strong>non-leaf</strong> node in the tree has between n/2 and n children, where n is fixed for a particular tree.</p>
+</li>
+<li>
+<p>A <strong>non-leaf</strong> node may hold up to n pointers, and must hold at least n/2 pointers. The number of pointers in a node is called the fanout of the node.</p>
+</li>
+<li>
+<p>Each <strong>leaf</strong> can hold up to n − 1 values. We allow leaf nodes to contain as few as (n − 1)/2 values. With n = 4 in our example B±tree, each leaf must contain at least 2 values, and at most 3 values.</p>
+</li>
+<li>
+<p>Since, n = 4 and 1 &lt; (n − 1)/2, we must either merge the node with a sibling node, or redistribute the entries between the nodes, to ensure that each node is at least half-full.</p>
+</li>
+</ul>
+</li>
+<li>Insertion
+<ul>
+<li>Split</li>
+<li>Coalesce</li>
+</ul>
+</li>
+<li>Deletion
+<ul>
+<li>if the occupancy of a node falls below 2n/3, the system attempts to borrow an entry from one of the sibling nodes</li>
+<li>Borrow left, pick max one</li>
+<li>Borrow right, pick min one</li>
+<li>Merge left, shift left, change parent</li>
+<li>Merge right, shift right, change parent</li>
+</ul>
+</li>
+<li><strong>Non-unique search key</strong>: If a relation can have more than one record containing the same search key value (that is, two or more records can have the same values for the indexed attributes), the search key is said to be a non-unique search key.</li>
+<li><strong>Bulk-loading in B+ tree</strong>
+<ul>
+<li>Insertion of a large number of entries at a time into an index is referred to as bulk loading of the index.</li>
+<li>sort the file on the search key of the index being constructed</li>
+<li>There is a significant benefit to sorting the entries before inserting them into the B+tree.</li>
+<li>nodes will never have to be read from disk during bulk load, if the B+ tree was empty to start with. Each leaf node will thus incur only one I/O operation even though many entries may be inserted into the node.</li>
+</ul>
+</li>
+<li><strong>bottom-up B+ tree construction</strong>
+<ul>
+<li>it can be constructed faster by building it bottom-up, from the leaf level, instead of using the usual insert procedure.</li>
+<li>we break up the sorted entries into blocks, keeping as many entries in a block as can fit in the block; the resulting blocks form the leaf level of the B±tree. The minimum value in each block, alongwith the pointer to the block, is used to create entries in the next level of the B±tree, pointing to the leaf blocks</li>
+</ul>
+</li>
+</ul>
+<h3 id="hashing"><a class="markdownIt-Anchor" href="#hashing"></a> HASHING</h3>
+<h4 id="static-hashing"><a class="markdownIt-Anchor" href="#static-hashing"></a> Static Hashing</h4>
+<ul>
+<li>We use the term <strong>bucket</strong> to denote a unit of storage that can store one or more records.</li>
+<li>let <strong>K</strong> denote the set of all search-key values, and let <strong>B</strong> denote the set of all bucket addresses. A <strong>hash function h</strong> is a function from K to B. Let h denote a hash function.</li>
+<li>Hash function should be random and uniform</li>
+<li>Algorithm is similiar to Data Structure Hash Table</li>
+</ul>
+<h4 id="dynamic-hashing"><a class="markdownIt-Anchor" href="#dynamic-hashing"></a> Dynamic Hashing</h4>
+<p><img src="https://i.imgur.com/jAg67QV.png" alt=""></p>
+<h3 id="bitmap"><a class="markdownIt-Anchor" href="#bitmap"></a> BITMAP</h3>
+<ul>
+<li>A <strong>bitmap</strong> is simply an array of bits. In its simplest form, a bitmap index on the attribute A of relation r consists of one bitmap for each value that A can take. Each bitmap has as many bits as the number of records in the relation. The ith bit of the bitmap for value vj is set to 1 if the record numbered i has the value vj for attribute A. All other bits of the bitmap are set to 0.</li>
+</ul>
+<p><img src="https://i.imgur.com/bjJkZQR.png" alt=""></p>
+<ul>
+<li>To recognize deleted records,we can store an <strong>existence bitmap</strong>, in which bit i is 0 if record i does not exist and 1 otherwise.
+<ul>
+<li>If some records have been deleted, however, just computing the complement of a bitmap is not sufficient. Bits corresponding to such records would be 0 in the original bitmap, but would become 1 in the complement, although the records don’t exist.</li>
+</ul>
+</li>
+<li><strong>Limitation</strong>
+<ul>
+<li>If there are further conditions, the fraction of records satisfying all the conditions is likely to be quite small.</li>
+<li>If the fraction is large, scanning the entire relation would remain the cheaper alternative.</li>
+</ul>
+</li>
+<li><strong>Counting the number of bits that are 1 in a bitmap</strong> can be done quickly by a clever technique. We can maintain an array with 256 entries, where the ith entry stores the number of bits that are 1 in the binary representation of i.</li>
+</ul>
+<h3 id="储存与索引总结"><a class="markdownIt-Anchor" href="#储存与索引总结"></a> 储存与索引总结</h3>
+<p>atomicity problem:  transaction is executed totally or not at all<br>
+integrated storage structure: index file 和record file一起<br>
+seperate file: 相反</p>
+<p>clustered index 与原数据同顺序<br>
+clustered indexes do not guarantee sequential storage on the disk. Managing exactly where data is placed on the disk is the job of the OS, not the DBMS. But it suggests that items are ordered generally according to the clustering key.</p>
+<p>With a non clustered index there is a second list that has pointers to the physical rows. You can have many non clustered indexes, although each new index will increase the time it takes to write new records.</p>
+<p>It is generally faster to read from a clustered index if you want to get back all the columns. You do not have to go first to the index and then to the table.</p>
+<p>Writing to a table with a clustered index can be slower, if there is a need to rearrange the data</p>
+<p>primary index: using primary key for indexing</p>
+<p>secondary index: otherwise</p>
+<p>index以block为单位进行index  within block用offset</p>
+<p>hash index  通过哈希函数生成hash address to a bucket with possible overflow chain for managing collision<br>
+cheaper than B+tree if no overflow occurs Access: O(1+#overflow buckets)<br>
+所以hash索引的最大的特点就是等值查询快，不能进行范围索引。<br>
+位图索引适合静态low-cardinality重复数据<br>
+b树索引同时支持范围及等值查询</p>
+<p>b tree m-way(order m, m fanout, m-1info fields) search tree with additional constraints:  叶子层高度相同 root 2 key  其他节点至少半满ceiling(order/2)来尽量减少高度    若想要插入的位置已满  recursively按中序遍历顺序将中点上移 同时将前驱后继节点分开 始终保持节点半满的要求<br>
+b+ tree 更贴近多级索引，是在b树基础上, nonleaf node sparse index 减少disk page access  支持equality search 在叶子层将nonleaf节点key按中序遍历顺序拷贝下来 叶子层包含record ptrs 保持中序遍历顺序建立链表 形成dense &amp; clustered index 从而支持range search<br>
+删除： 左合并 右合并 来满足半满的限制  split if necessary can propagate to root.<br>
+order=#ptr fields = p    /node<br>
+#k,v fields = p-1          /node</p>
+<p>(p-1)(key_ptr_size + record_ptr_size) + p(block_ptr_size) &lt;= blocksize=512</p>
+<p>static hashing: linear congruential hash function with fixed #hash buckets  use overflow chain to manage contention</p>
+<p>extendible hashing: nonlinear hashing congruential function such as h_k(v)=h(v) mod 2^k  use directory of size 2^k to store ptrs to hash buckets<br>
+when collisions happen increment k value and maps it elsewhere</p>
+
+	
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>Author：<a href="http://th2zz.github.io">th2zz</a>
+            <p>原文链接：<a href="http://th2zz.github.io/2019/03/19/Database/">http://th2zz.github.io/2019/03/19/Database/</a>
+            <p>发表日期：<a href="http://th2zz.github.io/2019/03/19/Database/">March 18th 2019, 1:00:41 pm</a>
+            <p>更新日期：<a href="http://th2zz.github.io/2019/03/19/Database/">April 22nd 2019, 7:48:17 am</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2019/03/23/Threaded Binary Tree and Morris Traversal/" title= "Threaded Binary Tree and Morris Traversal">
+                    <div class="nextTitle">Threaded Binary Tree and Morris Traversal</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2019/03/16/Operating System - Virtualization/" title= "Operating System - Virtualization">
+                    <div class="prevTitle">Operating System - Virtualization</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80MzMwMy8xOTg0NA==">
+        <script type="text/javascript">
+            (function (d, s) {
+                var j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') { return; }
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+    </div>
+
+<!-- City版安装代码已完成 -->
+
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:tzhang329@gmail.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/th2zz" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/qr.png" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/qrqq.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.zhihu.com/people/vince-zzz/" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+            
+                <a href="https://www.douban.com/people/55328071/" class="iconfont-archer douban" target="_blank" title=douban></a>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.instagram.com/th2zz3/" class="iconfont-archer instagram" target="_blank" title=instagram></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://space.bilibili.com/38725165" class="iconfont-archer bilibili" target="_blank" title=bilibili></a>
+            
+        
+    
+        
+    
+        
+            
+                <a href="https://steamcommunity.com/id/th2zz/" class="iconfont-archer steam" target="_blank" title=steam></a>
+            
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cs564-dbms-relational-design-theory"><span class="toc-number">1.</span> <span class="toc-text"> CS564 - DBMS - Relational Design Theory</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sql"><span class="toc-number">1.1.</span> <span class="toc-text"> SQL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#relational-algebra-and-calculus"><span class="toc-number">1.1.1.</span> <span class="toc-text"> Relational algebra and Calculus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#keys"><span class="toc-number">1.1.2.</span> <span class="toc-text"> Keys</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#join"><span class="toc-number">1.1.3.</span> <span class="toc-text"> Join</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sql-language"><span class="toc-number">1.1.4.</span> <span class="toc-text"> SQL Language</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#database-design-er-model"><span class="toc-number">1.2.</span> <span class="toc-text"> Database Design (ER Model)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#terms"><span class="toc-number">1.2.1.</span> <span class="toc-text"> Terms</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#the-relational-model"><span class="toc-number">1.2.2.</span> <span class="toc-text"> The Relational Model</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#relational-design-theory"><span class="toc-number">1.3.</span> <span class="toc-text"> Relational Design Theory</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#函数依赖-functional-dependency"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 函数依赖 Functional Dependency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据异常-data-anomalies"><span class="toc-number">1.3.2.</span> <span class="toc-text"> 数据异常 Data Anomalies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#范式-normal-form"><span class="toc-number">1.3.3.</span> <span class="toc-text"> 范式 Normal Form</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#分解"><span class="toc-number">1.3.3.1.</span> <span class="toc-text"> 分解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-第一范式-1nf-atomicity原子性"><span class="toc-number">1.3.3.2.</span> <span class="toc-text"> 1. 第一范式 (1NF) Atomicity(原子性)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-boycecodd-normal-formbcnf-每个表中只有一个候选键"><span class="toc-number">1.3.3.3.</span> <span class="toc-text"> 2. Boyce–Codd normal form(BCNF) 每个表中只有一个候选键</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-第三范式-3nf-2nf消除传递函数依赖"><span class="toc-number">1.3.3.4.</span> <span class="toc-text"> 3. 第三范式 (3NF) 2NF&amp;消除传递函数依赖</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#multi-dimensional-database"><span class="toc-number">1.3.4.</span> <span class="toc-text"> Multi-dimensional database</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#levels-of-abstraction-in-dbms"><span class="toc-number">1.3.5.</span> <span class="toc-text"> Levels of abstraction in DBMS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#storage-and-file-structure"><span class="toc-number">1.4.</span> <span class="toc-text"> Storage and File Structure</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#storage-overview"><span class="toc-number">1.4.1.</span> <span class="toc-text"> Storage Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#memory-hierarchy"><span class="toc-number">1.4.2.</span> <span class="toc-text"> Memory hierarchy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#disk"><span class="toc-number">1.4.3.</span> <span class="toc-text"> Disk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#database-buffer"><span class="toc-number">1.4.4.</span> <span class="toc-text"> Database Buffer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#file-organization"><span class="toc-number">1.4.5.</span> <span class="toc-text"> File Organization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#storage-summary"><span class="toc-number">1.4.6.</span> <span class="toc-text"> Storage summary</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#indexing-and-hashing"><span class="toc-number">1.5.</span> <span class="toc-text"> Indexing and Hashing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#b-tree"><span class="toc-number">1.5.1.</span> <span class="toc-text"> B+ tree</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hashing"><span class="toc-number">1.5.2.</span> <span class="toc-text"> HASHING</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#static-hashing"><span class="toc-number">1.5.2.1.</span> <span class="toc-text"> Static Hashing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dynamic-hashing"><span class="toc-number">1.5.2.2.</span> <span class="toc-text"> Dynamic Hashing</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bitmap"><span class="toc-number">1.5.3.</span> <span class="toc-text"> BITMAP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#储存与索引总结"><span class="toc-number">1.5.4.</span> <span class="toc-text"> 储存与索引总结</span></a></li></ol></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 22
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span><a class="archive-post-title" href= "/2019/10/01/java-jvm/" >JVM</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/21</span><a class="archive-post-title" href= "/2019/04/22/Database Management System - Indexing/" >Database Management System - Indexing</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/10</span><a class="archive-post-title" href= "/2019/04/11/Operating System - Persistence/" >Operating System - Persistence</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/08</span><a class="archive-post-title" href= "/2019/04/09/Computer Networking/" >Computer Networking</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/02</span><a class="archive-post-title" href= "/2019/04/03/Operating System - Concurrency/" >Operating System - Concurrency</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/24</span><a class="archive-post-title" href= "/2019/03/25/Boyer–Moore majority vote algorithm/" >Boyer–Moore majority vote algorithm</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/22</span><a class="archive-post-title" href= "/2019/03/23/Threaded Binary Tree and Morris Traversal/" >Threaded Binary Tree and Morris Traversal</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/18</span><a class="archive-post-title" href= "/2019/03/19/Database/" >Database Management System - Relational Design Theory</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/15</span><a class="archive-post-title" href= "/2019/03/16/Operating System - Virtualization/" >Operating System - Virtualization</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/10</span><a class="archive-post-title" href= "/2019/02/11/process control/" >Process Control</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/24</span><a class="archive-post-title" href= "/2018/12/25/TCS/" >Automata, language, and computational complexity</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2018/12/10/real-analysis/" >real analysis</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2018/12/09/Compiler/" >Programming language and Compiler</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/01</span><a class="archive-post-title" href= "/2018/12/02/probability/" >Math431-probability theory</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/21</span><a class="archive-post-title" href= "/2018/05/22/Digital-system-fundamental/" >Digital system fundamental</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/19</span><a class="archive-post-title" href= "/2018/05/20/ai/" >CS540 Intro to AI Notesheet</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/05</span><a class="archive-post-title" href= "/2018/05/06/algorithm/" >CS577 Algorithm Notesheet</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2017 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/10</span><a class="archive-post-title" href= "/2017/12/12/Linear-algebra/" >Linear algebra</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span><a class="archive-post-title" href= "/2017/09/30/chmod/" >chmod</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/21</span><a class="archive-post-title" href= "/2017/09/22/link/" >link</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/29</span><a class="archive-post-title" href= "/2017/08/30/chown/" >chown</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/12</span><a class="archive-post-title" href= "/2017/08/13/hello-world/" >Hello world</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Compiler"><span class="iconfont-archer">&#xe606;</span>Compiler</span>
+    
+        <span class="sidebar-tag-name" data-tags="Computer Network"><span class="iconfont-archer">&#xe606;</span>Computer Network</span>
+    
+        <span class="sidebar-tag-name" data-tags="Algorithm and Data Structures"><span class="iconfont-archer">&#xe606;</span>Algorithm and Data Structures</span>
+    
+        <span class="sidebar-tag-name" data-tags="Database"><span class="iconfont-archer">&#xe606;</span>Database</span>
+    
+        <span class="sidebar-tag-name" data-tags="Computer Science"><span class="iconfont-archer">&#xe606;</span>Computer Science</span>
+    
+        <span class="sidebar-tag-name" data-tags="Math"><span class="iconfont-archer">&#xe606;</span>Math</span>
+    
+        <span class="sidebar-tag-name" data-tags="OS"><span class="iconfont-archer">&#xe606;</span>OS</span>
+    
+        <span class="sidebar-tag-name" data-tags="Theory of computation"><span class="iconfont-archer">&#xe606;</span>Theory of computation</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="Java"><span class="iconfont-archer">&#xe606;</span>Java</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "th2zz"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    <div style="display: none">
+        <script src="https://s13.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+        
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->    
+     
+    </body>
+</html>
+
+

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://th2zz.github.io/"/>
-  <updated>2019-04-21T23:50:22.999Z</updated>
+  <updated>2020-02-08T16:17:54.966Z</updated>
   <id>http://th2zz.github.io/</id>
   
   <author>
@@ -17,9 +17,35 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>JVM</title>
+    <link href="http://th2zz.github.io/2019/10/01/java-jvm/"/>
+    <id>http://th2zz.github.io/2019/10/01/java-jvm/</id>
+    <published>2019-09-30T17:34:41.000Z</published>
+    <updated>2020-02-08T16:17:54.966Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="jvm-architecture"><a class="markdownIt-Anchor" href="#jvm-architecture"></a> JVM architecture</h1><ul><li><p>Main function: load &amp; execute java application</p></li><li><p>Process: edit - javac myapp.java - java myapp (create a jvm instance)</p></li><li><img src="https://s2.ax1x.com/2020/02/08/1WkqSg.png" alt="1WkqSg.png" style="zoom:50%;"></li><li><img src="https://s2.ax1x.com/2020/02/08/1WAGnA.png" alt="1WAGnA.png" style="zoom:50%;"></li><li><p>components:</p><ul><li>class loader: input .class files output bytecode for execution engine</li><li>Runtime data areas</li><li>execution engine: executes byte code by talking to OS (may use native method calls that will be translated to machine language)</li></ul></li></ul><h3 id="1-class-loader-and-its-subsystem"><a class="markdownIt-Anchor" href="#1-class-loader-and-its-subsystem"></a> 1. Class Loader and its subsystem</h3><ul><li><img src="https://s2.ax1x.com/2020/02/08/1WA2NV.png" alt="1WA2NV.png" style="zoom:50%;"></li></ul><h4 id="load"><a class="markdownIt-Anchor" href="#load"></a> Load</h4><ul><li>Load: Load bytecode into memory<ul><li>can read from different sources: file system, socket</li><li>can have classNotFound</li><li>Three types of class loaders:<ul><li><strong>bootstrap</strong> rt.jar: <strong>load java internal classes</strong></li><li><strong>extension</strong> jre/lib/ext: <strong>load classes from additional application jar in jre/lib</strong></li><li><strong>application</strong> CLASSPATH, -cp: load classes from specified path</li></ul></li></ul></li></ul><h4 id="link"><a class="markdownIt-Anchor" href="#link"></a> Link</h4><ul><li>Link phase<ul><li><strong>verify</strong> bytecode compatibility with JVM</li><li><strong>Prepare</strong> allocate memory and init to default value for class (static) variables</li><li><strong>Resolve</strong> resolve symbolic references to other classes / constant pool to actual reference<ul><li>classDefNotFound</li></ul></li></ul></li></ul><h4 id="initialize"><a class="markdownIt-Anchor" href="#initialize"></a> Initialize</h4><ul><li>Initialize<ul><li>Execute static code block “static initializer”</li><li>actual initialization of static variables</li></ul></li></ul><h4 id="类初始化时机"><a class="markdownIt-Anchor" href="#类初始化时机"></a> 类初始化时机</h4><ol><li>主动引用<br>虚拟机规范中并没有强制约束何时进行加载，但是规范严格规定了有且只有下列五种情况必须对类进行初始化（加载、验证、准备都会随之发生）：</li></ol><ul><li>遇到 new、getstatic、putstatic、invokestatic 这四条字节码指令时，如果类没有进行过初始化，则必须先触发其初始化。最常见的生成这 4 条指令的场景是：使用 new 关键字实例化对象的时候；读取或设置一个类的静态字段（被 final 修饰、已在编译期把结果放入常量池的静态字段除外）的时候；以及调用一个类的静态方法的时候。</li><li>使用 java.lang.reflect 包的方法对类进行反射调用的时候，如果类没有进行初始化，则需要先触发其初始化。</li><li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化。</li><li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类），虚拟机会先初始化这个主类；</li><li>当使用 JDK 1.7 的动态语言支持时，如果一个 java.lang.invoke.MethodHandle 实例最后的解析结果为 REF_getStatic, REF_putStatic, REF_invokeStatic 的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化；</li></ul><ol start="2"><li>被动引用<br>以上 5 种场景中的行为称为对一个类进行主动引用。除此之外，所有引用类的方式都不会触发初始化，称为被动引用。被动引用的常见例子包括：</li></ol><ul><li>通过子类引用父类的静态字段，不会导致子类初始化。</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(SubClass.value);  <span class="comment">// value 字段在 SuperClass 中定义Copy to clipboardErrorCopied</span></span><br></pre></td></tr></table></figure><ul><li>通过数组定义来引用类，不会触发此类的初始化。该过程会对数组类进行初始化，数组类是一个由虚拟机自动生成的、直接继承自 Object 的子类，其中包含了数组的属性和方法。</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SuperClass[] sca = <span class="keyword">new</span> SuperClass[<span class="number">10</span>];Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure><ul><li>常量在编译阶段会存入调用类的常量池中，本质上并没有直接引用到定义常量的类，因此不会触发定义常量的类的初始化。</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(ConstClass.HELLOWORLD);</span><br></pre></td></tr></table></figure><h3 id="2-runtime-data-areas"><a class="markdownIt-Anchor" href="#2-runtime-data-areas"></a> 2. Runtime data areas</h3><ul><li><strong>per thread means operations in thread local storage are generally safe.</strong></li><li><strong>per JVM means operations in shared data areas such as meatspace, Heap are not thread-safe.</strong></li></ul><h4 id="per-thread"><a class="markdownIt-Anchor" href="#per-thread"></a> Per-thread</h4><img src="https://s2.ax1x.com/2020/02/08/1WmTkn.png" alt="1WmTkn.png" style="zoom:50%;"><h5 id="pc-register"><a class="markdownIt-Anchor" href="#pc-register"></a> PC Register</h5><ul><li><strong>PC Register</strong>:  program counter register<ul><li>pointer to next instruction <strong>per thread</strong></li></ul></li></ul><h5 id="java-stacks"><a class="markdownIt-Anchor" href="#java-stacks"></a> Java Stacks</h5><ul><li><strong>Java Stacks</strong>: stack frames “chains of stack frames” corresponded to current methods execution <strong>per thread</strong><ul><li>use -Xss to mention size of stacks we want to maintain</li><li>when run out of memory, can have StackOverflowError</li></ul></li></ul><h5 id="native-method-stacks"><a class="markdownIt-Anchor" href="#native-method-stacks"></a> Native method Stacks</h5><ul><li><strong>Native method stacks</strong>: native method stacks if needed / used <strong>per thread</strong>.<ul><li>a thread with its method may call a native method such as loading a dll and run something, then the native method stack will be created, and you will get a pointer</li></ul></li></ul><h4 id="per-jvm"><a class="markdownIt-Anchor" href="#per-jvm"></a> Per-JVM</h4><img src="https://s2.ax1x.com/2020/02/08/1WZNA1.md.png" alt="1WZNA1.md.png" style="zoom:80%;"><h5 id="metaspace-method-area"><a class="markdownIt-Anchor" href="#metaspace-method-area"></a> Metaspace / Method Area</h5><ul><li><p><strong>Method Area</strong> “PermGen space 64MB”: metadata for class, available for reflection <strong>per JVM</strong>.</p><ul><li>use -XX:MaxPermSize to adjust size if we need to store a lot more classes</li><li><strong>Removed since Java 8</strong></li><li>Now is called: <strong>Metaspace</strong><ul><li>a seperate memory portion in native operating system</li><li>no limit now, can grow infinitely, but can have a limit if tuned.</li></ul></li></ul></li></ul><h5 id="heap"><a class="markdownIt-Anchor" href="#heap"></a> Heap</h5><ul><li><p><strong>Heap</strong>: stores Object data such as arrays, objects… <strong>per JVM</strong>.</p><ul><li>now has runtime constant pool and string pool</li><li>use -Xms for min size, -Xms for max size if need to tune.</li></ul></li></ul><h5 id="direct-memory"><a class="markdownIt-Anchor" href="#direct-memory"></a> Direct Memory</h5><ul><li>直接内存: 在 JDK 1.4 中新引入了 NIO 类，它可以使用 Native 函数库直接分配堆外内存，然后通过 Java 堆里的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在堆内存和堆外内存来回拷贝数据。</li></ul><h3 id="3-execution-engine"><a class="markdownIt-Anchor" href="#3-execution-engine"></a> 3. Execution Engine</h3><img src="https://s2.ax1x.com/2020/02/08/1WQdZF.png" alt="1WQdZF.png" style="zoom:50%;"><ul><li><strong>Interperter</strong>: interpret &amp; execute bytecode related native operations<ul><li>done by interacting with Java Native Method Interface (JNI)<ul><li><strong>Platform independent (native) libraries</strong>: ex. in windows JRE /bin you will see .dll files   .so on unix platform</li></ul></li></ul></li><li><strong>JIT Compiler</strong> (Just-in-time): do not interpret instructions that will be executed again and agin, compile it on the fly and keep the bytecode to avoid wasteful interpretations.</li><li><strong>Hotspot profiler</strong>: make statistics on hotspot to help JIT compiler.</li><li><strong>Garbage Collector (GC)</strong>: cleans up unused classes / objects in memory areas.</li></ul><h1 id="jvm-gc"><a class="markdownIt-Anchor" href="#jvm-gc"></a> JVM GC</h1><ul><li>Intro<ul><li>Memory leak: 内存管理不当导致的“不需要的内存没有被释放” <strong>can have Memory leak in Java</strong></li><li>In C++/C, programmers responsible for manage memory, can easily lead to memory leaks if not handled properly<ul><li>malloc() realloc() calloc() free() new and destructors</li></ul></li></ul></li><li>Basics<ul><li>Live object = reachable (referenced by someone else)</li><li>dead object = unreachable (not referenced anywhere)</li><li><strong>root node = main thread</strong></li><li>Objects e.g. (new xxx) are allocated in the heap, static members, class definitions (metadata) are stored in Permgen / Metaspace</li><li>GC is carried out by a <strong>daemon thread &quot;Garbage collector&quot;</strong></li><li><strong>we cannot force gc to happen</strong> (System.gc()😉</li><li>failed new allocations in heap  = java.lang.OutOfMemoryError</li><li>GC只处理java new出来的对象，但无法关闭其他资源，也无法处理java调用C或其他语言分配出的内存。</li><li>垃圾回收分多级，0级为全部(Full)的垃圾回收，会回收OLD段中的垃圾；1级或以上为部分垃圾回收，只会回收Young中的垃圾。</li><li>System.gc并不保证GC执行，只是向JVM发送建议，并不是命令。</li><li>finalize被调用时代表gc准备回收该对象内存</li></ul></li></ul><h3 id="directed-graph-reachability"><a class="markdownIt-Anchor" href="#directed-graph-reachability"></a> Directed Graph &amp; Reachability</h3><ul><li>.NET的垃圾回收采用引用计数，java的垃圾回收机制采取的是有向图的方式来实现，具体的说，java程序中的每个线程对象就可以看作是一个有向图的起点，有向边从栈中的引用者指向堆中的引用对象。在这个有向图中，如果一个对象和根节点之间是可达的，那么这个对象就是有效的，反之，这个对象就是可以被回收的。采取这样一种机制的优点是可以有效的避免循环引用。</li></ul><h2 id="general-gc-steps-mark-sweep-compact"><a class="markdownIt-Anchor" href="#general-gc-steps-mark-sweep-compact"></a> General GC steps: Mark Sweep Compact</h2><ul><li><strong>Mark</strong><ul><li>Starts from root node (main) walks the object graph, <strong>marks reachable object</strong> as live.</li></ul></li><li><strong>Sweep</strong>/Delete<ul><li><strong>clean unreachable objects</strong> and <strong>reclaim memory</strong></li></ul></li><li><strong>Compacting</strong><ul><li>arrange things in order: move objects around to <strong>avoid fragmentation</strong> = make memory contiguous.</li></ul></li></ul><h2 id="java-gc-generational-collectors"><a class="markdownIt-Anchor" href="#java-gc-generational-collectors"></a> Java GC: <strong>Generational collectors</strong></h2><h3 id="heap-division"><a class="markdownIt-Anchor" href="#heap-division"></a> Heap division</h3><ul><li><img src="https://s2.ax1x.com/2020/02/08/1WtC4S.png" alt="1WtC4S.png" style="zoom:80%;"></li><li>Young Generation<ul><li><strong>Eden space</strong>: new object();</li><li><strong>Survivor space 1 / 2</strong>: used to <strong>move back and force</strong> survivors that survive minor GC each turn<ul><li>can <strong>help avoid compacting step</strong></li></ul></li></ul></li><li>Old Generation<ul><li>objects that survived at least “threshold” rounds of GC</li><li>if full, iincur Major GC</li></ul></li></ul><h3 id="minor-vs-major-gc"><a class="markdownIt-Anchor" href="#minor-vs-major-gc"></a> Minor vs Major GC</h3><ul><li>Minor:<ul><li>only Young Generation</li><li>Responsive</li></ul></li><li>Major:<ul><li>run through entire heap</li><li>Long pause / latency</li><li>High throughput</li><li>Good for batch processing, jobs in database that that care about throughput &gt; latency</li></ul></li></ul><h3 id="entire-process"><a class="markdownIt-Anchor" href="#entire-process"></a> Entire process</h3><ol><li>new obj allocated in Eden</li><li>Eden full = allocation fail for new obj<ol><li>Minor GC run, mark reachable objs</li><li>move reachable obj to survivor 1</li><li>Sweep unreachables</li><li>survivors counters =  “1” means 1 rounds</li></ol></li><li>Now Eden clear, allocate new objs… some in survivor 1 became unreachable… when Eden full,<ol><li>minor GC mark and move reachables to survivor 2 <strong>the empty one</strong></li><li>move reachables in S1 to S2, <strong>increment</strong> S1 <strong>survivor counter.</strong>  By moving around this way we <strong>avoids compacting steps.</strong></li></ol></li><li><strong>Repeat</strong>: allocate in Eden, Eden full, mark and move all reachable (Eden or Sx) to the empty S, increment counters, sweep unreachables</li><li>If counter <strong>hit threshold, promote them to Old Generation</strong>.</li><li>If Old Generation is near full, Major GC runs across the entire heap MSC. very time consuming, can lead to pause.</li></ol><h2 id="gc-types-usages"><a class="markdownIt-Anchor" href="#gc-types-usages"></a> GC types &amp; Usages</h2><h3 id="basic-serial-collector"><a class="markdownIt-Anchor" href="#basic-serial-collector"></a> Basic Serial Collector</h3><ul><li>runs in single thread, used for basic applications</li></ul><h3 id="concurrent-collector-cmsc"><a class="markdownIt-Anchor" href="#concurrent-collector-cmsc"></a> Concurrent collector (CMSC)</h3><ul><li>A thread that performs GC concurrently for the app.</li><li>No waiting for the old generation.</li><li><strong>small pause only when mark / remark</strong>. Otherwise no pause “concurrent”.</li><li>use when<ul><li>more available memory</li><li>high number of CPUs</li><li>needs responsiveness</li></ul></li></ul><h3 id="parallel-collector-pmsc"><a class="markdownIt-Anchor" href="#parallel-collector-pmsc"></a> Parallel collector (PMSC)</h3><ul><li>use multiple CPU and multiple threads to do MSC (mark sweep compact).</li><li>only runs when heap is full / near full.</li><li><strong>long pause when it runs</strong>.</li><li>use when<ul><li>less available memory</li><li>less number of CPUs</li><li>needs high throughput &amp; can withstand pauses</li></ul></li></ul><h3 id="g1-collector-garbage-first-17"><a class="markdownIt-Anchor" href="#g1-collector-garbage-first-17"></a> G1 collector (Garbage - first) 1.7+</h3><ul><li>Divide heap into small regions, each of them can be eden / survivor / old</li><li><strong>Dynamically chose regions with most garbage to GC</strong><ul><li>More predictable GC pauses</li><li>Low pauses and fragmentation</li><li>Parallelism &amp; concurrency together</li><li>Better heap utilization</li></ul></li></ul><h3 id="usage"><a class="markdownIt-Anchor" href="#usage"></a> Usage</h3><p><img src="https://s2.ax1x.com/2020/02/08/1WBMZj.png" alt="1WBMZj.png"></p><ul><li>notice CMS is only in old generation.</li></ul><h2 id="memory-leaks"><a class="markdownIt-Anchor" href="#memory-leaks"></a> Memory Leaks</h2><ul><li><p>内存溢出通常发生于OLD段或Perm段垃圾回收后，仍然无内存空间容纳新的Java对象的情况。</p></li><li><p>建议将不用的对象引用设为null来避免临时的内存泄漏： 将他们标记为可清理对象。</p></li><li><p>常发生于</p><ol><li>使用生命周期较长的单位：单例模式类对象， 静态集合类形成的对象引用   <strong>暂时内存泄漏：只有相应对象/类被释放时才会gc</strong></li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Static Vector v = new Vector(); </span><br><span class="line">for (int i = 1; i&lt;100; i++) </span><br><span class="line">&#123; </span><br><span class="line">    Object o = new Object(); </span><br><span class="line">    v.add(o); </span><br><span class="line">    o = null; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ol start="2"><li><p><strong>使用了各种资源连接忘了关</strong>：数据库连接，网络连接，IO连接等，显式调用close<strong>关闭后才能被GC回收</strong></p></li><li><p>**改变哈希值，**当一个对象被存储进HashSet集合中以后，就不能修改这个对象中的那些参与计算哈希值的字段了，否则，对象修改后的哈希值与最初存储进HashSet集合中时的哈希值就不同了，在这种情况下，即使在contains方法使用该对象的当前引用作为的参数去HashSet集合中检索对象，也将返回找不到对象的结果，这也会导致无法从HashSet集合中单独删除当前对象，造成内存泄露</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">  Set&lt;Person&gt; set = <span class="keyword">new</span> HashSet&lt;Person&gt;();</span><br><span class="line">  Person p1 = <span class="keyword">new</span> Person(<span class="string">"唐僧"</span>,<span class="string">"pwd1"</span>,<span class="number">25</span>);</span><br><span class="line">  Person p2 = <span class="keyword">new</span> Person(<span class="string">"孙悟空"</span>,<span class="string">"pwd2"</span>,<span class="number">26</span>);</span><br><span class="line">  Person p3 = <span class="keyword">new</span> Person(<span class="string">"猪八戒"</span>,<span class="string">"pwd3"</span>,<span class="number">27</span>);</span><br><span class="line">  set.add(p1);</span><br><span class="line">  set.add(p2);</span><br><span class="line">  set.add(p3);</span><br><span class="line">  System.out.println(<span class="string">"总共有:"</span>+set.size()+<span class="string">" 个元素!"</span>); <span class="comment">//结果：总共有:3 个元素!</span></span><br><span class="line">  p3.setAge(<span class="number">2</span>); <span class="comment">//修改p3的年龄,此时p3元素对应的hashcode值发生改变</span></span><br><span class="line">  set.remove(p3); <span class="comment">//此时remove不掉，造成内存泄漏</span></span><br><span class="line">  set.add(p3); <span class="comment">//重新添加，居然添加成功</span></span><br><span class="line">  System.out.println(<span class="string">"总共有:"</span>+set.size()+<span class="string">" 个元素!"</span>); <span class="comment">//结果：总共有:4 个元素!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ol></li></ul><h2 id="java对象引用类别强引用软引用弱引用虚引用"><a class="markdownIt-Anchor" href="#java对象引用类别强引用软引用弱引用虚引用"></a> Java对象引用类别：强引用，软引用，弱引用，虚引用</h2><ul><li><p><strong>强引用</strong>就是平时最常用的引用，当内存空间不足，Java虚拟机宁愿抛出OutOfMemoryError错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足的问题。</p></li><li><p>如果一个对象只具有<strong>软引用</strong>，则内存空间足够，垃圾回收器就不会回收它；如果内存空间不足了，就会回收这些对象的内存。</p></li><li><p>只具有<strong>弱引用</strong>的对象拥有更短暂的生命周期。在垃圾回收器线程扫描它所管辖的内存区域的过程中，一旦发现了只具有弱引用的对象，<strong>不管当前内存空间足够与否，都会回收它的内存</strong>。</p></li><li><p>虚引用，这种引用不常用，主要用途是关联对象，实现对对象引用关系追踪。虚引用并不会决定对象的生命周期。也无法通过虚引用得到一个对象。如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收器回收。</p></li><li><p>几种引用分别位于java.lang.ref.SoftReference; java.lang.ref.WeakReference; 和 java.lang.ref.PhantomReference;</p></li></ul><h2 id="finalize"><a class="markdownIt-Anchor" href="#finalize"></a> finalize( )</h2><ul><li><p>do not use finalizer manually: finalize()</p><ul><li><p>guranteed to be called <strong>only ONCE</strong> at the end of execution when GC is done</p></li><li><p>no gurantee of gc happens</p></li><li><p>do not use finalizer on anything important</p></li><li><p>suppose we try to resurect obj by recreating an object in finalize( ), this = new xxx( );</p><ul><li>obj is recreated in memory at the end of gc = <strong>memory leak</strong></li></ul></li></ul></li><li><p>finalize被调用时代表gc准备回收该对象内存</p><ul><li>对象不可达，但是调用<strong>finalize之后</strong>又变得可达的情况存在，在finalize函数中通过this指针让其他句柄执行本身即可，但是再下次回收时不会再调用finalize，因为只能调用一次。</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected void finalize()</span><br><span class="line">&#123;</span><br><span class="line">     main.ref=this;  // 恢复本对象，让本对象可达</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>垃圾回收器不能对用Java以外的代码编写的Class(比如JNI，C<ins>的new方法分配的内存)进行正确的回收，这时就需要覆盖默认finalize的方法来实现对这部分内存的正确释放和回收(比如C</ins>需要delete)。</li><li>finalize不能等同于C<ins>对象的destructor析构函数，C</ins>析构函数在在对象生命周期结束时会确定执行，而finalize函数的调用具有很大的不确定性。</li></ul><blockquote><p><strong>1、调用时间不确定——有资源浪费的风险</strong></p><p>如果把某些稀缺资源放到finalize()中释放，可能会导致该稀缺资源等上很久很久以后才被释放。造成资源的浪费！另外，某些类对象所携带的资源（比如某些JDBC的类）可能本身就很耗费内存，这些资源的延迟释放会造成很大的性能问题。</p><p><strong>2、可能不被调用——有资源泄漏的风险</strong></p><p>在某些情况下，finalize()压根儿不被调用。比如在JVM退出的当口，内存中那些对象的finalize函数可能就不会被调用了。</p><p>因此一些清理工作如文件的关闭，连接的关闭等不要放到finalize函数中，要在程序中单独进行管理，一般finalize只做C/C++内存的回收。<br><strong>3、对象可能在finalize函数调用时复活——有诈尸的风险</strong>　　<br>诈尸的情况比较少见，不过俺还是稍微提一下。<br>　　本来，只有当某个对象已经失效（没有引用），垃圾回收器才会调用该对象的finalize函数。但是，万一碰上某个变态的程序员，在finalize()函数内部再把对象自身的引用（也就是this）重新保存在某处，也就相当于把自己复活了（因为这个对象重新有了引用，不再处于失效状态）。这种做法是不是够变态啊</p><p>为了防止发生这种诡异的事情，垃圾回收器只能在每次调用完finalize()之后再次去检查该对象是否还处于失效状态。这无形中又增加了JVM的开销。<br>　　随便提一下。由于JDK的文档中规定了（具体见“这里”），JVM对于每一个类对象实例最多只会调用一次finalize()。所以，对于那些诈尸的实例，当它们真正死亡时，finalize()反而不会被调用了。这看起来是不是很奇怪？<br><strong>4、要记得自己做异常捕获</strong><br>　　刚才在介绍finalize()调用机制时提到，一旦有异常抛出到finalize函数外面，会被垃圾回收线程捕获并丢弃。也就是说，异常被忽略掉了（异常被忽略的危害，“这里”有提到）。为了防止这种事儿，凡是finalize()中有可能抛出异常的代码，你都得写上try catch语句，自己进行捕获。 　<br><strong>5、要小心线程安全</strong><br>　　由于调用finalize()的是垃圾回收线程，和你自己代码的线程不是同一个线程；甚至不同对象的finalize()可能会被不同的垃圾回收线程调用（比如使用“并行收集器”的时候）。所以，当你在finalize()里面访问某些数据的时候，还得时刻留心线程安全的问题。</p></blockquote></li></ul><h2 id="常量池总结"><a class="markdownIt-Anchor" href="#常量池总结"></a> 常量池总结</h2><ul><li><p>**class文件常量池 / constant pool：存静态常量,符号引用和字面量 ** 存在于.class文件中</p></li><li><p><strong>运行时常量池</strong>：类加载后，常量池中的数据会在<strong>运行时常量池</strong>中存放！这里所说的常量包括：基本类型包装类**（包装类<strong>不管理浮点型</strong>，整形只会管理-128到127）和<strong>String</strong>（也可以通过String.intern()方法可以强制将String放入常量池）**</p></li><li><p><strong>字符串常量池</strong>： HotSpot VM里，记录interned string的一个全局表叫做StringTable，它本质上就是个HashSet<string>。注意它只存储对java.lang.String实例的引用，而不存储String对象的内容</string></p></li><li><p>运行时常量池和字符串常量池都在堆中。</p></li></ul><h2 id="other-notes"><a class="markdownIt-Anchor" href="#other-notes"></a> Other Notes</h2><ol><li>Tune the heaps</li></ol><img src="https://s2.ax1x.com/2020/02/08/1WspsU.png" alt="1WspsU.png" style="zoom:80%;"><ol start="2"><li>GC logging with graphical tool if we suspect gc is the problem for performance issues.</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-verbose:gc</span><br><span class="line"></span><br><span class="line">-XX:+PrintGCDetails</span><br><span class="line"></span><br><span class="line">-Xloggc:gc.log</span><br></pre></td></tr></table></figure><ol start="3"><li>jvisualvm: visual gc plugin</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;jvm-architecture&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#jvm-architecture&quot;&gt;&lt;/a&gt; JVM architecture&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Main function: load 
+      
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="http://th2zz.github.io/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Database Management System - Indexing</title>
-    <link href="http://th2zz.github.io/2019/04/21/Database%20Management%20System%20-%20Indexing/"/>
-    <id>http://th2zz.github.io/2019/04/21/Database Management System - Indexing/</id>
+    <link href="http://th2zz.github.io/2019/04/22/Database%20Management%20System%20-%20Indexing/"/>
+    <id>http://th2zz.github.io/2019/04/22/Database Management System - Indexing/</id>
     <published>2019-04-21T23:49:41.000Z</published>
     <updated>2019-04-21T23:50:22.999Z</updated>
     
@@ -42,8 +68,8 @@
   
   <entry>
     <title>Operating System - Persistence</title>
-    <link href="http://th2zz.github.io/2019/04/10/Operating%20System%20-%20Persistence/"/>
-    <id>http://th2zz.github.io/2019/04/10/Operating System - Persistence/</id>
+    <link href="http://th2zz.github.io/2019/04/11/Operating%20System%20-%20Persistence/"/>
+    <id>http://th2zz.github.io/2019/04/11/Operating System - Persistence/</id>
     <published>2019-04-11T01:51:23.000Z</published>
     <updated>2019-04-11T02:12:45.982Z</updated>
     
@@ -91,8 +117,8 @@
   
   <entry>
     <title>Operating System - Concurrency</title>
-    <link href="http://th2zz.github.io/2019/04/02/Operating%20System%20-%20Concurrency/"/>
-    <id>http://th2zz.github.io/2019/04/02/Operating System - Concurrency/</id>
+    <link href="http://th2zz.github.io/2019/04/03/Operating%20System%20-%20Concurrency/"/>
+    <id>http://th2zz.github.io/2019/04/03/Operating System - Concurrency/</id>
     <published>2019-04-03T01:06:41.000Z</published>
     <updated>2019-04-11T02:01:38.530Z</updated>
     
@@ -114,8 +140,8 @@
   
   <entry>
     <title>Boyer–Moore majority vote algorithm</title>
-    <link href="http://th2zz.github.io/2019/03/24/Boyer%E2%80%93Moore%20majority%20vote%20algorithm/"/>
-    <id>http://th2zz.github.io/2019/03/24/Boyer–Moore majority vote algorithm/</id>
+    <link href="http://th2zz.github.io/2019/03/25/Boyer%E2%80%93Moore%20majority%20vote%20algorithm/"/>
+    <id>http://th2zz.github.io/2019/03/25/Boyer–Moore majority vote algorithm/</id>
     <published>2019-03-25T03:38:32.000Z</published>
     <updated>2019-03-25T05:16:09.226Z</updated>
     
@@ -137,8 +163,8 @@
   
   <entry>
     <title>Threaded Binary Tree and Morris Traversal</title>
-    <link href="http://th2zz.github.io/2019/03/22/Threaded%20Binary%20Tree%20and%20Morris%20Traversal/"/>
-    <id>http://th2zz.github.io/2019/03/22/Threaded Binary Tree and Morris Traversal/</id>
+    <link href="http://th2zz.github.io/2019/03/23/Threaded%20Binary%20Tree%20and%20Morris%20Traversal/"/>
+    <id>http://th2zz.github.io/2019/03/23/Threaded Binary Tree and Morris Traversal/</id>
     <published>2019-03-22T20:58:08.000Z</published>
     <updated>2019-03-22T20:58:39.460Z</updated>
     
@@ -160,8 +186,8 @@
   
   <entry>
     <title>Database Management System - Relational Design Theory</title>
-    <link href="http://th2zz.github.io/2019/03/18/Database/"/>
-    <id>http://th2zz.github.io/2019/03/18/Database/</id>
+    <link href="http://th2zz.github.io/2019/03/19/Database/"/>
+    <id>http://th2zz.github.io/2019/03/19/Database/</id>
     <published>2019-03-18T18:00:41.000Z</published>
     <updated>2019-04-21T23:48:17.969Z</updated>
     
@@ -183,8 +209,8 @@
   
   <entry>
     <title>Operating System - Virtualization</title>
-    <link href="http://th2zz.github.io/2019/03/15/Operating%20System%20-%20Virtualization/"/>
-    <id>http://th2zz.github.io/2019/03/15/Operating System - Virtualization/</id>
+    <link href="http://th2zz.github.io/2019/03/16/Operating%20System%20-%20Virtualization/"/>
+    <id>http://th2zz.github.io/2019/03/16/Operating System - Virtualization/</id>
     <published>2019-03-15T20:06:41.000Z</published>
     <updated>2019-04-11T02:01:28.494Z</updated>
     
@@ -206,8 +232,8 @@
   
   <entry>
     <title>Process Control</title>
-    <link href="http://th2zz.github.io/2019/02/10/process%20control/"/>
-    <id>http://th2zz.github.io/2019/02/10/process control/</id>
+    <link href="http://th2zz.github.io/2019/02/11/process%20control/"/>
+    <id>http://th2zz.github.io/2019/02/11/process control/</id>
     <published>2019-02-10T20:15:32.000Z</published>
     <updated>2019-03-20T22:41:52.066Z</updated>
     
@@ -235,8 +261,8 @@
   
   <entry>
     <title>Automata, language, and computational complexity</title>
-    <link href="http://th2zz.github.io/2018/12/24/TCS/"/>
-    <id>http://th2zz.github.io/2018/12/24/TCS/</id>
+    <link href="http://th2zz.github.io/2018/12/25/TCS/"/>
+    <id>http://th2zz.github.io/2018/12/25/TCS/</id>
     <published>2018-12-25T01:22:41.000Z</published>
     <updated>2019-03-20T21:15:44.035Z</updated>
     
@@ -258,8 +284,8 @@
   
   <entry>
     <title>real analysis</title>
-    <link href="http://th2zz.github.io/2018/12/09/real-analysis/"/>
-    <id>http://th2zz.github.io/2018/12/09/real-analysis/</id>
+    <link href="http://th2zz.github.io/2018/12/10/real-analysis/"/>
+    <id>http://th2zz.github.io/2018/12/10/real-analysis/</id>
     <published>2018-12-09T18:00:41.000Z</published>
     <updated>2019-02-04T21:04:45.743Z</updated>
     
@@ -282,8 +308,8 @@
   
   <entry>
     <title>Programming language and Compiler</title>
-    <link href="http://th2zz.github.io/2018/12/08/Compiler/"/>
-    <id>http://th2zz.github.io/2018/12/08/Compiler/</id>
+    <link href="http://th2zz.github.io/2018/12/09/Compiler/"/>
+    <id>http://th2zz.github.io/2018/12/09/Compiler/</id>
     <published>2018-12-09T03:40:41.000Z</published>
     <updated>2019-03-22T21:02:39.161Z</updated>
     
@@ -306,8 +332,8 @@
   
   <entry>
     <title>Math431-probability theory</title>
-    <link href="http://th2zz.github.io/2018/12/01/probability/"/>
-    <id>http://th2zz.github.io/2018/12/01/probability/</id>
+    <link href="http://th2zz.github.io/2018/12/02/probability/"/>
+    <id>http://th2zz.github.io/2018/12/02/probability/</id>
     <published>2018-12-02T04:30:02.000Z</published>
     <updated>2019-02-04T20:44:28.643Z</updated>
     
@@ -330,8 +356,8 @@
   
   <entry>
     <title>Digital system fundamental</title>
-    <link href="http://th2zz.github.io/2018/05/21/Digital-system-fundamental/"/>
-    <id>http://th2zz.github.io/2018/05/21/Digital-system-fundamental/</id>
+    <link href="http://th2zz.github.io/2018/05/22/Digital-system-fundamental/"/>
+    <id>http://th2zz.github.io/2018/05/22/Digital-system-fundamental/</id>
     <published>2018-05-22T00:43:32.000Z</published>
     <updated>2019-02-04T20:26:06.050Z</updated>
     
@@ -354,8 +380,8 @@
   
   <entry>
     <title>CS540 Intro to AI Notesheet</title>
-    <link href="http://th2zz.github.io/2018/05/19/ai/"/>
-    <id>http://th2zz.github.io/2018/05/19/ai/</id>
+    <link href="http://th2zz.github.io/2018/05/20/ai/"/>
+    <id>http://th2zz.github.io/2018/05/20/ai/</id>
     <published>2018-05-19T18:00:41.000Z</published>
     <updated>2019-03-20T22:42:14.864Z</updated>
     
@@ -380,8 +406,8 @@
   
   <entry>
     <title>CS577 Algorithm Notesheet</title>
-    <link href="http://th2zz.github.io/2018/05/05/algorithm/"/>
-    <id>http://th2zz.github.io/2018/05/05/algorithm/</id>
+    <link href="http://th2zz.github.io/2018/05/06/algorithm/"/>
+    <id>http://th2zz.github.io/2018/05/06/algorithm/</id>
     <published>2018-05-06T00:00:01.000Z</published>
     <updated>2019-03-20T20:46:17.321Z</updated>
     
@@ -406,8 +432,8 @@
   
   <entry>
     <title>Linear algebra</title>
-    <link href="http://th2zz.github.io/2017/12/11/Linear-algebra/"/>
-    <id>http://th2zz.github.io/2017/12/11/Linear-algebra/</id>
+    <link href="http://th2zz.github.io/2017/12/12/Linear-algebra/"/>
+    <id>http://th2zz.github.io/2017/12/12/Linear-algebra/</id>
     <published>2017-12-11T19:45:24.000Z</published>
     <updated>2019-02-04T21:02:43.787Z</updated>
     
@@ -430,8 +456,8 @@
   
   <entry>
     <title>chmod</title>
-    <link href="http://th2zz.github.io/2017/09/29/chmod/"/>
-    <id>http://th2zz.github.io/2017/09/29/chmod/</id>
+    <link href="http://th2zz.github.io/2017/09/30/chmod/"/>
+    <id>http://th2zz.github.io/2017/09/30/chmod/</id>
     <published>2017-09-30T03:42:32.000Z</published>
     <updated>2019-03-20T22:42:02.951Z</updated>
     
@@ -454,8 +480,8 @@
   
   <entry>
     <title>link</title>
-    <link href="http://th2zz.github.io/2017/09/21/link/"/>
-    <id>http://th2zz.github.io/2017/09/21/link/</id>
+    <link href="http://th2zz.github.io/2017/09/22/link/"/>
+    <id>http://th2zz.github.io/2017/09/22/link/</id>
     <published>2017-09-22T03:00:41.000Z</published>
     <updated>2019-02-04T20:26:41.418Z</updated>
     
@@ -466,30 +492,6 @@
       
       
         &lt;p&gt;用于创建 &lt;a href=&quot;https://en.wikipedia.org/wiki/Symbolic_link&quot; title=&quot;Symbolic_link&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;符号链接&lt;/a&gt; 或 &lt;a href=&quot;https
-      
-    
-    </summary>
-    
-    
-      <category term="Linux" scheme="http://th2zz.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>chown</title>
-    <link href="http://th2zz.github.io/2017/08/29/chown/"/>
-    <id>http://th2zz.github.io/2017/08/29/chown/</id>
-    <published>2017-08-30T01:31:52.000Z</published>
-    <updated>2019-03-20T22:36:16.839Z</updated>
-    
-    <content type="html"><![CDATA[<p>修改文件或目录的所有者或（和）用户组。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">chown --help</span><br><span class="line"></span><br><span class="line">Usage: chown [OPTION]... [OWNER][:[GROUP]] FILE...</span><br><span class="line">  or:  chown [OPTION]... --reference=RFILE FILE...</span><br><span class="line">Change the owner and/or group of each FILE to OWNER and/or GROUP.</span><br><span class="line">With --reference, change the owner and group of each FILE to those of RFILE.</span><br><span class="line"></span><br><span class="line">  -c, --changes          like verbose but report only when a change is made</span><br><span class="line">  -f, --silent, --quiet  suppress most error messages</span><br><span class="line">  -v, --verbose          output a diagnostic for every file processed</span><br><span class="line">      --dereference      affect the referent of each symbolic link (this is</span><br><span class="line">                         the default), rather than the symbolic link itself</span><br><span class="line">  -h, --no-dereference   affect symbolic links instead of any referenced file</span><br><span class="line">                         (useful only on systems that can change the</span><br><span class="line">                         ownership of a symlink)</span><br><span class="line">      --from=CURRENT_OWNER:CURRENT_GROUP</span><br><span class="line">                         change the owner and/or group of each file only if</span><br><span class="line">                         its current owner and/or group match those specified</span><br><span class="line">                         here.  Either may be omitted, in which case a match</span><br><span class="line">                         is not required for the omitted attribute</span><br><span class="line">      --no-preserve-root  do not treat '/' specially (the default)</span><br><span class="line">      --preserve-root    fail to operate recursively on '/'</span><br><span class="line">      --reference=RFILE  use RFILE's owner and group rather than</span><br><span class="line">                         specifying OWNER:GROUP values</span><br><span class="line">  -R, --recursive        operate on files and directories recursively</span><br><span class="line"></span><br><span class="line">The following options modify how a hierarchy is traversed when the -R</span><br><span class="line">option is also specified.  If more than one is specified, only the final</span><br><span class="line">one takes effect.</span><br><span class="line"></span><br><span class="line">  -H                     if a command line argument is a symbolic link</span><br><span class="line">                         to a directory, traverse it</span><br><span class="line">  -L                     traverse every symbolic link to a directory</span><br><span class="line">                         encountered</span><br><span class="line">  -P                     do not traverse any symbolic links (default)</span><br><span class="line"></span><br><span class="line">      --help     display this help and exit</span><br><span class="line">      --version  output version information and exit</span><br><span class="line"></span><br><span class="line">Owner is unchanged if missing.  Group is unchanged if missing, but changed</span><br><span class="line">to login group if implied by a ':' following a symbolic OWNER.</span><br><span class="line">OWNER and GROUP may be numeric as well as symbolic.</span><br><span class="line"></span><br><span class="line">Examples:</span><br><span class="line">  chown root /u        Change the owner of /u to "root".</span><br><span class="line">  chown root:staff /u  Likewise, but also change its group to "staff".</span><br><span class="line">  chown -hR root /u    Change the owner of /u and subfiles to "root".</span><br></pre></td></tr></table></figure><p>###查看归属信息</p><p><code>ls -l</code> 命令可以看到文件的拥有者和用户组：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -l</span><br><span class="line"></span><br><span class="line">-rw-rw-r-- 1 root hu 27  3月 18 16:50 hello.js</span><br></pre></td></tr></table></figure><p>root owner;<br>hu group.</p><p>###修改归属</p><ul><li><code>sudo chown hu hello.js</code> 将 hello.js 的 owner 改为 hu；</li><li><code>sudo chown root:root hello.js</code> 将 hello.js 的 owner 改为 root，group 改为 root。</li></ul><p>注意：<code>chown</code> 命令只能被 root 用户执行。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;修改文件或目录的所有者或（和）用户组。&lt;/p&gt;
-&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;li
       
     
     </summary>
