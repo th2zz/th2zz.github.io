@@ -29,6 +29,11 @@
       
 <section class="cover">
     
+      
+      <a class="forkMe" href="true"
+        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    
   <div class="cover-frame">
     <div class="bg-box">
       <img src="/images/cover1.jpg" alt="image frame" />
@@ -60,6 +65,646 @@
     
     
     
+    
+    <article id="post-computer_network" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/12/02/computer_network/"
+    >计网总结</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/12/02/computer_network/" class="article-date">
+  <time datetime="2019-12-02T15:32:49.000Z" itemprop="datePublished">2019-12-02</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="包交换-vs-电路交换网络"><a class="markdownIt-Anchor" href="#包交换-vs-电路交换网络"></a> 包交换 vs 电路交换网络</h1>
+<ul>
+<li>电路交换
+<ul>
+<li>需要建立连接 和 专用物理线路 线路利用率低 没有转发机制</li>
+<li>容易受网络中断影响</li>
+</ul>
+</li>
+<li>包交换
+<ul>
+<li>更灵活  不需要专用线路 可以线路复用  线路利用率高</li>
+<li>不容易受网络中断影响</li>
+</ul>
+</li>
+</ul>
+<h1 id="时延"><a class="markdownIt-Anchor" href="#时延"></a> 时延</h1>
+<p>E2E总时延 = 排队时延 + 处理时延 + 传输时延 + 传播时延</p>
+<p>P2P总时延 = 传输时延 + 传播时延</p>
+<h1 id="传输过程和基本术语"><a class="markdownIt-Anchor" href="#传输过程和基本术语"></a> 传输过程和基本术语</h1>
+<p><strong>Message “报文” - Segment “报文段” - Datagram / Packet “数据报 / 包” - Frame“帧” - bit</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20181201104548931.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2EzMTkyMDQ4,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p><a href="https://blog.csdn.net/a3192048/article/details/84671340" target="_blank" rel="noopener">https://blog.csdn.net/a3192048/article/details/84671340</a></p>
+<ul>
+<li>
+<p>Links: 链路 连接节点的物理介质</p>
+</li>
+<li>
+<p>Service / Interface: between layering</p>
+</li>
+<li>
+<p>Protocol: between peer</p>
+</li>
+<li>
+<p>E2E Client to Server  P2P otherwise</p>
+</li>
+<li>
+<p>根据信息在传输线上的传送方向，分为以下三种通信方式：</p>
+<ul>
+<li>单工通信Simplex：单向传输</li>
+<li>半双工通信Half-duplex：双向交替传输</li>
+<li>全双工通信Duplex：双向同时传输</li>
+</ul>
+</li>
+<li>
+<p>局域网：多种不同结构</p>
+<ul>
+<li>局域网是一种典型的广播信道，主要特点是网络为一个单位所拥有，且地理范围和站点数目均有限。有多种局域网技术，其中以太网占主导地位。可以按照网络拓扑结构对局域网进行分类：星 环 直线</li>
+</ul>
+</li>
+<li>
+<p>以太网：星形结构局域网 中间使用集线器或交换机连接</p>
+</li>
+<li>
+<p>MAC地址 链路层地址 48位 设备网卡的唯一标识 有多少个适配器=多少个mac地址 os可更换</p>
+</li>
+<li>
+<p>Switch交换机 Hub集线器 Router路由</p>
+<ul>
+<li>Hub 集线器 <strong>[layer1]</strong> enables mulitple hosts to create <strong>a broadcast Channel (only floods)</strong> 作用于物理层的 能使多个主机 创建一个广播频道的设备 具备多个网口，专门实现多台计算机的互联作用。</li>
+<li>Switch 交换机 <strong>[layer 2]</strong> 收处理转发以太网帧到网络中的其他设备 会维护一个&lt;mac link/接口&gt; 表 “交换表” 表类似一个LRU缓存 因此能够实现mac地址识别=说它具有“学习能力”. Can have simultaneous p2p connectivity between different hosts</li>
+<li>Router 路由 <strong>[layer 3]</strong> 根据routing table提供转发和路由两种功能 转发：将数据包移送到合适输出端 路由：决定数据包的路由路径。</li>
+</ul>
+</li>
+<li>
+<p>Bridge Repeater Gateway</p>
+<ul>
+<li>Repeater 中继器**[layer 1]** receive and repeat/regenerate signal</li>
+<li>Bridge 网桥**[layer 2]** 连接两个局域网</li>
+<li>Gateway 网关 <strong>[layer 3]</strong>  两个不同网络之间的关口设备</li>
+</ul>
+</li>
+</ul>
+<h1 id="ip-service-model-ip-best-effort-network-最大努力网络"><a class="markdownIt-Anchor" href="#ip-service-model-ip-best-effort-network-最大努力网络"></a> IP-service model / IP best-effort network /最大努力网络</h1>
+<ul>
+<li>
+<p>packets may lose, duplicate, reorder</p>
+</li>
+<li>
+<p>connectionelss best-effort destination based forwarding.</p>
+</li>
+</ul>
+<h1 id="layering-architecture"><a class="markdownIt-Anchor" href="#layering-architecture"></a> Layering &amp; Architecture</h1>
+<ul>
+<li>OSI architecture 应用层传输层之间多了session(建立及管理会话) presentation(数据压缩、加密以及数据描述)</li>
+<li>TCP/IP architecture 将物理层和数据链路层合并为“网络接口层”</li>
+</ul>
+<h2 id="application-layer"><a class="markdownIt-Anchor" href="#application-layer"></a> Application Layer</h2>
+<p><strong>E2E</strong>用户服务  HTTP FTP DNS DHCP 远程登录 邮件</p>
+<h2 id="transport-layer"><a class="markdownIt-Anchor" href="#transport-layer"></a> Transport Layer</h2>
+<p><strong>E2E</strong> <strong>为应用进程提供端到端的通信服务 在应用层和网络层之间multiplexing和demultiplexing</strong> TCP UDP</p>
+<p>Hide defects and limitations of the network</p>
+<p>Fragmentation &amp; reassembly</p>
+<p>resend defect packets</p>
+<ul>
+<li>TCP
+<ul>
+<li>Connection oriented: need to set up connection (has overhead)</li>
+<li>Reliable: it will make sure packets get through, if lost/corrupted resend packet</li>
+<li>Flow control: “making sure receiver not overwhelmed”</li>
+<li>Congestion control: “making network is not overloaded”</li>
+</ul>
+</li>
+<li>UDP
+<ul>
+<li>Connectionless: no need to set up connection, if need to send just send</li>
+<li>Unreliable best-effort</li>
+<li>No Flow control</li>
+<li>No Congestion control</li>
+</ul>
+</li>
+</ul>
+<p>No timing / throughput / security gurantee</p>
+<p>Why should we even bother using UDP ? you have a lot more control when having a tradeoff</p>
+<h2 id="network-layer"><a class="markdownIt-Anchor" href="#network-layer"></a> Network Layer</h2>
+<p>P2P Addressing, Routing, Congestion control <strong>点对点寻址，路由，拥塞控制</strong> Moving data between networks. 涉及协议： IP, ARP, ICMP and routing protocol</p>
+<ul>
+<li>
+<p>Addressing</p>
+<ul>
+<li>
+<p>IP: 沙漏结构的中点，将异构网络连接起来，使之看起来像个统一的网络</p>
+<ul>
+<li>IP is a <strong>unreliable</strong> protocol because it does not guarantee the delivery of a datagram to its destination. <strong>The reliability must be provided by the upper layer protocols like TCP.</strong> IP does not support flow control, retransmission, acknowledgement and error recovery.</li>
+<li><strong>地址系统</strong>
+<ul>
+<li>Class-based addressing (过去版本):  lead to problem of large #networks in routing table</li>
+<li>Subnetting and supernetting 子网与超网
+<ul>
+<li>subnet ip = subnet mask &amp; host ip address</li>
+<li>Supernetting: classless interdomain routing CIDR 无分类跨网地址系统
+<ul>
+<li>ip地址=网络前缀+主机号 128.14.35.7/20 表示前 20 位为网络前缀。</li>
+<li>意义：减少了路由表项   查找时采取最长前缀匹配原则选择哪一个</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Fragmentation/Reassembly <strong>报文的拆分重组</strong>: enabling heterogenous system to transmit their own “max pkt” 和tcp合作 tcp负责mtu discovery</li>
+<li>Error reporting and control (ICMP) <strong>错误报告和控制</strong>
+<ul>
+<li>
+<img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/aa29cc88-7256-4399-8c7f-3cf4a6489559.png" alt="img" style="zoom:30%;">
+</li>
+<li><strong>封装在 IP 数据报中</strong>，但是不属于高层协议。</li>
+<li>ping 用来测试两台主机之间的连通性 通过icmp echo实现</li>
+</ul>
+</li>
+<li>Traceroute 追踪一个数据包路径: 封装一个无法交付的udp包, 利用IP协议的“ttl”字段，尝试从每个网关到某个主机的路径引发ICMP 超时响应。</li>
+<li>IP packet format</li>
+</ul>
+<img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/85c05fb1-5546-4c50-9221-21f231cdc8c5.jpg" alt="img" style="zoom:40%;">
+</li>
+</ul>
+</li>
+<li>
+<p>Routing</p>
+<ul>
+<li>
+<p><strong>How does router figure out MAC</strong></p>
+<ul>
+<li>
+<p>ARP: routers and hosts maintain an dynammic &lt;IP, MAC&gt; cache, this table is called ARP table</p>
+<p>If IP is not in ARP table, broadcast ARP request, hosts that have that IP address will responds</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Types &amp; protocols used</p>
+<ul>
+<li>Intra-domain
+<ul>
+<li>RIP Routing Information Protocol:  rely on local computation in all nodes
+<ul>
+<li>Distance Vector Protocol (based on Bellman-ford)</li>
+</ul>
+</li>
+<li>OSPF Open Shortest Path First Protocol: no local computation  <strong>faster loop-free convergence</strong>
+<ul>
+<li>Link state Protocol (based on Dijkstra’s shortest path)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Inter-domain
+<ul>
+<li>BGP Border Gateway Protocol</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="link-layer"><a class="markdownIt-Anchor" href="#link-layer"></a> Link Layer</h2>
+<p>P2P <strong>相邻网络节点/主机的数据传输和控制</strong> 局域网(LAN) 广域网(WAN)</p>
+<ul>
+<li><strong>Framing</strong> 把网络层传下来的包封装成帧 加个开始和结束</li>
+<li>P2P点对点服务: Logical link control (LLC)
+<ul>
+<li><strong>Error Detection</strong> CRC checksum</li>
+<li><strong>Flow Control</strong> “making sure receiver not overwhelmed”</li>
+</ul>
+</li>
+<li>Broadcast广播服务: Media access control (MAC)
+<ul>
+<li><strong>Frames synchronization</strong> 帧的同步 clock based, character counting, byte stuffing.</li>
+<li><strong>Channel sharing</strong> 信道共享- methods:
+<ul>
+<li>信道复用：时分，频分，码分</li>
+<li>交替：轮询，令牌传递</li>
+<li>随机访问   主要例子：Aloha, Ethernet
+<ul>
+<li>Ethernet MAC采用CSMA/CD协议 (Carrier Sense Multiple Access / Collision Detection) 载波监听多点接入/碰撞检测
+<ul>
+<li>Only if line is idle, start to send immediately (Carrier Sense 载波监听)</li>
+<li>if busy wait for “inter-frame gap” = 96 bit time</li>
+<li>if collision detected, send jam signal, do binary exponential backoff “nth randomly choose k from {0,1,2,…,2^n-1}, then delay k*51.2 μs” 二进制指数后退   collision domain = 1 RTT</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="physical-layer"><a class="markdownIt-Anchor" href="#physical-layer"></a> Physical Layer</h2>
+<p>P2P transmission of raw bits</p>
+<h1 id="application-layer-2"><a class="markdownIt-Anchor" href="#application-layer-2"></a> Application Layer</h1>
+<ul>
+<li>
+<p>2 different Architecture: Client Server / Peer to Peer</p>
+</li>
+<li>
+<p>Socket = Door</p>
+<ul>
+<li>Transport Layer = hallway</li>
+</ul>
+</li>
+<li>
+<p>IP + port determines host &amp; process</p>
+</li>
+<li>
+<p>Public Domain Protocols    Propertiary protocol Skype … etc.</p>
+<ul>
+<li>HTTP</li>
+<li>FTP</li>
+<li>SMTP</li>
+<li>BitTorrent</li>
+</ul>
+</li>
+<li>
+<p>不同情况下应用有不同需求 data loss vs time-sensitive vs throughput</p>
+</li>
+</ul>
+<h2 id="常用端口"><a class="markdownIt-Anchor" href="#常用端口"></a> 常用端口</h2>
+<table>
+<thead>
+<tr>
+<th>应用</th>
+<th>应用层协议</th>
+<th>端口号</th>
+<th>传输层协议</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>域名解析</strong></td>
+<td><strong>DNS</strong></td>
+<td><strong>53</strong></td>
+<td><strong>UDP/TCP</strong></td>
+<td><strong>长度超过 512 字节时使用 TCP</strong></td>
+</tr>
+<tr>
+<td><strong>动态主机配置协议</strong></td>
+<td><strong>DHCP</strong></td>
+<td><strong>67/68</strong></td>
+<td><strong>UDP</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>超文本传送协议</strong></td>
+<td><strong>HTTP</strong></td>
+<td><strong>80</strong></td>
+<td><strong>TCP</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>文件传送协议</strong></td>
+<td><strong>FTP</strong></td>
+<td><strong>20/21</strong></td>
+<td><strong>TCP</strong></td>
+<td>数据连接 20，控制连接 21</td>
+</tr>
+<tr>
+<td>远程终端协议</td>
+<td>TELNET</td>
+<td>23</td>
+<td>TCP</td>
+<td>ssh = 22</td>
+</tr>
+<tr>
+<td>简单网络管理协议</td>
+<td>SNMP</td>
+<td>161/162</td>
+<td>UDP</td>
+<td></td>
+</tr>
+<tr>
+<td>简单邮件传送协议</td>
+<td>SMTP</td>
+<td>25</td>
+<td>TCP</td>
+<td></td>
+</tr>
+<tr>
+<td>邮件读取协议</td>
+<td>POP3</td>
+<td>110</td>
+<td>TCP</td>
+<td></td>
+</tr>
+<tr>
+<td>网际报文存取协议</td>
+<td>IMAP</td>
+<td>143</td>
+<td>TCP</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="web-and-http"><a class="markdownIt-Anchor" href="#web-and-http"></a> Web and HTTP</h2>
+<h2 id="ftp"><a class="markdownIt-Anchor" href="#ftp"></a> FTP</h2>
+<p>使用TCP进行连接, 使用2个连接来传输一个文件</p>
+<ul>
+<li>控制连接：服务器打开端口号 21 等待客户端的连接，客户端主动建立连接后，使用这个连接将客户端的命令传送给服务器，并传回服务器的应答。</li>
+<li>数据连接：用来传送一个文件数据</li>
+</ul>
+<p>根据数据连接是否是服务器端主动建立，FTP 有主动和被动两种模式：</p>
+<ul>
+<li>主动模式：服务器端主动建立数据连接，服务器端端口号 20，客户端端口号1024 - 65535随机（因为 0~1023 是熟知端口号）。</li>
+</ul>
+<p><img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/03f47940-3843-4b51-9e42-5dcaff44858b.jpg" alt="img"></p>
+<ul>
+<li>被动模式：服务器端被动，客户端主动建立数据连接，客户端端口号自己指定，服务器端的端口号随机。</li>
+</ul>
+<p><img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/be5c2c61-86d2-4dba-a289-b48ea23219de.jpg" alt="img"></p>
+<p>主动模式要求客户端开放端口号给服务器端，需要去配置客户端的防火墙。被动模式只需要服务器端开放端口号即可，无需客户端配置防火墙。但是被动模式会导致服务器端的安全性减弱，因为开放了过多的端口号。</p>
+<h2 id="dns"><a class="markdownIt-Anchor" href="#dns"></a> DNS</h2>
+<img src="https://s2.ax1x.com/2020/02/03/1NTl4S.png" alt="dns" style="zoom:50%;">
+<img src="https://s2.ax1x.com/2020/02/03/1NTMAf.png" alt="dns" style="zoom:50%;">
+<img src="https://s2.ax1x.com/2020/02/03/1NTuHP.png" alt="recdns" style="zoom:50%;">
+<p>DNS 可以使用 <strong>UDP 或者 TCP</strong> 进行传输，<strong>使用的端口号都为 53</strong>。大多数情况下 DNS 使用 <strong>UDP</strong> 进行传输，这就要求域名解析器和域名服务器都必须<strong>自己处理超时和重传</strong>从而保证可靠性。在两种<strong>特殊情况下会使用 TCP</strong> 进行传输：</p>
+<ul>
+<li>如果返回的响应超过 512 字节（UDP 最大只支持 512 字节的数据）。</li>
+<li>DNS zone transfer</li>
+</ul>
+<h4 id="dns-负载均衡"><a class="markdownIt-Anchor" href="#dns-负载均衡"></a> DNS 负载均衡</h4>
+<p>同一主机在dns服务器里配置多个主机记录=多个不同服务器ip，dns服务器解析域名时会轮询，这就完成了简单的负载均衡。</p>
+<h2 id="dhcp"><a class="markdownIt-Anchor" href="#dhcp"></a> DHCP</h2>
+<p>只适用于动态ip分配的情形，如进入一个新的移动网络。 主机不知道自己ip地址 ask dhcp server</p>
+<p>DHCP (Dynamic Host Configuration Protocol) 是用于动态ip分配和配置的协议。</p>
+<p>DHCP 配置的内容不仅是 IP 地址，还包括子网掩码、网关 IP 地址。</p>
+<p>DHCP 工作过程如下：</p>
+<ol>
+<li>客户端发送 Discover 报文，该报文的目的地址为 255.255.255.255:67，源地址为 0.0.0.0:68，被放入 UDP 中，该报文被广播到同一个子网的所有主机上。如果客户端和 DHCP 服务器不在同一个子网，就需要使用中继代理。</li>
+<li>DHCP 服务器收到 Discover 报文之后，发送 Offer 报文给客户端，该报文包含了客户端所需要的信息。因为客户端可能收到多个 DHCP 服务器提供的信息，因此客户端需要进行选择。</li>
+<li>如果客户端选择了某个 DHCP 服务器提供的信息，那么就发送 Request 报文给该 DHCP 服务器。</li>
+<li>DHCP 服务器发送 Ack 报文，表示客户端此时可以使用提供给它的信息。</li>
+</ol>
+<p><img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/23219e4c-9fc0-4051-b33a-2bd95bf054ab.jpg" alt="img"></p>
+<h2 id="远程登录协议"><a class="markdownIt-Anchor" href="#远程登录协议"></a> 远程登录协议</h2>
+<p>SSH  TELNET</p>
+<h2 id="电子邮件协议"><a class="markdownIt-Anchor" href="#电子邮件协议"></a> 电子邮件协议</h2>
+<p>发送协议常用 SMTP，读取协议常用 POP3 和 IMAP。</p>
+<h2 id="web页面请求过程"><a class="markdownIt-Anchor" href="#web页面请求过程"></a> Web页面请求过程</h2>
+<h3 id="1-dhcp-配置主机信息"><a class="markdownIt-Anchor" href="#1-dhcp-配置主机信息"></a> 1. DHCP 配置主机信息</h3>
+<ul>
+<li>假设主机最开始没有 IP 地址以及其它信息，那么就需要先使用 DHCP 来获取。</li>
+<li>主机生成一个 DHCP 请求报文，并将这个报文放入具有目的端口 67 和源端口 68 的 UDP 报文段中。</li>
+<li>该报文段则被放入在一个具有广播 IP 目的地址(255.255.255.255) 和源 IP 地址（0.0.0.0）的 IP 数据报中。</li>
+<li>该数据报则被放置在 MAC 帧中，该帧具有目的地址 FF:FF:FF:FF:FF:FF，将广播到与交换机连接的所有设备。</li>
+<li>连接在交换机的 DHCP 服务器收到广播帧之后，不断地向上分解得到 IP 数据报、UDP 报文段、DHCP 请求报文，之后生成 DHCP ACK 报文，该报文包含以下信息：IP 地址、DNS 服务器的 IP 地址、默认网关路由器的 IP 地址和子网掩码。该报文被放入 UDP 报文段中，UDP 报文段有被放入 IP 数据报中，最后放入 MAC 帧中。</li>
+<li>该帧的目的地址是请求主机的 MAC 地址，因为交换机具有自学习能力，之前主机发送了广播帧之后就记录了 MAC 地址到其转发接口的交换表项，因此现在交换机就可以直接知道应该向哪个接口发送该帧。</li>
+<li>主机收到该帧后，不断分解得到 DHCP 报文。之后就配置它的 IP 地址、子网掩码和 DNS 服务器的 IP 地址，并在其 IP 转发表中安装默认网关。</li>
+</ul>
+<h3 id="2-arp-解析-mac-地址"><a class="markdownIt-Anchor" href="#2-arp-解析-mac-地址"></a> 2. ARP 解析 MAC 地址</h3>
+<ul>
+<li>主机通过浏览器生成一个 TCP 套接字，套接字向 HTTP 服务器发送 HTTP 请求。为了生成该套接字，主机需要知道网站的域名对应的 IP 地址。</li>
+<li>主机生成一个 DNS 查询报文，该报文具有 53 号端口，因为 DNS 服务器的端口号是 53。</li>
+<li>该 DNS 查询报文被放入目的地址为 DNS 服务器 IP 地址的 IP 数据报中。</li>
+<li>该 IP 数据报被放入一个以太网帧中，该帧将发送到网关路由器。</li>
+<li>DHCP 过程只知道网关路由器的 IP 地址，为了获取网关路由器的 MAC 地址，需要使用 ARP 协议。</li>
+<li>主机生成一个包含目的地址为网关路由器 IP 地址的 ARP 查询报文，将该 ARP 查询报文放入一个具有广播目的地址（FF:FF:FF:FF:FF:FF）的以太网帧中，并向交换机发送该以太网帧，交换机将该帧转发给所有的连接设备，包括网关路由器。</li>
+<li>网关路由器接收到该帧后，不断向上分解得到 ARP 报文，发现其中的 IP 地址与其接口的 IP 地址匹配，因此就发送一个 ARP 回答报文，包含了它的 MAC 地址，发回给主机。</li>
+</ul>
+<h3 id="3-dns-解析域名"><a class="markdownIt-Anchor" href="#3-dns-解析域名"></a> 3. DNS 解析域名</h3>
+<ul>
+<li>知道了网关路由器的 MAC 地址之后，就可以继续 DNS 的解析过程了。</li>
+<li>网关路由器接收到包含 DNS 查询报文的以太网帧后，抽取出 IP 数据报，并根据转发表决定该 IP 数据报应该转发的路由器。</li>
+<li>因为路由器具有内部网关协议（RIP、OSPF）和外部网关协议（BGP）这两种路由选择协议，因此路由表中已经配置了网关路由器到达 DNS 服务器的路由表项。</li>
+<li>到达 DNS 服务器之后，DNS 服务器抽取出 DNS 查询报文，并在 DNS 数据库中查找待解析的域名。</li>
+<li>找到 DNS 记录之后，发送 DNS 回答报文，将该回答报文放入 UDP 报文段中，然后放入 IP 数据报中，通过路由器反向转发回网关路由器，并经过以太网交换机到达主机。</li>
+</ul>
+<h3 id="4-http-请求页面"><a class="markdownIt-Anchor" href="#4-http-请求页面"></a> 4. HTTP 请求页面</h3>
+<ul>
+<li>有了 HTTP 服务器的 IP 地址之后，主机就能够生成 TCP 套接字，该套接字将用于向 Web 服务器发送 HTTP GET 报文。</li>
+<li>在生成 TCP 套接字之前，必须先与 HTTP 服务器进行三次握手来建立连接。生成一个具有目的端口 80 的 TCP SYN 报文段，并向 HTTP 服务器发送该报文段。</li>
+<li>HTTP 服务器收到该报文段之后，生成 TCP SYN ACK 报文段，发回给主机。</li>
+<li>连接建立之后，浏览器生成 HTTP GET 报文，并交付给 HTTP 服务器。</li>
+<li>HTTP 服务器从 TCP 套接字读取 HTTP GET 报文，生成一个 HTTP 响应报文，将 Web 页面内容放入报文主体中，发回给主机。</li>
+<li>浏览器收到 HTTP 响应报文后，抽取出 Web 页面内容，之后进行渲染，显示 Web 页面。</li>
+</ul>
+<h1 id="tcpudp"><a class="markdownIt-Anchor" href="#tcpudp"></a> TCP/UDP</h1>
+<ul>
+<li>
+<p>UDP header：src port, dest port, header length, checksum</p>
+</li>
+<li>
+<p><strong>TCP header:</strong></p>
+<ul>
+<li>SRC，DST ports (16-bit each)</li>
+<li><strong>Sequence #序号,     Ack #确认号</strong>(32-bit each) 序号：当前数据段第一个字节编号 确认号：期望下个数据段第一个字节编号</li>
+<li>Header length(data offset), <strong>reserve flags(indicate pkt types)</strong> SYN FIN ACK</li>
+<li><strong>Receive window</strong> (16-bits     that specify how big my receive buffer is) important for <strong>flow control</strong></li>
+<li>Check sum, Urgent Ptr: can be     used by app to indicate a receiving host need to pay attention about     packets but most case is ignored.</li>
+<li>Options</li>
+</ul>
+</li>
+<li>
+<p>TCP</p>
+<ul>
+<li>全双工：代表建立连接后可以双向传送接受数据</li>
+<li>以连接为导向： 意味着需要主动建立连接</li>
+<li>可以提供包级别的可靠传输 什么是包级别的可靠传输：udp只提供位级别的可靠传输 由checksum实现 只能进行简单的检测看看数据是否污染，包级别可靠传输 在网络层 也就是基本的的ip-service model=best-effort destination-based forwarding里是不能够被保证的，但是我们在很多实际应用中又需要这个保证，所以就在传输层由tcp来做：<strong>保证包级别可靠传输</strong>主要靠两个机制：
+<ul>
+<li>接收方发送<strong>确认</strong>ack 就是要求接受者每次接收到数据都要回复发送方 说一声我收到了 只有这个确认机制只能保证我们可以收到包，还不够，有问题的包还需要进行恢复</li>
+<li><strong>计时器/超时检测机制</strong> 解决了“<strong>什么时候重新发没收到的/有问题的包</strong>”  他的机制很简单：只要超时了 就要重发 超时标准要比RTT稍微多一点尽量接近RTT, RTO新= RTO旧*2  by karn’s algorithm</li>
+</ul>
+</li>
+<li>提供流量控制：确保接收方的buffer不会overflow
+<ul>
+<li>接收方发送的确认报文中的窗口字段可以用来控制发送方窗口大小，从而影响发送方的发送速率。将窗口字段设置为 0，则发送方不能发送数据。</li>
+</ul>
+</li>
+<li>提供拥塞控制：与整个网络有关, 网络比较拥挤的时候控制发送方的窗口。增加一个congestion window CWND
+<ul>
+<li><strong>send window (#unacknowledge pkts in flight) = min(CWND, RWND</strong>) 当cwnd更小时，我们就进入了一个拥塞控制的模式
+<ul>
+<li>慢开始与拥塞避免
+<ul>
+<li>cwnd := 1, cwnd++ for each ack == cwnd*2 each RTT</li>
+<li>cwnd &gt;= ssthresh do congestion avoidance: cwnd++ for each RTT;</li>
+</ul>
+</li>
+<li>快重传和快恢复 on dupack fast retransmit the next sequence from receiver side.  Fast recover it by setting ssthresh = cwnd/2, cwnd = ssthresh, do congestion avoidance</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="三次握手建立连接-四次挥手关闭连接"><a class="markdownIt-Anchor" href="#三次握手建立连接-四次挥手关闭连接"></a> 三次握手建立连接 四次挥手关闭连接</h2>
+<img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/e92d0ebc-7d46-413b-aec1-34a39602f787.png" alt="img" style="zoom:35%;">
+<ul>
+<li>
+<p><strong>为什么需要三次握手</strong>：TCP是一个<strong>全双工</strong>通信协议，也就是说它是<strong>双向收发</strong>的。<strong>初始序号是两边都要随机选择</strong>, 这个主要是因为安全问题要避免TCP sequence prediction attack的。<strong>然后，因为两方都要告诉对面自己的初始序号</strong> = 也就是<strong>通信双方数据原点的位置</strong>，<strong>所以至少要4次握手</strong>。SYN  ACK SYN ACK, <strong>然后因为tcp header里reserve flags部分SYN ACK是可以同时为1的 中间两个步骤可以合并</strong> 所以3次就够。</p>
+</li>
+<li>
+<p>第三次握手过程中sender可以piggypack data而receiver只能在这次握手结束才可以。</p>
+</li>
+<li>
+<p>在socket编程中，客户端执行connect()时，将触发三次握手。</p>
+</li>
+</ul>
+<img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/f87afe72-c2df-4c12-ac03-9b8d581a8af8.jpg" alt="img" style="zoom:50%;">
+<ul>
+<li>
+<p>四次挥手是因为tcp是双向的性质+tcp半关闭造成的。假如客户端主动关闭，那么直到客户端收到服务器的ack前，数据传输仍然可以从服务器到客户端进行，tcp是半关闭的client-server关了但server-client方向还没关，这也是为什么有close-wait状态的原因，服务器端要等待最后这一波数据传输的完成。所以这也解释了中间两次为什么不能像建立连接一样合并。当服务器没有数据要传时他就可以通过fin来释放自己方向的连接了。</p>
+</li>
+<li>
+<p><strong>TIME_WAIT / 2MSL等待状态</strong>: 首先被动方如果接受了ack不需要等，因为他已经完成同步了可以释放资源了。然后主动方必须要等因为他不知道自己发的ack对面收没收到。这里需要假设没收到。那么它需要等待来自对面的超时重传消息，这最坏情况要1MSL。然后他等到了的话又要发ack回去。所以主动方要等最坏情况一个来回2MSL。</p>
+</li>
+<li>
+<p>在socket编程中，任何一方执行close()操作即可产生挥手操作。</p>
+</li>
+</ul>
+<h2 id="应用层面实现可靠传输-发收双方缓存工作原理滑动窗口"><a class="markdownIt-Anchor" href="#应用层面实现可靠传输-发收双方缓存工作原理滑动窗口"></a> 应用层面实现可靠传输-发收双方缓存工作原理：滑动窗口</h2>
+<ul>
+<li>Buffers on senders and receivers are operated as “sliding window”. Senders maintain buffers of sent but unacknowledged packets. Receivers maintains buffer to assure non-duplicate, in order delivery to applications.</li>
+<li>发送方缓存：<strong>已发送和未确认的包</strong>   接收方缓存：<strong>不重复，按序到达的包</strong></li>
+</ul>
+<p>窗口是缓存的一部分，用来暂时存放字节流。发送方和接收方各有一个窗口，接收方通过 TCP 报文段中的窗口字段告诉发送方自己的窗口大小，发送方根据这个值和其它信息设置自己的窗口大小。</p>
+<p><strong>发送窗口内的字节都允许被发送，接收窗口内的字节都允许被接收</strong>。如果发送窗口左部的字节已经发送并且收到了确认，那么就将发送窗口向右滑动一定距离，直到左部第一个字节不是已发送并且已确认的状态；接收窗口的滑动类似，接收窗口左部字节已经发送确认并交付主机，就向右滑动接收窗口。</p>
+<p>接收窗口<strong>只会对窗口内最后一个按序到达的字节进行确认</strong>。<strong>发送方得到一个字节的确认之后，就知道这个字节之前的所有字节都已经被接收。就可以移动了</strong>。<strong>如果发送方窗口迟迟收不到来自接收方的确认，就会超时重传</strong></p>
+<p><img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/a3253deb-8d21-40a1-aae4-7d178e4aa319.jpg" alt="img"></p>
+<h2 id="拥塞控制"><a class="markdownIt-Anchor" href="#拥塞控制"></a> 拥塞控制</h2>
+<p>如果网络出现拥塞，分组将会丢失，此时发送方会继续重传，从而导致网络拥塞程度更高。因此当出现拥塞时，应当控制发送方的速率。这一点和流量控制很像，但是出发点不同。流量控制是为了让接收方能来得及接收，而拥塞控制是为了降低整个网络的拥塞程度。</p>
+<img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/51e2ed95-65b8-4ae9-8af3-65602d452a25.jpg" alt="img" style="zoom:30%;">
+<img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/910f613f-514f-4534-87dd-9b4699d59d31.png" alt="img" style="zoom:30%;">
+<h2 id="1-慢开始与拥塞避免"><a class="markdownIt-Anchor" href="#1-慢开始与拥塞避免"></a> 1. 慢开始与拥塞避免</h2>
+<ul>
+<li>
+<p>Slow start: 初始 cwnd = 1，每收到1个ack cwnd++，cwnd指数增长：2、4、8 …</p>
+</li>
+<li>
+<p>为避免过快，设置一个慢开始门限 ssthresh，当 cwnd &gt;= ssthresh 时，进入拥塞避免，每个轮次cwnd++</p>
+</li>
+<li>
+<p>超时: 令 ssthresh = cwnd / 2，重新执行慢开始。</p>
+</li>
+</ul>
+<h2 id="2-快重传与快恢复"><a class="markdownIt-Anchor" href="#2-快重传与快恢复"></a> 2. 快重传与快恢复</h2>
+<p>接收方只对最后一个收到的有序报文段进行确认。在发送方，如果收到<strong>三个重复确认</strong>，那么可以知道接收方下一个报文段丢失，此时执行快重传</p>
+<p>只是丢失个别报文段，而不是网络拥塞，因此执行快恢复，令 ssthresh = cwnd / 2 ，cwnd = ssthresh，注意到此时直接进入拥塞避免。</p>
+<img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/f61b5419-c94a-4df1-8d4d-aed9ae8cc6d5.png" alt="img" style="zoom:50%;">
+<h1 id="http"><a class="markdownIt-Anchor" href="#http"></a> HTTP</h1>
+<ul>
+<li>Stateless
+<ul>
+<li>Every request is completely independent</li>
+<li>Similar to transaction</li>
+<li>programming, local storage, cookies, sessions are used to create enhanced user experience</li>
+</ul>
+</li>
+<li>HTTPS
+<ul>
+<li>data sent is encrpted</li>
+<li>SSL / TLS</li>
+<li>install a certificate on web host.</li>
+</ul>
+</li>
+<li>HTTP Methods
+<ul>
+<li>GET: fetch data from server</li>
+<li>POST: submit data to server</li>
+<li>PUT: update data already on the server</li>
+<li>DELETE: deletes data from server</li>
+</ul>
+</li>
+<li>Headers
+<ul>
+<li>General: Request URL, Method, Status code, remote address, referer policy</li>
+<li>Response: server, set-cookie, content-type, content-length, date</li>
+<li>Request: cookies, accept-xxx, content-type, content-length, authorization, user-agent, referrer</li>
+</ul>
+</li>
+</ul>
+<h2 id="基本方法"><a class="markdownIt-Anchor" href="#基本方法"></a> 基本方法</h2>
+<ul>
+<li>Get 获取资源</li>
+<li>Post 传输数据</li>
+<li>Head 获取报文头部</li>
+<li>Put/Delete 上传/删除文件 不安全没有验证机制</li>
+<li>Patch 部分修改资源</li>
+</ul>
+<h2 id="状态码"><a class="markdownIt-Anchor" href="#状态码"></a> 状态码</h2>
+<p>200 OK</p>
+<p>3XX 重定向</p>
+<p>4XX 客户端错误 如 404 NOT FOUND</p>
+<p>5XX 服务端错误</p>
+<h2 id="长连接短连接流水线"><a class="markdownIt-Anchor" href="#长连接短连接流水线"></a> 长连接短连接&amp;流水线</h2>
+<ul>
+<li>
+<p>HTTP 1.1之后采用长连接persistent connection 只需要建立一次 TCP 连接就能进行多次 HTTP 通信。如果要断开连接，需要由客户端或者服务器端提出断开，使用 <code>Connection : close</code>；在 HTTP/1.1 之前默认是短连接的，如果需要使用长连接，则使用 <code>Connection : Keep-Alive</code>。</p>
+</li>
+<li>
+<p>默认情况下，HTTP 请求是按顺序发出的，下一个请求只有在当前请求收到响应之后才会被发出。由于受到网络延迟可能需要等待很长时间。</p>
+<p>流水线是在同一条长连接上连续发出请求，而不用等待响应返回，这样可以减少延迟。</p>
+</li>
+</ul>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Computer-Network/">Computer Network</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
     
     <article id="post-java-jvm" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
@@ -6746,168 +7391,6 @@ when collisions happen increment k value and maps it elsewhere</p>
 
 </article>
     
-    <article id="post-process control" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2019/02/11/process control/"
-    >Process Control</a
-  >
-</h2>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2019/02/11/process control/" class="article-date">
-  <time datetime="2019-02-10T20:15:32.000Z" itemprop="datePublished">2019-02-10</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <h1 id="进程控制"><a class="markdownIt-Anchor" href="#进程控制"></a> 进程控制</h1>
-<ul>
-	<li>pid</li>
-	<li>fork</li>
-	<li>wait</li>
-	<li>exec</li>
-</ul>
-<h2 id="pid"><a class="markdownIt-Anchor" href="#pid"></a> pid</h2>
-<p>每一个进程都有一个独特的非负整型pid</p>
-<p>pid可以用来生成独特的文件名</p>
-<p>进程终止时 pid会被回收重用</p>
-<p>大部分unix系统会有代码来延迟重用从而保证新创建的进程和刚刚终止的进程pid相同</p>
-<p>pid 1 通常为init process， 会在启动结束时被kernel invoke
-	其program file在/etc/init （老版本的UNIX系统）或者/sbin/init   （较新版本。 这个进程负责bring up unix system after kernel has been bootstrapped by reading system-dependent initialization files: the /etc/rc* files or /etc/inittab and the files in /etc/init.d. 来带系统进入一定的状态：比如多用户状态。
-</p>
-<p>init process is a user process (with superuser privileges) that never dies.</p>
-<p>例子： mac os X 10.4里的launchd process</p>
-<p>通常每个unix系统有自己的内核进程， 有的系统pid2时pagedaemon 负责支持系统虚拟内存paging</p>
-<p>以下所有函数都没有error return</p>
-<p><img src="/img_rand/a1.png" alt=""></p>
-<h2 id="fork"><a class="markdownIt-Anchor" href="#fork"></a> fork</h2>
-<p>现存进程可以用fork来创建新进程</p>
-<p><img src="/img_rand/a2.png" alt=""></p>
-<p>这个函数被call一次会返回两次</p>
-<p>在子进程中返回值为0 原因：子进程只能有一个父进程 可以getppid来获得</p>
-<p>parent process返回值为子进程pid 原因：避免子进程pid被其他进程获
-</p>
-<p>子进程父进程在fork之后会继续执行接下来的命令</p>
-<p>The child is a copy of the parent. For example, the child gets a copy of the parent’s data space, heap, and stack. 但是会share text segment</p>
-<p>Modern implementations don’t perform a complete copy of the parent’s data, stack, and heap, since a fork is often followed by an exec. Instead, a technique called copy-on-write (COW) is used. These regions are shared by the parent and the child and have their protection changed by the kernel to read-only. If either process tries to modify these regions, the kernel then makes a copy of that piece of memory only, typically a ‘‘page’’ in a virtual memory system. </p>
-<p><img src="/img_rand/a3.png" alt=""></p>
-<p>通常父子进程执行顺序是nondeterministic的 这取决与kernel的调度算法</p>
-<p>若需要sychronize action 可以使用如上代码中的sleep来使父进程等待子进程的执行， 但我们没有保证2秒的时间是合适的</p>	
-<p>其他同步方式 race conditions section 8.9  signal section 10.16</p>
-<p>sizeof 和 strlen的 区别：</p>
-<p>When we write to standard output, we subtract 1 from the size of buf to avoid writing the terminating null byte. Although strlen will calculate the length of a string not including the terminating null byte, sizeof calculates the size of the buffer, which does include the terminating null byte. </p>
-<p>Another difference is that using strlen requires a function call, whereas sizeof calculates the buffer length at compile time,(更快) as the buffer is initialized with a known string and its size is fixed.</p>
-<p>为什么打印了两遍？write是没有缓冲的。 stdio库是有缓冲的：stdout如果连接着terminal device 会被line buffered 否则会被fully buffered</p>
-<p>所以刚开始的printf缓存区被清空了 但当我们重定向输出到文件的时候 printf打印了两行。 在第二个情况下 printf在fork前被呼叫了1次，但在呼叫fork后buffer里缓存还在，buffer里的内容被拷贝到子进程 此时父子进程都有这个相同的 内容没被清空的buffer。 最后一个printf appends its data to the existing buffer.进程终止时 缓存区清空.
-</p>
-### file shareing
-<p>当我们重定向父进程的stdout输出的时候 子进程stdout也被重定向</p>
-<p>这是fork的一个特性： all file descriptors that are open in the parent are duplicated in the child. The parent and the child share a file table entry for every open descriptor </p>
-<p>也就是说 父子进程同时进行输出到stdout时 一定要共享file offset. 若父进程输出被重定向，我们需要子进程在输出到stdout时更新父进程file offset。 这样不仅子进程可以在父进程wait时候输出到stdout，在子进程结束输出时父进程可以在同位置继续之前的输出。 如果没有共享file offset 
-这种互动会很难实现</p>
-<p><img src="/img_rand/a4.png" alt=""></p>
-<p>通常有两种情况来处理 fork之后的descriptors的使用</p>
-<ol>
-	<li>父进程等待子进程结束：parent need to do nothing. 任何共享的descriptors会被子进程更新</li>
-	<li>父进程子进程都有自己的事情要干：fork之后父子进程各自关闭其不需要的descriptors，open descriptors互不干涉 这种情况常见于网络服务器</li>
-</ol>
-<p>其他被子进程继承的属性：</p>	
-<ul>
-	<li>Real user ID, real group ID, effective user ID, and effective group ID</li>
-	<li>Supplementary group IDs</li>
-	<li>Process group ID</li>
-	<li>Session ID</li>
-	<li>Controlling terminal</li>
-	<li>The set-user-ID and set-group-ID flags</li>
-	<li>Current working directory</li>
-	<li>Root directory</li>
-	<li>File mode creation mask</li>
-	<li>Signal mask and dispositions</li>
-	<li>The close-on-exec flag for any open file descriptors</li>
-	<li>Environment</li>
-	<li>Attached shared memory segments</li>
-	<li>Memory mappings</li>
-	<li>Resource limits</li>
-</ul>
-<p>父子进程的区别：</p>
-<ul>
-	<li>fork返回值</li>
-	<li>pid</li>
-	<li>ppid</li>
-	<li>子进程的tms_utime, tms_stime, tms_cutime, and tms_cstime值为0</li>
-	<li>父进程的文件锁不会被子进程继承</li>
-	<li>Pending alarms are cleared for the child.</li>	
-	<li>The set of pending signals for the child is set to the empty set.</li>
-</ul>
-<p>fork通常失败的原因有 太多进程存在于系统或者 对于当前用户进程数量超过系统限制： CHILD_MAX specifies the maximum number of simultaneous processes per real user ID.</p>
-<p>fork 的两种使用</p>
-<ul>
-	<li>当一个进程想要自我复制从而 父子进程同时执行一片相同的代码时：常见于网络服务器 the parent waits for a service request from a client. When the request arrives, the parent calls fork and lets the child handle the request. The parent goes back to waiting for the next service request to arrive. </li>
-	<li>当一个进程想要执行一个不同的程序 这种情况下通常子进程使用exec right after it returns from the fork.（spawn by some other OS）</li>
-</ul>
-## wait
-<p>When a process terminates, either normally or abnormally, the kernel notifies the parent by sending the SIGCHLD signal to the parent.</p>
-<p>Because the termination of a child is an asynchronous event—it can happen at any time while the parent is running—this signal is the asynchronous notification from the kernel to the parent.</p>
-<p>The parent can choose to ignore this signal, or it can provide a function that is called when the signal occurs: a signal handler. </p>
-<p>The default action for this signal is to be ignored.</p>
-<p>For now, we need to be aware that a process that calls wait or waitpid can:</p>
-<ul>
-	<li>Block, if all of its children are still running</li>
-	<li>Return immediately with the termination status of a child, if a child has terminated and is waiting for its termination status to be fetched</li>
-	<li>Return immediately with an error, if it doesn’t have any child processes</li>
-</ul>
-<p>If the process is calling wait because it received the SIGCHLD signal, we expect wait to return immediately. But if we call it at any random point in time, it can block.</p>
-
-      
-      <!-- reward -->
-      
-    </div>
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/">OS</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-
-</article>
-    
   </article>
   
 
@@ -6930,21 +7413,10 @@ when collisions happen increment k value and maps it elsewhere</p>
       </li>
       <li>
         
-          Powered by
-        
-        
-        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
       </li>
     </ul>
     <ul class="list-inline">
       <li>
-        
-        
-        <span>
-  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
-</span>
         
       </li>
       <li>
@@ -7006,12 +7478,12 @@ when collisions happen increment k value and maps it elsewhere</p>
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Buscar">
+      <a class="nav-item-link nav-item-search"  title="Search">
         <i class="ri-search-line"></i>
       </a>
       
       
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS">
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
         <i class="ri-rss-line"></i>
       </a>
       

@@ -471,6 +471,26 @@ B±tree file organizations可以用于储存大的对象如 SQL clobs and blobs,
 
   
   
+<div class="gitalk" id="gitalk-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '24a8a906a3b6e08b0b7a',
+    clientSecret: 'a8443a2a0006c8e48692bb49c1ac84a9e51b0426',
+    repo: 'gitalk-comment',
+    owner: 'th2zz',
+    admin: ['th2zz'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
   
 
 </article>
@@ -485,21 +505,10 @@ B±tree file organizations可以用于储存大的对象如 SQL clobs and blobs,
       </li>
       <li>
         
-          Powered by
-        
-        
-        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
       </li>
     </ul>
     <ul class="list-inline">
       <li>
-        
-        
-        <span>
-  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
-</span>
         
       </li>
       <li>
@@ -561,12 +570,12 @@ B±tree file organizations可以用于储存大的对象如 SQL clobs and blobs,
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Buscar">
+      <a class="nav-item-link nav-item-search"  title="Search">
         <i class="ri-search-line"></i>
       </a>
       
       
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS">
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
         <i class="ri-rss-line"></i>
       </a>
       

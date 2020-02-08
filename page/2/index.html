@@ -29,6 +29,11 @@
       
 <section class="cover">
     
+      
+      <a class="forkMe" href="true"
+        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    
   <div class="cover-frame">
     <div class="bg-box">
       <img src="/images/cover1.jpg" alt="image frame" />
@@ -60,6 +65,168 @@
     
     
     
+    
+    <article id="post-process control" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/02/11/process control/"
+    >Process Control</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/02/11/process control/" class="article-date">
+  <time datetime="2019-02-10T20:15:32.000Z" itemprop="datePublished">2019-02-10</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="进程控制"><a class="markdownIt-Anchor" href="#进程控制"></a> 进程控制</h1>
+<ul>
+	<li>pid</li>
+	<li>fork</li>
+	<li>wait</li>
+	<li>exec</li>
+</ul>
+<h2 id="pid"><a class="markdownIt-Anchor" href="#pid"></a> pid</h2>
+<p>每一个进程都有一个独特的非负整型pid</p>
+<p>pid可以用来生成独特的文件名</p>
+<p>进程终止时 pid会被回收重用</p>
+<p>大部分unix系统会有代码来延迟重用从而保证新创建的进程和刚刚终止的进程pid相同</p>
+<p>pid 1 通常为init process， 会在启动结束时被kernel invoke
+	其program file在/etc/init （老版本的UNIX系统）或者/sbin/init   （较新版本。 这个进程负责bring up unix system after kernel has been bootstrapped by reading system-dependent initialization files: the /etc/rc* files or /etc/inittab and the files in /etc/init.d. 来带系统进入一定的状态：比如多用户状态。
+</p>
+<p>init process is a user process (with superuser privileges) that never dies.</p>
+<p>例子： mac os X 10.4里的launchd process</p>
+<p>通常每个unix系统有自己的内核进程， 有的系统pid2时pagedaemon 负责支持系统虚拟内存paging</p>
+<p>以下所有函数都没有error return</p>
+<p><img src="/img_rand/a1.png" alt=""></p>
+<h2 id="fork"><a class="markdownIt-Anchor" href="#fork"></a> fork</h2>
+<p>现存进程可以用fork来创建新进程</p>
+<p><img src="/img_rand/a2.png" alt=""></p>
+<p>这个函数被call一次会返回两次</p>
+<p>在子进程中返回值为0 原因：子进程只能有一个父进程 可以getppid来获得</p>
+<p>parent process返回值为子进程pid 原因：避免子进程pid被其他进程获
+</p>
+<p>子进程父进程在fork之后会继续执行接下来的命令</p>
+<p>The child is a copy of the parent. For example, the child gets a copy of the parent’s data space, heap, and stack. 但是会share text segment</p>
+<p>Modern implementations don’t perform a complete copy of the parent’s data, stack, and heap, since a fork is often followed by an exec. Instead, a technique called copy-on-write (COW) is used. These regions are shared by the parent and the child and have their protection changed by the kernel to read-only. If either process tries to modify these regions, the kernel then makes a copy of that piece of memory only, typically a ‘‘page’’ in a virtual memory system. </p>
+<p><img src="/img_rand/a3.png" alt=""></p>
+<p>通常父子进程执行顺序是nondeterministic的 这取决与kernel的调度算法</p>
+<p>若需要sychronize action 可以使用如上代码中的sleep来使父进程等待子进程的执行， 但我们没有保证2秒的时间是合适的</p>	
+<p>其他同步方式 race conditions section 8.9  signal section 10.16</p>
+<p>sizeof 和 strlen的 区别：</p>
+<p>When we write to standard output, we subtract 1 from the size of buf to avoid writing the terminating null byte. Although strlen will calculate the length of a string not including the terminating null byte, sizeof calculates the size of the buffer, which does include the terminating null byte. </p>
+<p>Another difference is that using strlen requires a function call, whereas sizeof calculates the buffer length at compile time,(更快) as the buffer is initialized with a known string and its size is fixed.</p>
+<p>为什么打印了两遍？write是没有缓冲的。 stdio库是有缓冲的：stdout如果连接着terminal device 会被line buffered 否则会被fully buffered</p>
+<p>所以刚开始的printf缓存区被清空了 但当我们重定向输出到文件的时候 printf打印了两行。 在第二个情况下 printf在fork前被呼叫了1次，但在呼叫fork后buffer里缓存还在，buffer里的内容被拷贝到子进程 此时父子进程都有这个相同的 内容没被清空的buffer。 最后一个printf appends its data to the existing buffer.进程终止时 缓存区清空.
+</p>
+### file shareing
+<p>当我们重定向父进程的stdout输出的时候 子进程stdout也被重定向</p>
+<p>这是fork的一个特性： all file descriptors that are open in the parent are duplicated in the child. The parent and the child share a file table entry for every open descriptor </p>
+<p>也就是说 父子进程同时进行输出到stdout时 一定要共享file offset. 若父进程输出被重定向，我们需要子进程在输出到stdout时更新父进程file offset。 这样不仅子进程可以在父进程wait时候输出到stdout，在子进程结束输出时父进程可以在同位置继续之前的输出。 如果没有共享file offset 
+这种互动会很难实现</p>
+<p><img src="/img_rand/a4.png" alt=""></p>
+<p>通常有两种情况来处理 fork之后的descriptors的使用</p>
+<ol>
+	<li>父进程等待子进程结束：parent need to do nothing. 任何共享的descriptors会被子进程更新</li>
+	<li>父进程子进程都有自己的事情要干：fork之后父子进程各自关闭其不需要的descriptors，open descriptors互不干涉 这种情况常见于网络服务器</li>
+</ol>
+<p>其他被子进程继承的属性：</p>	
+<ul>
+	<li>Real user ID, real group ID, effective user ID, and effective group ID</li>
+	<li>Supplementary group IDs</li>
+	<li>Process group ID</li>
+	<li>Session ID</li>
+	<li>Controlling terminal</li>
+	<li>The set-user-ID and set-group-ID flags</li>
+	<li>Current working directory</li>
+	<li>Root directory</li>
+	<li>File mode creation mask</li>
+	<li>Signal mask and dispositions</li>
+	<li>The close-on-exec flag for any open file descriptors</li>
+	<li>Environment</li>
+	<li>Attached shared memory segments</li>
+	<li>Memory mappings</li>
+	<li>Resource limits</li>
+</ul>
+<p>父子进程的区别：</p>
+<ul>
+	<li>fork返回值</li>
+	<li>pid</li>
+	<li>ppid</li>
+	<li>子进程的tms_utime, tms_stime, tms_cutime, and tms_cstime值为0</li>
+	<li>父进程的文件锁不会被子进程继承</li>
+	<li>Pending alarms are cleared for the child.</li>	
+	<li>The set of pending signals for the child is set to the empty set.</li>
+</ul>
+<p>fork通常失败的原因有 太多进程存在于系统或者 对于当前用户进程数量超过系统限制： CHILD_MAX specifies the maximum number of simultaneous processes per real user ID.</p>
+<p>fork 的两种使用</p>
+<ul>
+	<li>当一个进程想要自我复制从而 父子进程同时执行一片相同的代码时：常见于网络服务器 the parent waits for a service request from a client. When the request arrives, the parent calls fork and lets the child handle the request. The parent goes back to waiting for the next service request to arrive. </li>
+	<li>当一个进程想要执行一个不同的程序 这种情况下通常子进程使用exec right after it returns from the fork.（spawn by some other OS）</li>
+</ul>
+## wait
+<p>When a process terminates, either normally or abnormally, the kernel notifies the parent by sending the SIGCHLD signal to the parent.</p>
+<p>Because the termination of a child is an asynchronous event—it can happen at any time while the parent is running—this signal is the asynchronous notification from the kernel to the parent.</p>
+<p>The parent can choose to ignore this signal, or it can provide a function that is called when the signal occurs: a signal handler. </p>
+<p>The default action for this signal is to be ignored.</p>
+<p>For now, we need to be aware that a process that calls wait or waitpid can:</p>
+<ul>
+	<li>Block, if all of its children are still running</li>
+	<li>Return immediately with the termination status of a child, if a child has terminated and is waiting for its termination status to be fetched</li>
+	<li>Return immediately with an error, if it doesn’t have any child processes</li>
+</ul>
+<p>If the process is calling wait because it received the SIGCHLD signal, we expect wait to return immediately. But if we call it at any random point in time, it can block.</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/">OS</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
     
     <article id="post-TCS" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
@@ -863,87 +1030,6 @@ owner 拥有 read/write 权限；group 和 others 只拥有 read 权限。</p>
 
 </article>
     
-    <article id="post-link" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2017/09/22/link/"
-    >link</a
-  >
-</h2>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2017/09/22/link/" class="article-date">
-  <time datetime="2017-09-22T03:00:41.000Z" itemprop="datePublished">2017-09-21</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <p>用于创建 <a href="https://en.wikipedia.org/wiki/Symbolic_link" title="Symbolic_link" target="_blank" rel="noopener">符号链接</a> 或 <a href="https://en.wikipedia.org/wiki/Hard_link" title="Hard_link" target="_blank" rel="noopener">硬链接</a>。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">ln --help</span><br><span class="line"></span><br><span class="line">用法：ln [选项]... [-T] 目标 链接名	(第一种格式)</span><br><span class="line">　或：ln [选项]... 目标		(第二种格式)</span><br><span class="line">　或：ln [选项]... 目标... 目录	(第三种格式)</span><br><span class="line">　或：ln [选项]... -t 目录 目标...	(第四种格式)</span><br><span class="line">In the 1st form, create a link to TARGET with the name LINK_NAME.</span><br><span class="line">In the 2nd form, create a link to TARGET in the current directory.</span><br><span class="line">In the 3rd and 4th forms, create links to each TARGET in DIRECTORY.</span><br><span class="line">Create hard links by default, symbolic links with --symbolic.</span><br><span class="line">By default, each destination (name of new link) should not already exist.</span><br><span class="line">When creating hard links, each TARGET must exist.  Symbolic links</span><br><span class="line">can hold arbitrary text; if later resolved, a relative link is</span><br><span class="line">interpreted in relation to its parent directory.</span><br><span class="line"></span><br><span class="line">Mandatory arguments to long options are mandatory for short options too.</span><br><span class="line">      --backup[=CONTROL]	为每个已存在的目标文件创建备份文件</span><br><span class="line">  -b				类似--backup，但不接受任何参数</span><br><span class="line">  -d, -F, --directory		创建指向目录的硬链接(只适用于超级用户)</span><br><span class="line">  -f, --force			强行删除任何已存在的目标文件</span><br><span class="line">  -i, --interactive           prompt whether to remove destinations</span><br><span class="line">  -L, --logical               dereference TARGETs that are symbolic links</span><br><span class="line">  -n, --no-dereference        treat LINK_NAME as a normal file if</span><br><span class="line">                                it is a symbolic link to a directory</span><br><span class="line">  -P, --physical              make hard links directly to symbolic links</span><br><span class="line">  -r, --relative              create symbolic links relative to link location</span><br><span class="line">  -s, --symbolic              make symbolic links instead of hard links</span><br><span class="line">  -S, --suffix=SUFFIX         override the usual backup suffix</span><br><span class="line">  -t, --target-directory=DIRECTORY  specify the DIRECTORY in which to create</span><br><span class="line">                                the links</span><br><span class="line">  -T, --no-target-directory   treat LINK_NAME as a normal file always</span><br><span class="line">  -v, --verbose               print name of each linked file</span><br><span class="line">      --help		显示此帮助信息并退出</span><br><span class="line">      --version		显示版本信息并退出</span><br><span class="line"></span><br><span class="line">The backup suffix is '~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.</span><br><span class="line">The version control method may be selected via the --backup option or through</span><br><span class="line">the VERSION_CONTROL environment variable.  Here are the values:</span><br><span class="line"></span><br><span class="line">  none, off       不进行备份(即使使用了--backup 选项)</span><br><span class="line">  numbered, t     备份文件加上数字进行排序</span><br><span class="line">  existing, nil   若有数字的备份文件已经存在则使用数字，否则使用普通方式备份</span><br><span class="line">  simple, never   永远使用普通方式备份</span><br><span class="line"></span><br><span class="line">Using -s ignores -L and -P.  Otherwise, the last option specified controls</span><br><span class="line">behavior when a TARGET is a symbolic link, defaulting to -P.</span><br></pre></td></tr></table></figure>
-<p>###查看</p>
-<p><code>ls -l</code> 可以查看文件是否为链接文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -l /bin</span><br><span class="line"></span><br><span class="line">lrwxrwxrwx 1 root root      24  3月 18 14:25 netcat -&gt; /etc/alternatives/netcat</span><br></pre></td></tr></table></figure>
-<p>l 代表文件是链接文件；<br>
-netcat 是指向 /etc/alternatives/netcat 的一个文件链接。</p>
-<p>###创建</p>
-<ul>
-<li><code>ln -s target link</code> 创建一个名为 link 的文件，链接到 target 文件；</li>
-<li><code>ln -s target</code> 在当前目录创建一个链接到 target 的文件，与 target 同名；</li>
-<li><code>ln -s targets link_dir</code> 在 link_dir 目录创建所有 targets 的链接。</li>
-</ul>
-<p>###参考</p>
-<p><a href="https://zh.wikipedia.org/wiki/%E7%AC%A6%E5%8F%B7%E9%93%BE%E6%8E%A5" target="_blank" rel="noopener">wiki: 符号链接</a><br>
-<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/" target="_blank" rel="noopener">理解 Linux 的硬链接与软链接</a></p>
-
-      
-      <!-- reward -->
-      
-    </div>
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-
-</article>
-    
   </article>
   
 
@@ -966,21 +1052,10 @@ netcat 是指向 /etc/alternatives/netcat 的一个文件链接。</p>
       </li>
       <li>
         
-          Powered by
-        
-        
-        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
       </li>
     </ul>
     <ul class="list-inline">
       <li>
-        
-        
-        <span>
-  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
-</span>
         
       </li>
       <li>
@@ -1042,12 +1117,12 @@ netcat 是指向 /etc/alternatives/netcat 的一个文件链接。</p>
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Buscar">
+      <a class="nav-item-link nav-item-search"  title="Search">
         <i class="ri-search-line"></i>
       </a>
       
       
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS">
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
         <i class="ri-rss-line"></i>
       </a>
       

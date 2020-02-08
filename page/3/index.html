@@ -29,6 +29,11 @@
       
 <section class="cover">
     
+      
+      <a class="forkMe" href="true"
+        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    
   <div class="cover-frame">
     <div class="bg-box">
       <img src="/images/cover1.jpg" alt="image frame" />
@@ -60,6 +65,87 @@
     
     
     
+    
+    <article id="post-link" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2017/09/22/link/"
+    >link</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2017/09/22/link/" class="article-date">
+  <time datetime="2017-09-22T03:00:41.000Z" itemprop="datePublished">2017-09-21</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>用于创建 <a href="https://en.wikipedia.org/wiki/Symbolic_link" title="Symbolic_link" target="_blank" rel="noopener">符号链接</a> 或 <a href="https://en.wikipedia.org/wiki/Hard_link" title="Hard_link" target="_blank" rel="noopener">硬链接</a>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">ln --help</span><br><span class="line"></span><br><span class="line">用法：ln [选项]... [-T] 目标 链接名	(第一种格式)</span><br><span class="line">　或：ln [选项]... 目标		(第二种格式)</span><br><span class="line">　或：ln [选项]... 目标... 目录	(第三种格式)</span><br><span class="line">　或：ln [选项]... -t 目录 目标...	(第四种格式)</span><br><span class="line">In the 1st form, create a link to TARGET with the name LINK_NAME.</span><br><span class="line">In the 2nd form, create a link to TARGET in the current directory.</span><br><span class="line">In the 3rd and 4th forms, create links to each TARGET in DIRECTORY.</span><br><span class="line">Create hard links by default, symbolic links with --symbolic.</span><br><span class="line">By default, each destination (name of new link) should not already exist.</span><br><span class="line">When creating hard links, each TARGET must exist.  Symbolic links</span><br><span class="line">can hold arbitrary text; if later resolved, a relative link is</span><br><span class="line">interpreted in relation to its parent directory.</span><br><span class="line"></span><br><span class="line">Mandatory arguments to long options are mandatory for short options too.</span><br><span class="line">      --backup[=CONTROL]	为每个已存在的目标文件创建备份文件</span><br><span class="line">  -b				类似--backup，但不接受任何参数</span><br><span class="line">  -d, -F, --directory		创建指向目录的硬链接(只适用于超级用户)</span><br><span class="line">  -f, --force			强行删除任何已存在的目标文件</span><br><span class="line">  -i, --interactive           prompt whether to remove destinations</span><br><span class="line">  -L, --logical               dereference TARGETs that are symbolic links</span><br><span class="line">  -n, --no-dereference        treat LINK_NAME as a normal file if</span><br><span class="line">                                it is a symbolic link to a directory</span><br><span class="line">  -P, --physical              make hard links directly to symbolic links</span><br><span class="line">  -r, --relative              create symbolic links relative to link location</span><br><span class="line">  -s, --symbolic              make symbolic links instead of hard links</span><br><span class="line">  -S, --suffix=SUFFIX         override the usual backup suffix</span><br><span class="line">  -t, --target-directory=DIRECTORY  specify the DIRECTORY in which to create</span><br><span class="line">                                the links</span><br><span class="line">  -T, --no-target-directory   treat LINK_NAME as a normal file always</span><br><span class="line">  -v, --verbose               print name of each linked file</span><br><span class="line">      --help		显示此帮助信息并退出</span><br><span class="line">      --version		显示版本信息并退出</span><br><span class="line"></span><br><span class="line">The backup suffix is '~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.</span><br><span class="line">The version control method may be selected via the --backup option or through</span><br><span class="line">the VERSION_CONTROL environment variable.  Here are the values:</span><br><span class="line"></span><br><span class="line">  none, off       不进行备份(即使使用了--backup 选项)</span><br><span class="line">  numbered, t     备份文件加上数字进行排序</span><br><span class="line">  existing, nil   若有数字的备份文件已经存在则使用数字，否则使用普通方式备份</span><br><span class="line">  simple, never   永远使用普通方式备份</span><br><span class="line"></span><br><span class="line">Using -s ignores -L and -P.  Otherwise, the last option specified controls</span><br><span class="line">behavior when a TARGET is a symbolic link, defaulting to -P.</span><br></pre></td></tr></table></figure>
+<p>###查看</p>
+<p><code>ls -l</code> 可以查看文件是否为链接文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -l /bin</span><br><span class="line"></span><br><span class="line">lrwxrwxrwx 1 root root      24  3月 18 14:25 netcat -&gt; /etc/alternatives/netcat</span><br></pre></td></tr></table></figure>
+<p>l 代表文件是链接文件；<br>
+netcat 是指向 /etc/alternatives/netcat 的一个文件链接。</p>
+<p>###创建</p>
+<ul>
+<li><code>ln -s target link</code> 创建一个名为 link 的文件，链接到 target 文件；</li>
+<li><code>ln -s target</code> 在当前目录创建一个链接到 target 的文件，与 target 同名；</li>
+<li><code>ln -s targets link_dir</code> 在 link_dir 目录创建所有 targets 的链接。</li>
+</ul>
+<p>###参考</p>
+<p><a href="https://zh.wikipedia.org/wiki/%E7%AC%A6%E5%8F%B7%E9%93%BE%E6%8E%A5" target="_blank" rel="noopener">wiki: 符号链接</a><br>
+<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/" target="_blank" rel="noopener">理解 Linux 的硬链接与软链接</a></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
     
     <article id="post-chown" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
@@ -238,21 +324,10 @@ hu group.</p>
       </li>
       <li>
         
-          Powered by
-        
-        
-        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
       </li>
     </ul>
     <ul class="list-inline">
       <li>
-        
-        
-        <span>
-  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
-</span>
         
       </li>
       <li>
@@ -314,12 +389,12 @@ hu group.</p>
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Buscar">
+      <a class="nav-item-link nav-item-search"  title="Search">
         <i class="ri-search-line"></i>
       </a>
       
       
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS">
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
         <i class="ri-rss-line"></i>
       </a>
       
