@@ -1,1457 +1,1256 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!-- title -->
-
-
-
-
-<!-- keywords -->
-
-
-
 
 <head>
-    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
-    <meta name="author" content="th2zz">
-    <meta name="renderer" content="webkit">
-    <meta name="copyright" content="th2zz">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
     
-    <meta name="keywords" content="th2zz's blog,hexo-theme,hexo-blog">
-    
-    <meta name="description" content="">
-    <meta http-equiv="Cache-control" content="no-cache">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>th2zz&#39;s blog</title>
-    <style type="text/css">
-    @font-face {
-        font-family: 'Oswald-Regular';
-        src: url("/font/Oswald-Regular.ttf");
-    }
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     th2zz
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/pace.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
-    body {
-        margin: 0;
-    }
+  
 
-    header,
-    footer,
-    .back-top,
-    .sidebar,
-    .container,
-    .site-intro-meta,
-    .toc-wrapper {
-        display: none;
-    }
+  
 
-    .site-intro {
-        position: relative;
-        z-index: 3;
-        width: 100%;
-        /* height: 50vh; */
-        overflow: hidden;
-    }
-
-    .site-intro-placeholder {
-        position: absolute;
-        z-index: -2;
-        top: 0;
-        left: 0;
-        width: calc(100% + 300px);
-        height: 100%;
-        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
-        background-position: center center;
-        transform: translate3d(-226px, 0, 0);
-        animation: gradient-move 2.5s ease-out 0s infinite;
-    }
-
-    @keyframes gradient-move {
-        0% {
-            transform: translate3d(-226px, 0, 0);
-        }
-        100% {
-            transform: translate3d(0, 0, 0);
-        }
-    }
-
-</style>
-
-    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
-    
-    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
-/* This file is meant as a standalone workflow for
-- testing support for link[rel=preload]
-- enabling async CSS loading in browsers that do not support rel=preload
-- applying rel preload css once loaded, whether supported or not.
-*/ -->
-<script>
-(function( w ){
-	"use strict";
-	// rel=preload support test
-	if( !w.loadCSS ){
-		w.loadCSS = function(){};
-	}
-	// define on the loadCSS obj
-	var rp = loadCSS.relpreload = {};
-	// rel=preload feature support test
-	// runs once and returns a function for compat purposes
-	rp.support = (function(){
-		var ret;
-		try {
-			ret = w.document.createElement( "link" ).relList.supports( "preload" );
-		} catch (e) {
-			ret = false;
-		}
-		return function(){
-			return ret;
-		};
-	})();
-
-	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
-	// then change that media back to its intended value on load
-	rp.bindMediaToggle = function( link ){
-		// remember existing media attr for ultimate state, or default to 'all'
-		var finalMedia = link.media || "all";
-
-		function enableStylesheet(){
-			link.media = finalMedia;
-		}
-
-		// bind load handlers to enable media
-		if( link.addEventListener ){
-			link.addEventListener( "load", enableStylesheet );
-		} else if( link.attachEvent ){
-			link.attachEvent( "onload", enableStylesheet );
-		}
-
-		// Set rel and non-applicable media type to start an async request
-		// note: timeout allows this to happen async to let rendering continue in IE
-		setTimeout(function(){
-			link.rel = "stylesheet";
-			link.media = "only x";
-		});
-		// also enable media after 3 seconds,
-		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
-		setTimeout( enableStylesheet, 3000 );
-	};
-
-	// loop through link elements in DOM
-	rp.poly = function(){
-		// double check this to prevent external calls from running
-		if( rp.support() ){
-			return;
-		}
-		var links = w.document.getElementsByTagName( "link" );
-		for( var i = 0; i < links.length; i++ ){
-			var link = links[ i ];
-			// qualify links to those with rel=preload and as=style attrs
-			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
-				// prevent rerunning on link
-				link.setAttribute( "data-loadcss", true );
-				// bind listeners to toggle media back
-				rp.bindMediaToggle( link );
-			}
-		}
-	};
-
-	// if unsupported, run the polyfill
-	if( !rp.support() ){
-		// run once at least
-		rp.poly();
-
-		// rerun poly on an interval until onload
-		var run = w.setInterval( rp.poly, 500 );
-		if( w.addEventListener ){
-			w.addEventListener( "load", function(){
-				rp.poly();
-				w.clearInterval( run );
-			} );
-		} else if( w.attachEvent ){
-			w.attachEvent( "onload", function(){
-				rp.poly();
-				w.clearInterval( run );
-			} );
-		}
-	}
-
-
-	// commonjs
-	if( typeof exports !== "undefined" ){
-		exports.loadCSS = loadCSS;
-	}
-	else {
-		w.loadCSS = loadCSS;
-	}
-}( typeof global !== "undefined" ? global : this ) );
-</script>
-
-    <link rel="icon" href= "/assets/torr3.ico" />
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
-    <link rel="preload" href="/scripts/main.js" as="script" />
-    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
-    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
-    
-    <!-- fancybox -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
-    <!-- 百度统计  -->
-    
-    <script>
-        var _hmt = _hmt || [];
-        (function () {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?true";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
-    
-    <!-- 谷歌统计  -->
-    
-    <script>
-        (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date(); a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        ga('create', 'true', 'auto');
-        ga('send', 'pageview');
-    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-    
 </head>
 
-    
-        <body class="home-body">
-    
-    
-<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header index-header">
-
-    <div class="read-progress"></div>
-    <div class="header-sidebar-menu">&#xe775;</div>
-    <!-- post页的toggle banner  -->
-    
-    <a class="home-link" href=/>th2zz's blog.</a>
-</header>
-    <div class="wrapper">
-        <div class="site-intro" style="
-
-
-
-
-
-
-
-height:50vh;
-">
-    
-    <!-- 主页  -->
-    
-    
-    <!-- 文章页  -->
-            
-    <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
-    <div class="site-intro-meta">
-        <!-- 标题  -->
-        <h1 class="intro-title">
-            <!-- 主页  -->
-            
-            th2zz's blog.
-            <!-- 文章页  -->
-            
-        </h1>
-        <!-- 副标题 -->
-        <p class="intro-subtitle">
-            <!-- 主页副标题  -->
-            
-            
-                生きるとはつまり螺旋のことだったんだよ！
-            
-            <!-- 文章页  -->
-            
-        </p>
-        <!-- 文章页meta -->
-        
-    </div>
-</div>
-        <script>
- 
-  // get user agent
-  var browser = {
-    versions: function () {
-      var u = window.navigator.userAgent;
-      return {
-        userAgent: u,
-        trident: u.indexOf('Trident') > -1, //IE内核
-        presto: u.indexOf('Presto') > -1, //opera内核
-        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
-        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
-        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
-        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
-        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
-        iPad: u.indexOf('iPad') > -1, //是否为iPad
-        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
-        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
-        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
-      };
-    }()
-  }
-  console.log("userAgent:" + browser.versions.userAgent);
-
-  // callback
-  function fontLoaded() {
-    console.log('font loaded');
-    if (document.getElementsByClassName('site-intro-meta')) {
-      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
-      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
-      var postIntros = document.getElementsByClassName('post-intros')[0]
-      if (postIntros) {
-        postIntros.classList.add('post-fade-in');
-      }
-    }
-  }
-
-  // UC不支持跨域，所以直接显示
-  function asyncCb(){
-    if (browser.versions.uc) {
-      console.log("UCBrowser");
-      fontLoaded();
-    } else {
-      WebFont.load({
-        custom: {
-          families: ['Oswald-Regular']
-        },
-        loading: function () {  //所有字体开始加载
-          // console.log('loading');
-        },
-        active: function () {  //所有字体已渲染
-          fontLoaded();
-        },
-        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
-          console.log('inactive: timeout');
-          fontLoaded();
-        },
-        timeout: 5000 // Set the timeout to two seconds
-      });
-    }
-  }
-
-  function asyncErr(){
-    console.warn('script load from CDN failed, will load local script')
-  }
-
-  // load webfont-loader async, and add callback function
-  function async(u, cb, err) {
-    var d = document, t = 'script',
-      o = d.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    o.src = u;
-    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
-    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
-    s.parentNode.insertBefore(o, s);
-  }
-
-  var asyncLoadWithFallBack = function(arr, success, reject) {
-      var currReject = function(){
-        reject()
-        arr.shift()
-        if(arr.length)
-          async(arr[0], success, currReject)
-        }
-
-      async(arr[0], success, currReject)
-  }
-
-  asyncLoadWithFallBack([
-    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
-    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
-    "/lib/webfontloader.min.js"
-  ], asyncCb, asyncErr)
-</script>        
-        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
-        <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/12/25/TCS/" >
-            
-                <span>Automata, language, and computational complexity</span>
-        </a>
-        <div class="abstract-content">
-             参考课程内容 https://courses.engr.illinois.edu/cs373/sp2013/Lectures/
- NFA to DFA subset construction
-https://www.youtube.com/watch?v=Y92dtMnarAU&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;index=19
- ε-NFA to NFA Algorithm
-https://www.youtube.com/watch?v=Jz4YQ09nOxA&amp;index=44&amp;list=PLBlnK6fE...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/12/24</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Theory of computation">Theory of computation</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/12/10/real-analysis/" >
-            
-                <span>real analysis</span>
-        </a>
-        <div class="abstract-content">
-            summary and notes upon compeletion of the course and self study notes.
-https://github.com/th2zz/th2zz.github.io/blob/master/notes/real_analysis.pdf
-Textbook reference
-Principles of Mathematical Analysis - Rudin
-Analysis I - Terrence Tao
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/12/09</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Math">Math</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/12/09/Compiler/" >
-            
-                <span>Programming language and Compiler</span>
-        </a>
-        <div class="abstract-content">
-            summary &amp; notes upon compeletion of course on programming language and compiler
-https://github.com/th2zz/th2zz.github.io/blob/master/notes/CS536.pdf
-Textbook reference
-Engineering a compiler. [Keith_D._Cooper_Linda_Torczon]
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/12/08</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Compiler">Compiler</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/12/02/probability/" >
-            
-                <span>Math431-probability theory</span>
-        </a>
-        <div class="abstract-content">
-            notes collection
-https://github.com/th2zz/th2zz.github.io/blob/master/notes/probability.pdf
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/12/01</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Math">Math</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/05/22/Digital-system-fundamental/" >
-            
-                <span>Digital system fundamental</span>
-        </a>
-        <div class="abstract-content">
-            summary and notes upon compeletion of the course.
-https://github.com/th2zz/th2zz.github.io/blob/master/notes/digital_circuit.pdf
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/05/21</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Computer Science">Computer Science</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/05/20/ai/" >
-            
-                <span>CS540 Intro to AI Notesheet</span>
-        </a>
-        <div class="abstract-content">
-            
-
-
-
-
-
-
-
-
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/05/19</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Computer Science">Computer Science</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/05/06/algorithm/" >
-            
-                <span>CS577 Algorithm Notesheet</span>
-        </a>
-        <div class="abstract-content">
-            
-
-
-
-
-
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/05/05</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Math">Math</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2017/12/12/Linear-algebra/" >
-            
-                <span>Linear algebra</span>
-        </a>
-        <div class="abstract-content">
-            summary and notes upon compeletion of the course &amp; self study notes.
-https://github.com/th2zz/th2zz.github.io/blob/master/notes/linear_algebra.pdf
-Textbook Reference
-Introduction to Linear Algebra 4th Edition by Gilbert Strang
-Applied Linear Algebra (Undergraduate Texts in Mathematics) 2nd ed...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/12/11</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Math">Math</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2017/09/30/chmod/" >
-            
-                <span>chmod</span>
-        </a>
-        <div class="abstract-content">
-            修改文件或目录的访问权限。
-12345678910111213141516171819chmod --helpUsage: chmod [OPTION]... MODE[,MODE]... FILE...  or:  chmod [OPTION]... OCTAL-MODE FILE...  or:  chmod [OPTION]... --reference=RFILE FILE...Change the mode of each FILE to MODE.With --reference, change the mode of each FILE to that of RFILE. ...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/09/29</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Linux">Linux</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2017/09/22/link/" >
-            
-                <span>link</span>
-        </a>
-        <div class="abstract-content">
-            用于创建 符号链接 或 硬链接。
-12345678910111213141516171819202122232425262728293031323334353637383940414243444546ln --help用法：ln [选项]... [-T] 目标 链接名	(第一种格式)　或：ln [选项]... 目标		(第二种格式)　或：ln [选项]... 目标... 目录	(第三种格式)　或：ln [选项]... -t 目录 目标...	(第四种格式)In the 1st form, create a link to TARGET with the name LINK_NAME.In...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/09/21</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Linux">Linux</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    <!-- paginator  -->
-    
-    <nav class="page-nav">
-        <a class="extend prev" rel="prev" href="/">&#60; PREV</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">NEXT &#62;</a>
-    </nav>
-    
-</main>
-            <!-- profile -->
-            
-            <div class="profile">
-    <img class="profile-avatar" alt="avatar" src= /avatar/torr3.jpg >
-    <div class="profile-name">th2zz</div>
-    
-    <div class="profile-signature">
-        Hello World!
-    </div>
-    
-    
-    <div class="profile-social">
-        
-    
-        
-            
-                <a href="mailto:tzhang329@gmail.com" class="iconfont-archer email" title=email ></a>
-            
-        
-    
-        
-            
-                <a href="//github.com/th2zz" class="iconfont-archer github" target="_blank" title=github></a>
-            
-        
-    
-        
-            
-                <span class="iconfont-archer wechat" title=wechat>
-                  
-                  <img class="profile-qr" src="/assets/qr.png" />
-                </span>
-            
-        
-    
-        
-            
-                <span class="iconfont-archer qq" title=qq>
-                  
-                  <img class="profile-qr" src="/assets/qrqq.jpg" />
-                </span>
-            
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="https://www.zhihu.com/people/vince-zzz/" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
-            
-        
-    
-        
-            
-                <a href="https://www.douban.com/people/55328071/" class="iconfont-archer douban" target="_blank" title=douban></a>
-            
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="https://www.instagram.com/th2zz3/" class="iconfont-archer instagram" target="_blank" title=instagram></a>
-            
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="https://space.bilibili.com/38725165" class="iconfont-archer bilibili" target="_blank" title=bilibili></a>
-            
-        
-    
-        
-    
-        
-            
-                <a href="https://steamcommunity.com/id/th2zz/" class="iconfont-archer steam" target="_blank" title=steam></a>
-            
-        
-    
-        
-    
-        
-            
-                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
-            
-        
-    
-
-    </div>
-    
-    
-    
-</div>
-            
-        </div>
-        <footer class="footer footer-unloaded">
-    <!-- social  -->
-    
-    <div class="social">
-        
-    
-        
-            
-                <a href="mailto:tzhang329@gmail.com" class="iconfont-archer email" title=email ></a>
-            
-        
-    
-        
-            
-                <a href="//github.com/th2zz" class="iconfont-archer github" target="_blank" title=github></a>
-            
-        
-    
-        
-            
-                <span class="iconfont-archer wechat" title=wechat>
-                  
-                  <img class="profile-qr" src="/assets/qr.png" />
-                </span>
-            
-        
-    
-        
-            
-                <span class="iconfont-archer qq" title=qq>
-                  
-                  <img class="profile-qr" src="/assets/qrqq.jpg" />
-                </span>
-            
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="https://www.zhihu.com/people/vince-zzz/" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
-            
-        
-    
-        
-            
-                <a href="https://www.douban.com/people/55328071/" class="iconfont-archer douban" target="_blank" title=douban></a>
-            
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="https://www.instagram.com/th2zz3/" class="iconfont-archer instagram" target="_blank" title=instagram></a>
-            
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="https://space.bilibili.com/38725165" class="iconfont-archer bilibili" target="_blank" title=bilibili></a>
-            
-        
-    
-        
-    
-        
-            
-                <a href="https://steamcommunity.com/id/th2zz/" class="iconfont-archer steam" target="_blank" title=steam></a>
-            
-        
-    
-        
-    
-        
-            
-                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
-            
-        
-    
-
-    </div>
-    
-    <!-- powered by Hexo  -->
-    <div class="copyright">
-        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
-    </div>
-    <!-- 不蒜子  -->
-    
-    <div class="busuanzi-container">
-    
-     
-    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
-    
-    </div>
-    
-</footer>
-    </div>
-    <!-- toc -->
-    
-    <div class="back-top iconfont-archer">&#xe639;</div>
-    <div class="sidebar sidebar-hide">
-    <ul class="sidebar-tabs sidebar-tabs-active-0">
-        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
-        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
-        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
-    </ul>
-    <div class="sidebar-content sidebar-content-show-archive">
-          <div class="sidebar-panel-archives">
-    <!-- 在ejs中将archive按照时间排序 -->
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <div class="total-and-search">
-        <div class="total-archive">
-        Total : 22
-        </div>
-        <!-- search  -->
-        
-    </div>
-    
-    <div class="post-archive">
-    
-    
-    
-    
-    <div class="archive-year"> 2019 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">09/29</span><a class="archive-post-title" href= "/2019/10/01/java-jvm/" >JVM</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">04/21</span><a class="archive-post-title" href= "/2019/04/22/Database Management System - Indexing/" >Database Management System - Indexing</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">04/10</span><a class="archive-post-title" href= "/2019/04/11/Operating System - Persistence/" >Operating System - Persistence</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">04/08</span><a class="archive-post-title" href= "/2019/04/09/Computer Networking/" >Computer Networking</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">04/02</span><a class="archive-post-title" href= "/2019/04/03/Operating System - Concurrency/" >Operating System - Concurrency</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/24</span><a class="archive-post-title" href= "/2019/03/25/Boyer–Moore majority vote algorithm/" >Boyer–Moore majority vote algorithm</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/22</span><a class="archive-post-title" href= "/2019/03/23/Threaded Binary Tree and Morris Traversal/" >Threaded Binary Tree and Morris Traversal</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/18</span><a class="archive-post-title" href= "/2019/03/19/Database/" >Database Management System - Relational Design Theory</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/15</span><a class="archive-post-title" href= "/2019/03/16/Operating System - Virtualization/" >Operating System - Virtualization</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">02/10</span><a class="archive-post-title" href= "/2019/02/11/process control/" >Process Control</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2018 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/24</span><a class="archive-post-title" href= "/2018/12/25/TCS/" >Automata, language, and computational complexity</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2018/12/10/real-analysis/" >real analysis</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/08</span><a class="archive-post-title" href= "/2018/12/09/Compiler/" >Programming language and Compiler</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/01</span><a class="archive-post-title" href= "/2018/12/02/probability/" >Math431-probability theory</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/21</span><a class="archive-post-title" href= "/2018/05/22/Digital-system-fundamental/" >Digital system fundamental</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/19</span><a class="archive-post-title" href= "/2018/05/20/ai/" >CS540 Intro to AI Notesheet</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/05</span><a class="archive-post-title" href= "/2018/05/06/algorithm/" >CS577 Algorithm Notesheet</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2017 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">12/10</span><a class="archive-post-title" href= "/2017/12/12/Linear-algebra/" >Linear algebra</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">09/29</span><a class="archive-post-title" href= "/2017/09/30/chmod/" >chmod</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">09/21</span><a class="archive-post-title" href= "/2017/09/22/link/" >link</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">08/29</span><a class="archive-post-title" href= "/2017/08/30/chown/" >chown</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">08/12</span><a class="archive-post-title" href= "/2017/08/13/hello-world/" >Hello world</a>
-        </li>
-    
-    </div>
-  </div>
-        <div class="sidebar-panel-tags">
-    <div class="sidebar-tags-name">
-    
-        <span class="sidebar-tag-name" data-tags="Algorithm and Data Structures"><span class="iconfont-archer">&#xe606;</span>Algorithm and Data Structures</span>
-    
-        <span class="sidebar-tag-name" data-tags="Compiler"><span class="iconfont-archer">&#xe606;</span>Compiler</span>
-    
-        <span class="sidebar-tag-name" data-tags="Computer Network"><span class="iconfont-archer">&#xe606;</span>Computer Network</span>
-    
-        <span class="sidebar-tag-name" data-tags="Database"><span class="iconfont-archer">&#xe606;</span>Database</span>
-    
-        <span class="sidebar-tag-name" data-tags="Computer Science"><span class="iconfont-archer">&#xe606;</span>Computer Science</span>
-    
-        <span class="sidebar-tag-name" data-tags="Math"><span class="iconfont-archer">&#xe606;</span>Math</span>
-    
-        <span class="sidebar-tag-name" data-tags="OS"><span class="iconfont-archer">&#xe606;</span>OS</span>
-    
-        <span class="sidebar-tag-name" data-tags="Theory of computation"><span class="iconfont-archer">&#xe606;</span>Theory of computation</span>
-    
-        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
-    
-        <span class="sidebar-tag-name" data-tags="Java"><span class="iconfont-archer">&#xe606;</span>Java</span>
-    
-    </div>
-    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
-    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
-    缺失模块。<br/>
-    1、请确保node版本大于6.2<br/>
-    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
-    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
-    3、在根目录_config.yml里添加配置：
-    <pre style="color: #787878; font-size: 0.6rem;">
-jsonContent:
-  meta: false
-  pages: false
-  posts:
-    title: true
-    date: true
-    path: true
-    text: false
-    raw: false
-    content: false
-    slug: false
-    updated: false
-    comments: false
-    link: false
-    permalink: false
-    excerpt: false
-    categories: true
-    tags: true</pre>
-    </div> 
-    <div class="sidebar-tags-list"></div>
-</div>
-        <div class="sidebar-panel-categories">
-    <div class="sidebar-categories-name">
-    
-    </div>
-    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
-    <div class="sidebar-categories-list"></div>
-</div>
-    </div>
-</div> 
-    <script>
-    var siteMeta = {
-        root: "/",
-        author: "th2zz"
-    }
-</script>
-    <!-- CDN failover -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-    <script type="text/javascript">
-        if (typeof window.$ === 'undefined')
-        {
-            console.warn('jquery load from jsdelivr failed, will load local script')
-            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
-        }
-    </script>
-    <script src="/scripts/main.js"></script>
-    <!-- algolia -->
-    
-    <!-- busuanzi  -->
-    
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    
-    <!-- CNZZ  -->
-    
-    <div style="display: none">
-        <script src="https://s13.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
-        
-    </div>
-    <!-- async load share.js --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-     
-    </body>
 </html>
 
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="app">
+    <main class="content">
+      
+<section class="cover">
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="/images/cover1.jpg" alt="image frame" />
+    </div>
+    <div class="cover-inner text-center text-white">
+      <h1><a href="/">th2zz</a></h1>
+      <div id="subtitle-box">
+        
+        <span id="subtitle"></span>
+        
+      </div>
+      <div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+  </div>
+</section>
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
+
+<div id="main">
+  <section class="outer">
+  <article class="articles">
+    
+    
+    
+    
+    <article id="post-TCS" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/12/25/TCS/"
+    >Automata, language, and computational complexity</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/12/25/TCS/" class="article-date">
+  <time datetime="2018-12-25T01:22:41.000Z" itemprop="datePublished">2018-12-24</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="参考课程内容-httpscoursesengrillinoiseducs373sp2013lectures"><a class="markdownIt-Anchor" href="#参考课程内容-httpscoursesengrillinoiseducs373sp2013lectures"></a> <strong>参考课程内容</strong> <a href="https://courses.engr.illinois.edu/cs373/sp2013/Lectures/" target="_blank" rel="noopener">https://courses.engr.illinois.edu/cs373/sp2013/Lectures/</a></h2>
+<h4 id="nfa-to-dfa-subset-construction"><a class="markdownIt-Anchor" href="#nfa-to-dfa-subset-construction"></a> <strong>NFA to DFA subset construction</strong></h4>
+<p><a href="https://www.youtube.com/watch?v=Y92dtMnarAU&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;index=19" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Y92dtMnarAU&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;index=19</a></p>
+<h4 id="ε-nfa-to-nfa-algorithm"><a class="markdownIt-Anchor" href="#ε-nfa-to-nfa-algorithm"></a> <strong>ε-NFA to NFA Algorithm</strong></h4>
+<p><a href="https://www.youtube.com/watch?v=Jz4YQ09nOxA&amp;index=44&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Jz4YQ09nOxA&amp;index=44&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev</a></p>
+<h4 id="dfa-to-regular-expression-state-elimination"><a class="markdownIt-Anchor" href="#dfa-to-regular-expression-state-elimination"></a> <strong>DFA to regular expression State Elimination</strong></h4>
+<p><a href="https://www.youtube.com/watch?v=fyJumUElTGY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=fyJumUElTGY</a></p>
+<h4 id="dfa-to-regex-dynamic-programmingtransitive-closure-method"><a class="markdownIt-Anchor" href="#dfa-to-regex-dynamic-programmingtransitive-closure-method"></a> <strong>DFA to regex Dynamic programming/transitive closure method</strong></h4>
+<p><a href="https://www.classes.cs.uchicago.edu/archive/2015/winter/28000-1/Lec2.pdf" target="_blank" rel="noopener">https://www.classes.cs.uchicago.edu/archive/2015/winter/28000-1/Lec2.pdf</a><br>
+<a href="https://www.cs.dartmouth.edu/~ac/Teach/CS39-Winter09/SlidesAndNotes/lec09dfa2regexp.pdf" target="_blank" rel="noopener">https://www.cs.dartmouth.edu/~ac/Teach/CS39-Winter09/SlidesAndNotes/lec09dfa2regexp.pdf</a><br>
+<a href="https://cs.stackexchange.com/questions/2016/how-to-convert-finite-automata-to-regular-expressions" target="_blank" rel="noopener">https://cs.stackexchange.com/questions/2016/how-to-convert-finite-automata-to-regular-expressions</a></p>
+<h4 id="closure-properties-of-regular-language-regular-expression"><a class="markdownIt-Anchor" href="#closure-properties-of-regular-language-regular-expression"></a> <strong>Closure properties of regular language &amp; regular expression</strong></h4>
+<p><img src="/img_520/1.png" alt=""><br>
+<img src="/img_520/2.png" alt=""><br>
+<img src="/img_520/3.png" alt=""></p>
+<h4 id="regex-to-nfa-translation"><a class="markdownIt-Anchor" href="#regex-to-nfa-translation"></a> <strong>Regex to nfa translation</strong></h4>
+<p><img src="/img_520/4.png" alt=""></p>
+<h4 id="dfa-minimization-algorithm"><a class="markdownIt-Anchor" href="#dfa-minimization-algorithm"></a> <strong>Dfa minimization algorithm</strong></h4>
+<p>Minimization of DFA - Table Filling Method (Myhill-Nerode Theorem)<br>
+<img src="/img_520/5.png" alt=""></p>
+<h4 id="myhill-nerode-theorem"><a class="markdownIt-Anchor" href="#myhill-nerode-theorem"></a> <strong>Myhill-nerode theorem</strong></h4>
+<p><img src="/img_520/6.png" alt=""><br>
+Further more there is a minimized dfa having precisely one state for each equivalence class!!!<br>
+<strong>equivalence classes classification</strong>: how to tell what equivalence classes are there?<br>
+<a href="https://courses.cs.washington.edu/courses/cse322/05wi/handouts/MyhillNerode.pdf" target="_blank" rel="noopener">https://courses.cs.washington.edu/courses/cse322/05wi/handouts/MyhillNerode.pdf</a><br>
+Regular: we can use above algorithm on DFA minimization to find out each equivalence classes<br>
+Nonregular:<br>
+<img src="/img_520/7.png" alt=""></p>
+<h4 id="pumping-lemma-prove-nonregular-language"><a class="markdownIt-Anchor" href="#pumping-lemma-prove-nonregular-language"></a> <strong>Pumping lemma prove nonregular language</strong></h4>
+<p><img src="/img_520/8.png" alt=""></p>
+<p>Testing regularity finite language is regular  infinite language can be tested by pumping lemma</p>
+<h4 id="testing-whether-a-language-is-regular-or-not"><a class="markdownIt-Anchor" href="#testing-whether-a-language-is-regular-or-not"></a> <strong>Testing whether a language is regular or not</strong></h4>
+<p><a href="https://www.youtube.com/watch?v=KSczX111n3U" target="_blank" rel="noopener">https://www.youtube.com/watch?v=KSczX111n3U</a></p>
+<h4 id="cfg-design-regular-language-to-cfg"><a class="markdownIt-Anchor" href="#cfg-design-regular-language-to-cfg"></a> <strong>CFG DESIGN  Regular language to CFG,</strong></h4>
+<p><img src="/img_520/9.png" alt=""><br>
+对每一个dfa的state设计一个nonterminal variable；<br>
+对于每个transition  add 相应的rule   （根据不同的input）<br>
+对于accepting state的nonterminal variable 让他生成空的string<br>
+This cfg generates the same language that dfa recognizes.</p>
+<h4 id="ambiguity"><a class="markdownIt-Anchor" href="#ambiguity"></a> <strong>AMBIGUITY</strong></h4>
+<p>A string is derived ambiguously if it has one or more left/right most derivation tree.<br>
+A Grammar G is ambiguous if it generates some string ambiguously.</p>
+<h4 id="chompsky-normal-form"><a class="markdownIt-Anchor" href="#chompsky-normal-form"></a> <strong>Chompsky Normal Form</strong></h4>
+<p>(CFG simplification: removal of null ε production + unit production elimination + adding auxiliary variable &amp; rewrite)<br>
+<a href="https://www.youtube.com/watch?v=EF09zxzpVbk&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;t=5s&amp;index=76" target="_blank" rel="noopener">https://www.youtube.com/watch?v=EF09zxzpVbk&amp;list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;t=5s&amp;index=76</a><br>
+<img src="/img_520/10.png" alt=""></p>
+<p><img src="/img_520/11.png" alt=""><br>
+<img src="/img_520/12.png" alt=""><br>
+For each direct null production A-&gt; null , look for all productions whose right hand side contains A. Replace each occurrences of A in these production with null.  By each occurences, it means all possible location of A that can be nullified. Finsh the resulting productions without A-&gt;null, looking for the next one for ex B-&gt;null until no null productions exist.</p>
+<p><strong>Or a graph-algorithm:</strong><br>
+Create a directed cyclic graph where each vertex represent a nonterminal for all nonterminals.<br>
+Add an edge if there is a unit production.<br>
+Collapse all strongly connected components into a single vertex (meaning these nonterminal are equivalent, merge their production rules in the grammar)<br>
+Start from sink S, augment production rules of the sink to all nonterminals that go to sink, then remove the edges from all nonterminals that go to sink.  Repeat this until no edges exist</p>
+<p><strong>CYK algorithm O(n^3)<br>
+(Dynamic Programming parsing/recognizing if a string is in the language of cfg)<br>
+Assume in put is in CNF form.</strong><br>
+<img src="/img_520/13.png" alt=""><br>
+For example, to parse <strong>“id ( id , id )” 6 character sequence,</strong> we construct 6 by 6 grid with diagonals filled in all possible nonterminal that can derive the i-th symbol for i=1 to i=6.<br>
+<img src="/img_520/14.png" alt=""><br>
+Then we fill in each successive diagonals bottom up:<br>
+For each square, consider ALL possible ordered pair of the nonterminals one from left one from below, for each pair, if it can be derived from a rule(notice we have cnf), we put the lhs nonterminal of that rule to that squares<br>
+<img src="/img_520/15.png" alt=""><br>
+If the starting nonterminal appear in the upper right corner of the grid we accept the string</p>
+<p><strong>Non determinstic Push down automata<br>
+Equivalence of cfg and nondeterminstic pda :</strong><br>
+A language is generated by a cfg = it is recognized by a npda<br>
+<a href="https://people.eecs.berkeley.edu/~sseshia/172/lectures/Slides8.pdf" target="_blank" rel="noopener">https://people.eecs.berkeley.edu/~sseshia/172/lectures/Slides8.pdf</a><br>
+<img src="/img_520/16.png" alt=""></p>
+<p>For example.<br>
+<img src="/img_520/17.png" alt=""><br>
+<img src="/img_520/18.png" alt=""><br>
+<img src="/img_520/19.png" alt=""><br>
+<img src="/img_520/20.png" alt=""></p>
+<p><strong>Non context-free language</strong>:<br>
+<img src="/img_520/21.png" alt=""></p>
+<blockquote>
+<p>For any context free language L, there is a pumping length p such that for any string<br>
+z ∈  L of sufficient length p≥1 or more, there is a decomposition of string z into 5−PART uvwxy s.t.:</p>
+<ol>
+<li>|vwx|≤p    middle three≤p (not too far apart)</li>
+<li>|vx|&gt;0 pumping part of length nonegative</li>
+<li>for any i≥0  uv^i wx^i y  stays in L<br>
+<img src="/img_520/22.png" alt=""><br>
+<strong>Both CFG-PL AND REG-PL are necessary but not sufficient conditions for context-freeness/regularity.</strong></li>
+</ol>
+</blockquote>
+<p><strong>pumping lemma proof idea:</strong> for a sufficiently long string and its parse tree, the longest path in the tree by pigenhole principle must have nonterminals that repeat. Therefore Pumping up or down vx, it will remains a valid parse tree</p>
+<p><strong>Language hierarchy &amp; Decidable and recognizable language</strong><br>
+<img src="/img_520/23.png" alt=""><br>
+A <strong>decision problem</strong> can be expressed as a language, which is a set<br>
+A language is called a Recursively enumerable set (language) [also recognizable, partially decidable, semidecidable, Turing-acceptable or Turing-recognizable] if it is a recursively enumerable subset in the set of all possible words over the alphabet of the language, i.e., if there exists a Turing machine which will enumerate all valid strings of the language.</p>
+<p>Recursive set, decidable set, computable set refers to the set of decision problem that are decidable in polynomial time</p>
+<p>A complete set is a set of problems that are “hard”:<br>
+Np hard: every problem in np can reduce to it<br>
+Ex. To prove np-complete  first show it is np, then prove it is np hard, namely choose a np complete problem and reduce to it<br>
+<img src="/img_520/24.png" alt=""><br>
+<a href="https://en.wikipedia.org/wiki/Complete_(complexity)" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Complete_(complexity)</a></p>
+<p><img src="/img_520/25.png" alt=""><br>
+<img src="/img_520/26.png" alt=""><br>
+<img src="/img_520/27.png" alt=""></p>
+<p><strong>Proving problems undecidable<br>
+Turing machine and halting problem</strong><br>
+Refers to handouts<br>
+<img src="/img_520/28.png" alt=""><br>
+<img src="/img_520/29.png" alt=""><br>
+<strong>多带图灵机与单带图灵机等价</strong><br>
+A turing machine accepts input if there is a sequence of configuration from starting config to accepting config<br>
+A turing machine is decidable if there is some decider for it(always halt and acc or rej).<br>
+Every NDTM has a equivalent DTM<br>
+ATM, HaltTM, Etm, Eqtm, PCP is undecidable but Turing-recognizable/recursively enumerable<br>
+<img src="/img_520/30.png" alt=""><br>
+<img src="/img_520/31.png" alt=""></p>
+<p><strong>Undecidability and Rice’s theorem<br>
+Rice’s theorem:</strong><br>
+<img src="/img_520/32.png" alt=""><br>
+A property is a set of Turing machine. A TM satisfies P means TM is in the set.<br>
+A property P is nontrivial means there is a TM that satisfies it and there is a TM that does not satisfies it.<br>
+A property P is trivial means either it is satisfied by all TMs or it is satisfied by no TMs.</p>
+<p>Any nontrivial property about the r.e. language recognized by a Turing machine is undecidable.</p>
+<p><strong>Reduction</strong> <a href="https://en.wikipedia.org/wiki/Reduction_(complexity)" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Reduction_(complexity)</a><br>
+A reduces to B means we can use an efficient solution of B as a subroutine to solve A     hardness of B 大于等于 A<br>
+<strong>Computational complexity</strong><br>
+<a href="https://blog.csdn.net/golden1314521/article/details/51470999" target="_blank" rel="noopener">https://blog.csdn.net/golden1314521/article/details/51470999</a></p>
+<p>NP completeness theory is designed to be applied only to decision problem.<br>
+解决一个decision problem 等价于recognizing a corresponding language<br>
+A language is a set that contains all strings accepted by the turing machine.<br>
+<strong>Class P</strong>： 以单带图灵机定义的【 所有多项式时间内deterministically recognizable language】<br>
+<strong>Class NP</strong>: NTM Augmented Model of one tape turing machine with guessing ability<br>
+NTM 定义了 class NP: All languages recognizable nondeterministically in Polynomial time / there is a polynomial time NDTM program that accepts the language<br>
+NP is the class of languages that have polynomial time verifiers for the membership of an arbitrary instance given.<br>
+<img src="/img_520/33.png" alt=""></p>
+<p>A p-time mapping reduce to B means:  there is a transformation function that given an instance a of A 包装成 instance of B f(a)=b in polynomial time such that membership of  a and b in A and B. resp 同进同出</p>
+<p>多项式时间于伪多项式时间<br>
+动态规划解决subsetsum</p>
+<h4 id="textbook-reference"><a class="markdownIt-Anchor" href="#textbook-reference"></a> <strong>Textbook Reference</strong></h4>
+<p>Computers and Intractability A Guide to the Theory of NP Completeness -  Michael R. Garey and David S. Johnson<br>
+Introduction to the theory of computation third edition - Michael Sipser<br>
+Introduction To Automata Theory, Languages, And Computation 3rd - John E. Hopcroft, Rajeev Motwani, Jeffrey D. Ullman</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Theory-of-computation/">Theory of computation</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-real-analysis" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/12/10/real-analysis/"
+    >real analysis</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/12/10/real-analysis/" class="article-date">
+  <time datetime="2018-12-09T18:00:41.000Z" itemprop="datePublished">2018-12-09</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>summary and notes upon compeletion of the course and self study notes.<br>
+<a href="https://github.com/th2zz/th2zz.github.io/blob/master/notes/real_analysis.pdf" target="_blank" rel="noopener">https://github.com/th2zz/th2zz.github.io/blob/master/notes/real_analysis.pdf</a><br>
+Textbook reference<br>
+Principles of Mathematical Analysis - Rudin<br>
+Analysis I - Terrence Tao</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/">Math</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-Compiler" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/12/09/Compiler/"
+    >Programming language and Compiler</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/12/09/Compiler/" class="article-date">
+  <time datetime="2018-12-09T03:40:41.000Z" itemprop="datePublished">2018-12-08</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>summary &amp; notes upon compeletion of course on programming language and compiler<br>
+<a href="https://github.com/th2zz/th2zz.github.io/blob/master/notes/CS536.pdf" target="_blank" rel="noopener">https://github.com/th2zz/th2zz.github.io/blob/master/notes/CS536.pdf</a><br>
+Textbook reference<br>
+Engineering a compiler. [Keith_D._Cooper_Linda_Torczon]</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Compiler/">Compiler</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-probability" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/12/02/probability/"
+    >Math431-probability theory</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/12/02/probability/" class="article-date">
+  <time datetime="2018-12-02T04:30:02.000Z" itemprop="datePublished">2018-12-01</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>notes collection<br>
+<a href="https://github.com/th2zz/th2zz.github.io/blob/master/notes/probability.pdf" target="_blank" rel="noopener">https://github.com/th2zz/th2zz.github.io/blob/master/notes/probability.pdf</a></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/">Math</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-Digital-system-fundamental" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/05/22/Digital-system-fundamental/"
+    >Digital system fundamental</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/05/22/Digital-system-fundamental/" class="article-date">
+  <time datetime="2018-05-22T00:43:32.000Z" itemprop="datePublished">2018-05-21</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>summary and notes upon compeletion of the course.<br>
+<a href="https://github.com/th2zz/th2zz.github.io/blob/master/notes/digital_circuit.pdf" target="_blank" rel="noopener">https://github.com/th2zz/th2zz.github.io/blob/master/notes/digital_circuit.pdf</a></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Computer-Science/">Computer Science</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-ai" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/05/20/ai/"
+    >CS540 Intro to AI Notesheet</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/05/20/ai/" class="article-date">
+  <time datetime="2018-05-19T18:00:41.000Z" itemprop="datePublished">2018-05-19</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <img width="1000" src="/img_540/1.png">
+<img width="1000" src="/img_540/2.png">
+<img width="1000" src="/img_540/3.png">
+<img width="1000" src="/img_540/4.png">
+<img width="1000" src="/img_540/5.png">
+<img width="1000" src="/img_540/6.png">
+<img width="1000" src="/img_540/7.png">
+<img width="1000" src="/img_540/8.png">
+<img width="1000" src="/img_540/9.png">
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Computer-Science/">Computer Science</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-algorithm" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/05/06/algorithm/"
+    >CS577 Algorithm Notesheet</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/05/06/algorithm/" class="article-date">
+  <time datetime="2018-05-06T00:00:01.000Z" itemprop="datePublished">2018-05-05</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <img width="1000" src="/img_algo/1.png">
+<img width="1000" src="/img_algo/2.png">
+<img width="1000" src="/img_algo/3.png">
+<img width="1000" src="/img_algo/4.png">
+<img width="1000" src="/img_algo/5.png">
+<img width="1000" src="/img_algo/6.png">
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/">Math</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-Linear-algebra" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2017/12/12/Linear-algebra/"
+    >Linear algebra</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2017/12/12/Linear-algebra/" class="article-date">
+  <time datetime="2017-12-11T19:45:24.000Z" itemprop="datePublished">2017-12-11</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>summary and notes upon compeletion of the course &amp; self study notes.<br>
+<a href="https://github.com/th2zz/th2zz.github.io/blob/master/notes/linear_algebra.pdf" target="_blank" rel="noopener">https://github.com/th2zz/th2zz.github.io/blob/master/notes/linear_algebra.pdf</a></p>
+<p>Textbook Reference<br>
+Introduction to Linear Algebra 4th Edition by Gilbert Strang<br>
+Applied Linear Algebra (Undergraduate Texts in Mathematics) 2nd ed. 2018 Edition by Peter J. Olver, Chehrzad Shakiban</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/">Math</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-chmod" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2017/09/30/chmod/"
+    >chmod</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2017/09/30/chmod/" class="article-date">
+  <time datetime="2017-09-30T03:42:32.000Z" itemprop="datePublished">2017-09-29</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>修改文件或目录的访问权限。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">chmod --help</span><br><span class="line"></span><br><span class="line">Usage: chmod [OPTION]... MODE[,MODE]... FILE...</span><br><span class="line">  or:  chmod [OPTION]... OCTAL-MODE FILE...</span><br><span class="line">  or:  chmod [OPTION]... --reference=RFILE FILE...</span><br><span class="line">Change the mode of each FILE to MODE.</span><br><span class="line">With --reference, change the mode of each FILE to that of RFILE.</span><br><span class="line"></span><br><span class="line">  -c, --changes          like verbose but report only when a change is made</span><br><span class="line">  -f, --silent, --quiet  suppress most error messages</span><br><span class="line">  -v, --verbose          output a diagnostic for every file processed</span><br><span class="line">      --no-preserve-root  do not treat '/' specially (the default)</span><br><span class="line">      --preserve-root    fail to operate recursively on '/'</span><br><span class="line">      --reference=RFILE  use RFILE's mode instead of MODE values</span><br><span class="line">  -R, --recursive        change files and directories recursively</span><br><span class="line">      --help     display this help and exit</span><br><span class="line">      --version  output version information and exit</span><br><span class="line"></span><br><span class="line">Each MODE is of the form '[ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+'.</span><br></pre></td></tr></table></figure>
+<p><a href="https://en.wikipedia.org/wiki/File_system_permissions" title="File_system_permissions" target="_blank" rel="noopener">文件系统权限</a> 是 <a href="https://en.wikipedia.org/wiki/File_system" title="File_system" target="_blank" rel="noopener">文件系统</a> 用来管理用户和用户组对文件或目录的访问权限的规则。</p>
+<p>###用户</p>
+<p>文件和目录归属于用户(owner)，<br>
+分配给用户组(group)，owner 是 group 的成员；<br>
+非 owner 和非 group 成员的用户属于其他用户(others)；<br>
+还有所有用户(all)。</p>
+<p>###访问权限</p>
+<ul>
+<li>read 读取文件（当作用与目录时，仅能获取目录下所有文件的文件名）；</li>
+<li>write 修改文件（当作用与目录时，可以对文件执行创建、删除和重命名操作）；</li>
+<li>execute 执行文件（shell 脚本或可执行文件。当作用与目录时，可以获得文件内容和元信息，但不能获得文件列表）</li>
+</ul>
+<p>###符号模式</p>
+<p>r read;<br>
+w write;<br>
+x execute.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -l</span><br><span class="line"></span><br><span class="line">-rw-r--r-- 1 hu hu  0  3月 31 15:19 test.txt</span><br></pre></td></tr></table></figure>
+<p><code>-rw-r--r--</code> 代表了文件类型和文件权限：</p>
+<p>第一位 <code>-</code> 代表了文件为普通文件（参考 <a href="https://en.wikipedia.org/wiki/Unix_file_types" title="Unix_file_types" target="_blank" rel="noopener">文件类型</a>）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- Regular file</span><br><span class="line">d Directory</span><br><span class="line">l Symbolic link</span><br><span class="line">p Named pipe</span><br><span class="line">s Socket</span><br><span class="line">c Device file(character device)</span><br><span class="line">b Device file(block device)</span><br><span class="line">D Door</span><br></pre></td></tr></table></figure>
+<p>后面九位分成三段，分别代表了 owner/group/others 三类用户的访问权限，<code>-</code> 代表没有对应权限：<br>
+owner 拥有 read/write 权限；group 和 others 只拥有 read 权限。</p>
+<p>###数字模式</p>
+<p>| 符号 | 代码 | 权限 |<br>
+|  |  |  |<br>
+| r | 4/100 | read |<br>
+| w | 2/10 | write |<br>
+| x | 1/1 | execute |<br>
+| - | 0/0 | - |</p>
+<p><code>-rw-r--r--</code> 可以用数字表示为 <code>0644</code>。</p>
+<p>###MODE 规则</p>
+<p><code>[ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+</code> 被用来校验 <code>chmod</code> 命令中的 MODE 参数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">u user 所有者</span><br><span class="line">g group 所有者所在分组</span><br><span class="line">o others 所有其他用户</span><br><span class="line">a all 所有用户（等同于 ugo）</span><br><span class="line"></span><br><span class="line">+ 添加权限</span><br><span class="line">- 删除权限</span><br><span class="line">= 设置权限</span><br></pre></td></tr></table></figure>
+<p><img src="/img_rand/chmod-regexp.png" alt=""></p>
+<p>可能的 MODE 参数：</p>
+<ul>
+<li><code>chmod a+w test.txt</code> 给所有用户添加 test.txt 的写权限；</li>
+<li><code>chmod u=rwx app.js app.js</code> 的所有者拥有对该文件的读写和执行权限；</li>
+<li><code>chmod 624 app.js</code> 分别给三组用户不同的权限（u: rw, g: w, o: r）；</li>
+<li><code>chmod 755 ~/works</code> 分别给三组用户不同的权限（u: rwx, g: rx, o: rx）。</li>
+</ul>
+<p>###参考</p>
+<p><a href="https://zh.wikipedia.org/wiki/Chmod" target="_blank" rel="noopener">wiki: Chmod</a></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+    <article id="post-link" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2017/09/22/link/"
+    >link</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2017/09/22/link/" class="article-date">
+  <time datetime="2017-09-22T03:00:41.000Z" itemprop="datePublished">2017-09-21</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>用于创建 <a href="https://en.wikipedia.org/wiki/Symbolic_link" title="Symbolic_link" target="_blank" rel="noopener">符号链接</a> 或 <a href="https://en.wikipedia.org/wiki/Hard_link" title="Hard_link" target="_blank" rel="noopener">硬链接</a>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">ln --help</span><br><span class="line"></span><br><span class="line">用法：ln [选项]... [-T] 目标 链接名	(第一种格式)</span><br><span class="line">　或：ln [选项]... 目标		(第二种格式)</span><br><span class="line">　或：ln [选项]... 目标... 目录	(第三种格式)</span><br><span class="line">　或：ln [选项]... -t 目录 目标...	(第四种格式)</span><br><span class="line">In the 1st form, create a link to TARGET with the name LINK_NAME.</span><br><span class="line">In the 2nd form, create a link to TARGET in the current directory.</span><br><span class="line">In the 3rd and 4th forms, create links to each TARGET in DIRECTORY.</span><br><span class="line">Create hard links by default, symbolic links with --symbolic.</span><br><span class="line">By default, each destination (name of new link) should not already exist.</span><br><span class="line">When creating hard links, each TARGET must exist.  Symbolic links</span><br><span class="line">can hold arbitrary text; if later resolved, a relative link is</span><br><span class="line">interpreted in relation to its parent directory.</span><br><span class="line"></span><br><span class="line">Mandatory arguments to long options are mandatory for short options too.</span><br><span class="line">      --backup[=CONTROL]	为每个已存在的目标文件创建备份文件</span><br><span class="line">  -b				类似--backup，但不接受任何参数</span><br><span class="line">  -d, -F, --directory		创建指向目录的硬链接(只适用于超级用户)</span><br><span class="line">  -f, --force			强行删除任何已存在的目标文件</span><br><span class="line">  -i, --interactive           prompt whether to remove destinations</span><br><span class="line">  -L, --logical               dereference TARGETs that are symbolic links</span><br><span class="line">  -n, --no-dereference        treat LINK_NAME as a normal file if</span><br><span class="line">                                it is a symbolic link to a directory</span><br><span class="line">  -P, --physical              make hard links directly to symbolic links</span><br><span class="line">  -r, --relative              create symbolic links relative to link location</span><br><span class="line">  -s, --symbolic              make symbolic links instead of hard links</span><br><span class="line">  -S, --suffix=SUFFIX         override the usual backup suffix</span><br><span class="line">  -t, --target-directory=DIRECTORY  specify the DIRECTORY in which to create</span><br><span class="line">                                the links</span><br><span class="line">  -T, --no-target-directory   treat LINK_NAME as a normal file always</span><br><span class="line">  -v, --verbose               print name of each linked file</span><br><span class="line">      --help		显示此帮助信息并退出</span><br><span class="line">      --version		显示版本信息并退出</span><br><span class="line"></span><br><span class="line">The backup suffix is '~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.</span><br><span class="line">The version control method may be selected via the --backup option or through</span><br><span class="line">the VERSION_CONTROL environment variable.  Here are the values:</span><br><span class="line"></span><br><span class="line">  none, off       不进行备份(即使使用了--backup 选项)</span><br><span class="line">  numbered, t     备份文件加上数字进行排序</span><br><span class="line">  existing, nil   若有数字的备份文件已经存在则使用数字，否则使用普通方式备份</span><br><span class="line">  simple, never   永远使用普通方式备份</span><br><span class="line"></span><br><span class="line">Using -s ignores -L and -P.  Otherwise, the last option specified controls</span><br><span class="line">behavior when a TARGET is a symbolic link, defaulting to -P.</span><br></pre></td></tr></table></figure>
+<p>###查看</p>
+<p><code>ls -l</code> 可以查看文件是否为链接文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -l /bin</span><br><span class="line"></span><br><span class="line">lrwxrwxrwx 1 root root      24  3月 18 14:25 netcat -&gt; /etc/alternatives/netcat</span><br></pre></td></tr></table></figure>
+<p>l 代表文件是链接文件；<br>
+netcat 是指向 /etc/alternatives/netcat 的一个文件链接。</p>
+<p>###创建</p>
+<ul>
+<li><code>ln -s target link</code> 创建一个名为 link 的文件，链接到 target 文件；</li>
+<li><code>ln -s target</code> 在当前目录创建一个链接到 target 的文件，与 target 同名；</li>
+<li><code>ln -s targets link_dir</code> 在 link_dir 目录创建所有 targets 的链接。</li>
+</ul>
+<p>###参考</p>
+<p><a href="https://zh.wikipedia.org/wiki/%E7%AC%A6%E5%8F%B7%E9%93%BE%E6%8E%A5" target="_blank" rel="noopener">wiki: 符号链接</a><br>
+<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/" target="_blank" rel="noopener">理解 Linux 的硬链接与软链接</a></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+  </article>
+  
+
+  
+  <nav class="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
+  </nav>
+  
+</section>
+</div>
+
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2015-2020
+        th2zz
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="th2zz"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/旅行/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="http://shenyu-vip.lofter.com">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Buscar">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<script src="/js/share.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+    strings: ['面朝大海，春暖花开','愿你一生努力，一生被爱','想要的都拥有，得不到的都释怀'],
+    startDelay: 0,
+    typeSpeed: 200,
+    loop: true,
+    backSpeed: 100,
+    showCursor: true
+    });
+  } catch (err) {
+  }
+  
+</script>
+
+
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+<script src="/js/ayer.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+
+</html>
