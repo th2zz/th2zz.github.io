@@ -61,6 +61,116 @@
     
     
     
+    <article id="post-chmod" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2017/09/30/chmod/"
+    >chmod</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2017/09/30/chmod/" class="article-date">
+  <time datetime="2017-09-30T03:42:32.000Z" itemprop="datePublished">2017-09-29</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>修改文件或目录的访问权限。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">chmod --help</span><br><span class="line"></span><br><span class="line">Usage: chmod [OPTION]... MODE[,MODE]... FILE...</span><br><span class="line">  or:  chmod [OPTION]... OCTAL-MODE FILE...</span><br><span class="line">  or:  chmod [OPTION]... --reference=RFILE FILE...</span><br><span class="line">Change the mode of each FILE to MODE.</span><br><span class="line">With --reference, change the mode of each FILE to that of RFILE.</span><br><span class="line"></span><br><span class="line">  -c, --changes          like verbose but report only when a change is made</span><br><span class="line">  -f, --silent, --quiet  suppress most error messages</span><br><span class="line">  -v, --verbose          output a diagnostic for every file processed</span><br><span class="line">      --no-preserve-root  do not treat '/' specially (the default)</span><br><span class="line">      --preserve-root    fail to operate recursively on '/'</span><br><span class="line">      --reference=RFILE  use RFILE's mode instead of MODE values</span><br><span class="line">  -R, --recursive        change files and directories recursively</span><br><span class="line">      --help     display this help and exit</span><br><span class="line">      --version  output version information and exit</span><br><span class="line"></span><br><span class="line">Each MODE is of the form '[ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+'.</span><br></pre></td></tr></table></figure>
+<p><a href="https://en.wikipedia.org/wiki/File_system_permissions" title="File_system_permissions" target="_blank" rel="noopener">文件系统权限</a> 是 <a href="https://en.wikipedia.org/wiki/File_system" title="File_system" target="_blank" rel="noopener">文件系统</a> 用来管理用户和用户组对文件或目录的访问权限的规则。</p>
+<p>###用户</p>
+<p>文件和目录归属于用户(owner)，<br>
+分配给用户组(group)，owner 是 group 的成员；<br>
+非 owner 和非 group 成员的用户属于其他用户(others)；<br>
+还有所有用户(all)。</p>
+<p>###访问权限</p>
+<ul>
+<li>read 读取文件（当作用与目录时，仅能获取目录下所有文件的文件名）；</li>
+<li>write 修改文件（当作用与目录时，可以对文件执行创建、删除和重命名操作）；</li>
+<li>execute 执行文件（shell 脚本或可执行文件。当作用与目录时，可以获得文件内容和元信息，但不能获得文件列表）</li>
+</ul>
+<p>###符号模式</p>
+<p>r read;<br>
+w write;<br>
+x execute.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -l</span><br><span class="line"></span><br><span class="line">-rw-r--r-- 1 hu hu  0  3月 31 15:19 test.txt</span><br></pre></td></tr></table></figure>
+<p><code>-rw-r--r--</code> 代表了文件类型和文件权限：</p>
+<p>第一位 <code>-</code> 代表了文件为普通文件（参考 <a href="https://en.wikipedia.org/wiki/Unix_file_types" title="Unix_file_types" target="_blank" rel="noopener">文件类型</a>）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- Regular file</span><br><span class="line">d Directory</span><br><span class="line">l Symbolic link</span><br><span class="line">p Named pipe</span><br><span class="line">s Socket</span><br><span class="line">c Device file(character device)</span><br><span class="line">b Device file(block device)</span><br><span class="line">D Door</span><br></pre></td></tr></table></figure>
+<p>后面九位分成三段，分别代表了 owner/group/others 三类用户的访问权限，<code>-</code> 代表没有对应权限：<br>
+owner 拥有 read/write 权限；group 和 others 只拥有 read 权限。</p>
+<p>###数字模式</p>
+<p>| 符号 | 代码 | 权限 |<br>
+|  |  |  |<br>
+| r | 4/100 | read |<br>
+| w | 2/10 | write |<br>
+| x | 1/1 | execute |<br>
+| - | 0/0 | - |</p>
+<p><code>-rw-r--r--</code> 可以用数字表示为 <code>0644</code>。</p>
+<p>###MODE 规则</p>
+<p><code>[ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+</code> 被用来校验 <code>chmod</code> 命令中的 MODE 参数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">u user 所有者</span><br><span class="line">g group 所有者所在分组</span><br><span class="line">o others 所有其他用户</span><br><span class="line">a all 所有用户（等同于 ugo）</span><br><span class="line"></span><br><span class="line">+ 添加权限</span><br><span class="line">- 删除权限</span><br><span class="line">= 设置权限</span><br></pre></td></tr></table></figure>
+<p><img src="/img_rand/chmod-regexp.png" alt=""></p>
+<p>可能的 MODE 参数：</p>
+<ul>
+<li><code>chmod a+w test.txt</code> 给所有用户添加 test.txt 的写权限；</li>
+<li><code>chmod u=rwx app.js app.js</code> 的所有者拥有对该文件的读写和执行权限；</li>
+<li><code>chmod 624 app.js</code> 分别给三组用户不同的权限（u: rw, g: w, o: r）；</li>
+<li><code>chmod 755 ~/works</code> 分别给三组用户不同的权限（u: rwx, g: rx, o: rx）。</li>
+</ul>
+<p>###参考</p>
+<p><a href="https://zh.wikipedia.org/wiki/Chmod" target="_blank" rel="noopener">wiki: Chmod</a></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
     <article id="post-link" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
@@ -220,83 +330,6 @@ hu group.</p>
 
 </article>
     
-    <article id="post-hello-world" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2017/08/13/hello-world/"
-    >Hello world</a
-  >
-</h2>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2017/08/13/hello-world/" class="article-date">
-  <time datetime="2017-08-13T01:31:52.000Z" itemprop="datePublished">2017-08-12</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="quick-start"><a class="markdownIt-Anchor" href="#quick-start"></a> Quick Start</h2>
-<h3 id="create-a-new-post"><a class="markdownIt-Anchor" href="#create-a-new-post"></a> Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="run-server"><a class="markdownIt-Anchor" href="#run-server"></a> Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="generate-static-files"><a class="markdownIt-Anchor" href="#generate-static-files"></a> Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="deploy-to-remote-sites"><a class="markdownIt-Anchor" href="#deploy-to-remote-sites"></a> Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-      <!-- reward -->
-      
-    </div>
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-
-</article>
-    
   </article>
   
 
@@ -366,7 +399,7 @@ hu group.</p>
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Suche">
+      <a class="nav-item-link nav-item-search"  title="Search">
         <i class="ri-search-line"></i>
       </a>
       

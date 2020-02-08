@@ -701,6 +701,700 @@
 
 </article>
     
+    <article id="post-database_concurrency" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/10/01/database_concurrency/"
+    >Database Concurrency Summary</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/10/01/database_concurrency/" class="article-date">
+  <time datetime="2019-10-01T08:35:04.000Z" itemprop="datePublished">2019-10-01</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="数据库并发控制"><a class="markdownIt-Anchor" href="#数据库并发控制"></a> 数据库并发控制</h1>
+<h1 id="concurrency-control"><a class="markdownIt-Anchor" href="#concurrency-control"></a> Concurrency control</h1>
+<h2 id="acid-principle-for-transaction-management"><a class="markdownIt-Anchor" href="#acid-principle-for-transaction-management"></a> ACID principle for transaction management</h2>
+<h3 id="atomicity-原子性-all-or-none"><a class="markdownIt-Anchor" href="#atomicity-原子性-all-or-none"></a> Atomicity 原子性 “all or none”</h3>
+<p>事务所做操作要么全部提交要么全部失败回滚</p>
+<ul>
+<li>实现： 日志,   Shadow paging</li>
+</ul>
+<h3 id="consistency-一致性-looks-correct"><a class="markdownIt-Anchor" href="#consistency-一致性-looks-correct"></a> Consistency 一致性 “looks correct”</h3>
+<ul>
+<li>
+<p>数据库一致性 仍遵循完整性约束 未来事务能看到过去事务造成的后果</p>
+</li>
+<li>
+<p>事务一致性  事务前后数据库内容一致 一致意味着多个事务访问相同数据得到相同结果</p>
+</li>
+</ul>
+<h3 id="isolation-隔离性-lives-alone"><a class="markdownIt-Anchor" href="#isolation-隔离性-lives-alone"></a> Isolation 隔离性 “lives alone”</h3>
+<p>事务所作修改提交前对其他事务不可见</p>
+<ul>
+<li>两种类别的并发控制协议来保证隔离性
+<ul>
+<li>悲观  从最初就避免问题的发生</li>
+<li>乐观  假设冲突发生不常见，发生后再处理</li>
+</ul>
+</li>
+</ul>
+<h3 id="durability-持久性-survives-failure"><a class="markdownIt-Anchor" href="#durability-持久性-survives-failure"></a> Durability 持久性 “survives failure”</h3>
+<p>事务提交的修改应被持久化，即便系统崩溃也不受影响</p>
+<h2 id="conflict-serializability-in-transaction-scheduling"><a class="markdownIt-Anchor" href="#conflict-serializability-in-transaction-scheduling"></a> Conflict Serializability in transaction scheduling</h2>
+<ul>
+<li><strong>Schedules are equivalent to some serial schedule.</strong></li>
+<li>This is what (almost) every DBMS supports when you ask for the SERIALIZABLE isolation level.</li>
+<li>Schedule S is <strong>conflict serializable</strong> if you are able to <strong>transform</strong> S into a <strong>serial schedule</strong> by <strong>swapping</strong> consecutive non-conflicting operations of different transactions.</li>
+<li>Verify using either the swapping method or dependency graphs.</li>
+<li>A schedule is <strong>conflict serializable</strong> if and only if its dependency graph is <strong>acyclic</strong>.</li>
+</ul>
+<h2 id="consistency-conflicts-in-transaction-management"><a class="markdownIt-Anchor" href="#consistency-conflicts-in-transaction-management"></a> Consistency Conflicts in transaction management</h2>
+<ul>
+<li>读写冲突：
+<ul>
+<li>不可重复读 “non-repeatable read”   两个读的中间数据被另一个事务<strong>覆写并提交</strong> 导致第二次读的<strong>同一行值</strong>不同
+<ul>
+<li>transaction reads committed <strong>UPDATES</strong> from another transaction. The same row now has different values than it did when your transaction began.</li>
+<li>A non-repeatable read occurs, when during the course of a transaction, a row is retrieved twice and the <strong>values within the row differ</strong> between reads.</li>
+</ul>
+</li>
+<li>幻读 “phantom read” 两个读的中间<strong>被另一个事务插入/删除行并提交</strong> 导致第二次读<strong>返回的行不同</strong>
+<ul>
+<li>Phantom reads are similar but when reading from committed <strong>INSERTS</strong> and/or <strong>DELETES</strong> from another transaction. There are new rows or rows that have disappeared since you began the transaction.</li>
+<li>A phantom read occurs when, in the course of a transaction, two identical queries are executed, and the <strong>collection of rows</strong> returned by the second query is different from the first.</li>
+</ul>
+</li>
+<li>避免不可重复读锁行就足够，避免幻影读则需要锁表</li>
+</ul>
+</li>
+<li>写读冲突： 脏读 “dirty reads” Reading uncommitted data 读了另一个事务没有提交的数据</li>
+<li>写写冲突：丢失修改 “lost updates” overwriting uncommitted data 一个事务覆盖另一个事务没有提交的数据</li>
+</ul>
+<h2 id="pessimistic-concurrency-control"><a class="markdownIt-Anchor" href="#pessimistic-concurrency-control"></a> Pessimistic Concurrency Control</h2>
+<h3 id="two-phase-locking-cc-protocol"><a class="markdownIt-Anchor" href="#two-phase-locking-cc-protocol"></a> Two-Phase Locking CC protocol</h3>
+<ul>
+<li>
+<p><strong>Pessmistic 悲观的</strong> assume there are a lot of contentions in transactions 因此安全程度高 但并发能力会有所限制 (not allow all serializable schedules)</p>
+</li>
+<li>
+<p>Two basic types of locks &amp; compatibility matrix</p>
+<ul>
+<li>Write lock X (exclusive) Read lock S (shared)</li>
+</ul>
+</li>
+<li>
+<p>2PL <strong>always</strong> gurantee conflicts-serializable schedule = grantee serializable schedule</p>
+</li>
+<li>
+<p>二个阶段      “/\”</p>
+<ul>
+<li>生长期 只允许拿锁</li>
+<li>收缩期 一旦释放第一个锁 进入收缩期
+<ul>
+<li>只允许释放锁 或不释放锁</li>
+<li>不允许拿锁</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Problem: can have <strong>cascading abort</strong> in case of <strong>dirty reads</strong> 例如t1写 t2读 此时t1还没commit便abort 此时t2不得不abort…如果t2也写了还没来的及提交后面还有读的那这个反应会连锁下去</p>
+</li>
+<li>
+<p>Solution: Strong Strict 2PL  (SS2PL) 一个事务提交/abort后才允许放锁 一次放完</p>
+</li>
+<li>
+<p>Deadlock handling:</p>
+<ul>
+<li>Detection:
+<ul>
+<li>run backgroud task that periodically checks for cycles in waits-for graph / 超时检测</li>
+<li>selects a victim to rollback and breaks the cycle 选择标准和rollback程度取决于具体设计</li>
+</ul>
+</li>
+<li>Prevention:
+<ul>
+<li>assign priority based on timestamp  older timestamp = higher priority</li>
+<li>after comparison, one will get lock, the other waits, this essentially breaks deadlock.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="locking-granularities-and-hierarchy"><a class="markdownIt-Anchor" href="#locking-granularities-and-hierarchy"></a> Locking Granularities and hierarchy</h3>
+<p>MySQL 中提供了两种封锁粒度：行级锁以及表级锁。<br>
+应该尽量只锁定需要修改的那部分数据，而不是所有的资源。锁定的数据量越少，发生锁争用的可能就越小，系统的并发程度就越高。<br>
+但是加锁需要消耗资源，锁的各种操作（包括获取锁、释放锁、以及检查锁状态）都会增加系统开销。因此封锁粒度越小，系统开销就越大。<br>
+在选择封锁粒度时，需要在锁开销和并发程度之间做一个权衡。</p>
+<ul>
+<li>一个事务想要更新1billion tuples = ask for locks 1 billion times  VERY SLOW</li>
+<li>WE NEED a lock hierarchy that reflects what is down there (行级) at high level (表级)</li>
+</ul>
+<h4 id="如何更方便的进行多粒度封锁-意向锁"><a class="markdownIt-Anchor" href="#如何更方便的进行多粒度封锁-意向锁"></a> 如何更方便的进行多粒度封锁： 意向锁</h4>
+<ul>
+<li>
+<p>意向锁Intention lock: “lock escalation” 细粒度锁太多时动态的分配可用的粗粒度锁  大大减少lock manager需要处理的锁的请求数量</p>
+<p>Intention locks <strong>allow a higher level node to be locked in shared or exclusive mode without having to check all descendant nodes.</strong> If a node is in an intention mode, then explicit locking is being done at a lower level in the tree. <strong>基本相当于告诉你下面有什么样的锁 通过兼容矩阵 可以从hierarchy高处如表级快速判断能不能读/写下层具体行的数据</strong></p>
+</li>
+<li>
+<p>Intention-Shared (IS):下面某个地方有读锁</p>
+<ul>
+<li>Intention-Exclusive (IX):下面某个地方有写锁</li>
+</ul>
+</li>
+<li>
+<p>Shared+Intention-Exclusive (SIX):  整个子树可共享读，下面某个孩子有写锁</p>
+</li>
+<li>
+<p>各种锁的兼容关系如下：</p>
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/image-20191207214442687.png"> </div><br>
+解释如下：
+<ul>
+<li>任意 IS/IX 锁之间都是兼容的，因为它们只表示想要对表加锁，而不是真正加锁；</li>
+<li>这里兼容关系针对的是表级锁，而表级的 IX 锁和行级的 X 锁兼容，两个事务可以对两个数据行加 X 锁。（事务 T<sub>1</sub> 想要对数据行 R<sub>1</sub> 加 X 锁，事务 T<sub>2</sub> 想要对同一个表的数据行 R<sub>2</sub> 加 X 锁，两个事务都需要对该表加 IX 锁，但是 IX 锁是兼容的，并且 IX 锁与行级的 X 锁也是兼容的，因此两个事务都能加锁成功，对同一个表中的两个数据行做修改。）</li>
+</ul>
+</li>
+</ul>
+<h3 id="三级封锁协议"><a class="markdownIt-Anchor" href="#三级封锁协议"></a> 三级封锁协议</h3>
+<ul>
+<li><strong>一级封锁协议</strong>  事务 T 要修改数据 A 时必须加 X 锁，直到 T 结束才释放锁。可以解决丢失修改问题</li>
+<li><strong>二级封锁协议</strong>  在一级的基础上，要求读取数据 A 时必须加 S 锁，读取完马上释放 S 锁。可以解决读脏数据问题</li>
+<li><strong>三级封锁协议</strong>  在二级的基础上，要求读取数据 A 时必须加 S 锁，直到事务结束了才能释放 S 锁。可以解决不可重复读的问题</li>
+</ul>
+<h3 id="mysql-隐式与显示锁定"><a class="markdownIt-Anchor" href="#mysql-隐式与显示锁定"></a> MySQL 隐式与显示锁定</h3>
+<p>MySQL 的 InnoDB 存储引擎采用两段锁协议，会<strong>根据隔离级别在需要的时候自动加锁，并且所有的锁都是在同一时刻被释放，这被称为隐式锁定</strong>。<br>
+InnoDB 也可以使用特定的语句进行显示锁定：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">LOCK</span> <span class="keyword">In</span> <span class="keyword">SHARE</span> <span class="keyword">MODE</span>;</span><br><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="optimistic-concurrency-control"><a class="markdownIt-Anchor" href="#optimistic-concurrency-control"></a> Optimistic Concurrency Control</h2>
+<p>Ensure ordering using different methods. Assume they are good, handle problems later.</p>
+<h3 id="basic-timestamp-ordering-to-cc-protocol"><a class="markdownIt-Anchor" href="#basic-timestamp-ordering-to-cc-protocol"></a> Basic Timestamp ordering (T/O) CC protocol</h3>
+<ul>
+<li>
+<p>Basic idea: assign <strong>unique fixed monotonically increasing numeric</strong> value “timestamp” to determine <strong>commit order</strong>.</p>
+<ul>
+<li>different schemes for implementing timestamp: system clock, logical counter…</li>
+</ul>
+</li>
+<li>
+<p>Timestamp smaller TS(i) &lt; TS(j) = transaction i appears before j.</p>
+</li>
+<li>
+<p>Method:</p>
+<ul>
+<li>Transaction r/w object without locks.</li>
+<li>Every object X is tagged with timestamp of last txn that successfully did read / write. R-TS(X) / W-TS(X)</li>
+<li>Reads
+<ul>
+<li>Check timestamp for every operations, if txn k tries to access an object from the future, <strong>TS(k) &lt; W-TS(X)</strong>, (timestamp order of k violates writer of X), k aborts and restarts with <strong>newer</strong> TS.</li>
+<li>Otherwise allow txn k to read X, update R-TS(X) = max(R-TS(X), TS(k)), make a local copy of X to ensure repeatable reads for k. (subsequent read occurs in local copy)</li>
+</ul>
+</li>
+<li>Writes
+<ul>
+<li>If TS(k) &lt; R-TS(X) or TS(k) &lt; W-TS(X) abort and restart k.
+<ul>
+<li>opitimization: in case of write can simply <strong>ignore and continue</strong> “thomas write rule” this allow us to even commit it. Somewhat useful but will not give us a conflict serializable schedule.</li>
+</ul>
+</li>
+<li>else allow k to write X and update W-TS(X), make a local copy of X to ensure repeatable reads for k. (subsequent read occurs in local copy)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Comments:</p>
+<ul>
+<li>Can gurantee to generate a conflict serializable schedule if do not use “Thomas write rule”</li>
+<li>No deadlocks because no “waiting” at all.</li>
+<li>Can have starvation for long tens if shorter one keep causeing conflicts.</li>
+<li>permits schedules that are not recoverable 可恢复事务: 他读到的所有事务在他之前commit</li>
+<li>high overhead of copying data to local workspace and updating timestamps.</li>
+</ul>
+</li>
+</ul>
+<h3 id="optimistic-cc-occ-protocol"><a class="markdownIt-Anchor" href="#optimistic-cc-occ-protocol"></a> Optimistic CC (OCC) protocol</h3>
+<ul>
+<li>
+<p>Basic idea:  No locks at all.</p>
+<ul>
+<li>DBMS creates a private workspace for each transaction</li>
+<li>any obj read is copied into thread local workspace for following r/w, perform modifications at local workspace</li>
+<li>Validation: when commits, DBMS compares local workspace to see if it incurrs conflicts with other txns. Get a timestamp.</li>
+<li>Atomic install to global database if no conflicts.</li>
+</ul>
+</li>
+<li>
+<p>3 Phases</p>
+<ul>
+<li>
+<ol>
+<li>Read: make w/r modifications at private thread local workspace</li>
+<li>Validation: check if conflicts exist before commit, get a timestamp</li>
+<li>Write: valid =&gt; apply local changes to global database, abort &amp; restart otherwise.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>Serial Validation Explained</p>
+<ul>
+<li>Maintain a global view of all active txns.</li>
+<li>record w/r set while txns running and write into private workspace</li>
+<li>execute validation and write phase in a protected critical section</li>
+<li>when txn invokes COMMIT, DBMS checks existence of conflicts through methods like the following, <strong>it checks if 双方write set intersects</strong>, if so, abort (myself) .
+<ul>
+<li>Backward Validation: look at all older txns in the system</li>
+<li>Forward Validation: look at all younger txns in the system.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Comments:</p>
+<ul>
+<li>OCC Works well when #conflicts is low, transactions read heavy, mostly accessing disjoint subsets of data.  In this case locking is wasteful.</li>
+<li>High overhead of copying data to local space. Serial Validation/Write bottlenecks. Aborts more wasteful than 2PL because txns have already executed.   The validation step also need latches when comparing read write sets because maybe T2 is writing while T1 is reading. latch contention when a lot of concurrent txns ?</li>
+</ul>
+</li>
+</ul>
+<h3 id="partition-based-timestamp-ordering-protocol"><a class="markdownIt-Anchor" href="#partition-based-timestamp-ordering-protocol"></a> Partition-based Timestamp ordering protocol</h3>
+<ul>
+<li>Idea:
+<ul>
+<li>partition db into disjoint subsets called partitions / <strong>shards</strong> so that we do not need locks.</li>
+<li>Queued up &amp; assign timestamps upon arrival to order txns for serial execution at each partition. <strong>NO Concurrency  THIS IS SINGLE-THREADED</strong>.</li>
+<li>Partitions are protected by a single lock. A txn acquires the partition’s lock if it has the lowest timestamp in queue, it starts when it has all the locks of partitions it needs (r/w).
+<ul>
+<li>A txn can read anything in the partition it have locked</li>
+<li>write occurs in place, maintains a in-mem buffer to undo changes if aborted.</li>
+<li>abort &amp; restart if accessing a partition that it does not have the lock.</li>
+</ul>
+</li>
+<li>Only check conflicts between txns within same partitions.</li>
+<li>The finer-grained each partition is the more parallelism we get on disjoint sets of data</li>
+</ul>
+</li>
+<li>Comments:
+<ul>
+<li>Fast: when DBMS knows what partitions txn needs before it starts, most txns only need to access a single partition.</li>
+<li>Mult-partition txns are slower, some partitions can be idle.</li>
+</ul>
+</li>
+</ul>
+<h3 id="phantom-problem"><a class="markdownIt-Anchor" href="#phantom-problem"></a> Phantom problem</h3>
+<ul>
+<li>The above discussed protocols only deal with read/update. But if we have insertions / updates / deletions, we can have the phantom problem.
+<ul>
+<li>2PL cannot solve this because these new rows do not even have locks.</li>
+<li>Predicate locking can solve it but too hard to implement.</li>
+<li>Index locking can solves it</li>
+</ul>
+</li>
+</ul>
+<h2 id="isolation-level"><a class="markdownIt-Anchor" href="#isolation-level"></a> Isolation Level</h2>
+<p>产生并发不一致性问题的主要原因是破坏了事务的隔离性，解决方法是通过并发控制来保证隔离性。并发控制可以通过封锁来实现，但是封锁操作需要用户自己控制，相当复杂。数据库管理系统提供了事务的隔离级别，让用户以一种更轻松的方式处理并发一致性问题。</p>
+<p><img src="https://s2.ax1x.com/2020/02/02/1J7MlR.png" alt="isl"></p>
+<ul>
+<li>RU: 事务中的修改，即使没有提交，对其它事务也是可见的。</li>
+<li>RC: 一个事务只能读取已经提交的事务所做的修改。</li>
+<li>RR: 保证在同一个事务中多次读取同一数据的结果是一样的。</li>
+<li>S: 强制事务串行执行，这样多个事务互不干扰，不会出现并发一致性问题。从MVCC并发控制退化为基于锁的并发控制。不区别快照读和当前读，所有的读操作都是当前读，读加读锁（S锁），写加写锁（X锁）。在该隔离级别下，读写冲突，因此并发性能急剧下降，在MySQL/InnoDB中不建议使用。</li>
+</ul>
+<h2 id="multi-version-concurrency-control"><a class="markdownIt-Anchor" href="#multi-version-concurrency-control"></a> Multi-version concurrency control</h2>
+<ul>
+<li>
+<p>“Let writers make a “new” copy while readers use an appropriate “old” copy.”</p>
+</li>
+<li>
+<p>最常见的并发控制方法 DBMS. 非常适合读多写少的OLTP workload 可以提供rr级别的隔离程度</p>
+</li>
+<li>
+<p>读=读一个版本 写=创建一个新版本 版本号一般是通过时间戳机制分配</p>
+</li>
+<li>
+<p>只有 写写冲突 通过first commiter/first updater win 解决</p>
+</li>
+<li>
+<p>RC RR隔离级别下使用版本链 多个版本的快照存在undo日志中，日志通过回滚指针把一个数据行的所有快照连起来</p>
+</li>
+<li>
+<p>MVCC 维护一个read view结构 读的时候判断数据行快照是否可以使用</p>
+</li>
+<li>
+<p>mvcc下快照读select…不需要锁，当前读（涉及插入删除更新）仍需要锁</p>
+</li>
+<li>
+<p>mysql为了解决rr级别下当前读的幻读问题，使用了next-key lock本质上是索引锁+间隙锁 = 不仅锁定了索引还锁定了索引之间的间隙 就相当于数学上一个大区间中间很多个小区间  我在小区间端点上加锁之外还要在间隙上加锁才能保证安全性</p>
+</li>
+</ul>
+<h1 id="关系数据库设计理论"><a class="markdownIt-Anchor" href="#关系数据库设计理论"></a> 关系数据库设计理论</h1>
+<h2 id="函数依赖"><a class="markdownIt-Anchor" href="#函数依赖"></a> 函数依赖</h2>
+<p>记 A-&gt;B 表示 A uniquely determines B，也可以说 B functionaly dependent on A。</p>
+<p><strong>Full Functional Dependency :</strong> X is functionally dependent on Y and is not functionally dependent on any proper subset of Y.</p>
+<p>A <strong>Partial Functional Dependency</strong> is when you have a Composite Primary Key (a primary key that is made up of multiple columns), and one of the non-key columns is functionally dependent on a proper subset of the columns that make up the Composite Primary Key.</p>
+<p>对于 A-&gt;B，B-&gt;C，则 A-&gt;C 是一个传递函数依赖。</p>
+<p>For example : Let there be a relation R ( Course, Sid , Sname , fid, schedule ,  room , marks )</p>
+<p>Full Functional Dependencies : {Course , Sid) -&gt; Sname , {Course , Sid} -&gt; Marks, etc.</p>
+<p>Partial Functional Dependencies : Course -&gt; Schedule ,  Course -&gt; Room</p>
+<h2 id="异常"><a class="markdownIt-Anchor" href="#异常"></a> 异常</h2>
+<p>以下的学生课程关系的函数依赖为 {Sno, Cname} -&gt; {Sname, Sdept, Mname, Grade}，键码为 {Sno, Cname}。也就是说，确定学生和课程之后，就能确定其它信息。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Sname</th>
+<th style="text-align:center">Sdept</th>
+<th style="text-align:center">Mname</th>
+<th style="text-align:center">Cname</th>
+<th style="text-align:center">Grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">学生-1</td>
+<td style="text-align:center">学院-1</td>
+<td style="text-align:center">院长-1</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">90</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">80</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">学生-3</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">95</td>
+</tr>
+</tbody>
+</table>
+<p>不符合范式的关系，会产生很多异常，主要有以下四种异常：</p>
+<ul>
+<li>冗余数据：例如 <code>学生-2</code> 出现了两次。</li>
+<li>修改异常：修改了一个记录中的信息，但是另一个记录中相同的信息却没有被修改。</li>
+<li>删除异常：删除一个信息，那么也会丢失其它信息。例如删除了 <code>课程-1</code> 需要删除第一行和第三行，那么 <code>学生-1</code> 的信息就会丢失。</li>
+<li>插入异常：例如想要插入一个学生的信息，如果这个学生还没选课，那么就无法插入。</li>
+</ul>
+<h2 id="范式"><a class="markdownIt-Anchor" href="#范式"></a> 范式</h2>
+<p>范式理论是为了解决以上提到四种异常。</p>
+<p>高级别范式的依赖于低级别的范式，1NF 是最低级别的范式。</p>
+<h3 id="1-第一范式-1nf"><a class="markdownIt-Anchor" href="#1-第一范式-1nf"></a> 1. 第一范式 (1NF)</h3>
+<p>原子属性不可分。</p>
+<h3 id="2-第二范式-2nf"><a class="markdownIt-Anchor" href="#2-第二范式-2nf"></a> 2. 第二范式 (2NF)</h3>
+<p>1NF+每个非主属性不存在<strong>部分函数依赖</strong>(完全函数依赖于主属性/主键)。</p>
+<p>可以通过分解来满足。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Sname</th>
+<th style="text-align:center">Sdept</th>
+<th style="text-align:center">Mname</th>
+<th style="text-align:center">Cname</th>
+<th style="text-align:center">Grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">学生-1</td>
+<td style="text-align:center">学院-1</td>
+<td style="text-align:center">院长-1</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">90</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">80</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">学生-3</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">95</td>
+</tr>
+</tbody>
+</table>
+<p>以上学生课程关系中，{Sno, Cname} 为主键，有如下函数依赖：</p>
+<ul>
+<li>Sno -&gt; Sname, Sdept</li>
+<li>Sdept -&gt; Mname</li>
+<li>Sno, Cname-&gt; Grade</li>
+</ul>
+<p>Grade 完全函数依赖于主键，它没有任何冗余数据，每个学生的每门课都有特定的成绩。</p>
+<p>Sname, Sdept 和 Mname 都部分依赖于主键，当一个学生选修了多门课时，这些数据就会出现多次，造成大量冗余数据。</p>
+<p><font size="4">  <strong>分解后</strong>  </font><br></p>
+<p>关系-1</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Sname</th>
+<th style="text-align:center">Sdept</th>
+<th style="text-align:center">Mname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">学生-1</td>
+<td style="text-align:center">学院-1</td>
+<td style="text-align:center">院长-1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">学生-3</td>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+</tr>
+</tbody>
+</table>
+<p>有以下函数依赖：</p>
+<ul>
+<li>Sno -&gt; Sname, Sdept</li>
+<li>Sdept -&gt; Mname</li>
+</ul>
+<p>关系-2</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Cname</th>
+<th style="text-align:center">Grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">90</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">80</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">课程-1</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">课程-2</td>
+<td style="text-align:center">95</td>
+</tr>
+</tbody>
+</table>
+<p>有以下函数依赖：</p>
+<ul>
+<li>Sno, Cname -&gt;  Grade  完全函数依赖</li>
+</ul>
+<h3 id="3-第三范式-3nf"><a class="markdownIt-Anchor" href="#3-第三范式-3nf"></a> 3. 第三范式 (3NF)</h3>
+<p>2NF + 非主属性不存在“<strong>传递函数依赖</strong>”。</p>
+<p>关系-1 中存在以下传递函数依赖：</p>
+<ul>
+<li>Sno -&gt; Sdept -&gt; Mname</li>
+</ul>
+<p>可以把它分解成以下两个表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sno</th>
+<th style="text-align:center">Sname</th>
+<th style="text-align:center">Sdept</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">学生-1</td>
+<td style="text-align:center">学院-1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">学生-2</td>
+<td style="text-align:center">学院-2</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">学生-3</td>
+<td style="text-align:center">学院-2</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Sdept</th>
+<th style="text-align:center">Mname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">学院-1</td>
+<td style="text-align:center">院长-1</td>
+</tr>
+<tr>
+<td style="text-align:center">学院-2</td>
+<td style="text-align:center">院长-2</td>
+</tr>
+</tbody>
+</table>
+<h1 id="er-图"><a class="markdownIt-Anchor" href="#er-图"></a> ER 图</h1>
+<ul>
+<li>一对多：带箭头的线</li>
+<li>一对一：双向带箭头线</li>
+<li>多对多：不带箭头的线</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2020/02/02/1JfQVH.png" alt="erdiagram"></p>
+<h2 id="表示出现多次的关系"><a class="markdownIt-Anchor" href="#表示出现多次的关系"></a> 表示出现多次的关系</h2>
+<p>一个实体在联系出现几次，就要用几条线连接。</p>
+<p>下图表示一个课程的先修关系，先修关系出现两个 Course 实体，第一个是先修课程，后一个是后修课程，因此需要用两条线来表示这种关系。</p>
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/ac929ea3-daca-40ec-9e95-4b2fa6678243.png" width="250px"> </div><br>
+## 表示子类
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/14389ea4-8d96-4e96-9f76-564ca3324c1e.png" width="450px"> </div><br>
+# Indexing
+<ul>
+<li>
+<p>data can only have one actual order sorted by a order</p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/jiadajing267/article/details/54581262" target="_blank" rel="noopener">https://blog.csdn.net/jiadajing267/article/details/54581262</a></p>
+</li>
+<li>
+<p>Clustered : actually order data the same way as index key</p>
+</li>
+<li>
+<p>non-clustered: only a list of reference</p>
+</li>
+<li>
+<p>index-key  what the sort order is based on</p>
+</li>
+<li>
+<p>b+树 叶子层有序数组链表+非叶子层平衡多叉树有序索引   同时支持高效等值查询和范围查询 （节点内有序可以2分搜索）</p>
+</li>
+<li>
+<p>b+树与b树区别： b+树非叶节点 相当于多级索引，不含指向record的指针 （节省空间储存更多索引项）  叶子层是有序数组<strong>链表</strong></p>
+</li>
+<li>
+<p>为什么适合储存：b+树节点要求半满 而且因为是多路查找树 节点内容多 相比红黑 高度压缩非常明显 树的访问查找效率和高度直接相关 b+树非常矮 大大减少IO次数 更适合文件系统和数据储存  支持bulk-loading 更适合文件系统和数据储存</p>
+</li>
+<li></li>
+<li>
+<p>InnoDB和MyISAM的区别</p>
+<ol>
+<li>
+<p>InnoDB 支持事务，MyISAM 不支持事务。这是 MySQL 将默认存储引擎从 MyISAM 变成 InnoDB 的重要原因之一；</p>
+</li>
+<li>
+<p>InnoDB 支持外键，而 MyISAM 不支持。对一个包含外键的 InnoDB 表转为 MYISAM 会失败；</p>
+</li>
+<li>
+<p>InnoDB 是聚集索引，MyISAM 是非聚集索引。聚簇索引的文件存放在主键索引的叶子节点上，因此 InnoDB 必须要有主键，通过主键索引效率很高。但是辅助索引需要两次查询，先查询到主键，然后再通过主键查询到数据。因此，主键不应该过大，因为主键太大，其他索引也都会很大。而 MyISAM 是非聚集索引，数据文件是分离的，索引保存的是数据文件的指针。主键索引和辅助索引是独立的。</p>
+</li>
+<li>
+<p>InnoDB 不保存表的具体行数，执行 select count(*) from table 时需要全表扫描。而MyISAM 用一个变量保存了整个表的行数，执行上述语句时只需要读出该变量即可，速度很快；</p>
+</li>
+<li>
+<p>InnoDB 最小的锁粒度是行锁，MyISAM 最小的锁粒度是表锁。一个更新语句会锁住整张表，导致其他查询和更新都会被阻塞，因此并发访问受限。这也是 MySQL 将默认存储引擎从 MyISAM 变成 InnoDB 的重要原因之一；</p>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="nosql"><a class="markdownIt-Anchor" href="#nosql"></a> Nosql</h1>
+<p>better suited for unstructured data</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/">Database</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
     <article id="post-java-jvm" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
@@ -5454,1938 +6148,6 @@ when collisions happen increment k value and maps it elsewhere</p>
 
 </article>
     
-    <article id="post-Operating System - Virtualization" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2019/03/16/Operating System - Virtualization/"
-    >Operating System - Virtualization</a
-  >
-</h2>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2019/03/16/Operating System - Virtualization/" class="article-date">
-  <time datetime="2019-03-15T20:06:41.000Z" itemprop="datePublished">2019-03-15</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <h1 id="cs537-operating-system-summary-part-1-virtualization"><a class="markdownIt-Anchor" href="#cs537-operating-system-summary-part-1-virtualization"></a> <strong>CS537 - Operating System Summary Part 1 Virtualization</strong></h1>
-<h1 id="virtualization"><a class="markdownIt-Anchor" href="#virtualization"></a> Virtualization</h1>
-<h2 id="process"><a class="markdownIt-Anchor" href="#process"></a> Process</h2>
-<h3 id="what-is-a-process"><a class="markdownIt-Anchor" href="#what-is-a-process"></a> What is a process</h3>
-<ul>
-<li>A running program is a process</li>
-<li>Stream of executing instructions and their “context”</li>
-</ul>
-<h3 id="thread"><a class="markdownIt-Anchor" href="#thread"></a> Thread</h3>
-<ul>
-<li>Can have multiple threads within a single process</li>
-<li>Lightweight process</li>
-<li>Share an address space</li>
-</ul>
-<h3 id="why-do-we-need-processes"><a class="markdownIt-Anchor" href="#why-do-we-need-processes"></a> Why do we need processes?</h3>
-<ul>
-<li>Share CPU: Time sharing</li>
-</ul>
-<h3 id="os-scheduler"><a class="markdownIt-Anchor" href="#os-scheduler"></a> OS Scheduler</h3>
-<ul>
-<li>Scheduler save context when process is pause</li>
-<li>Restore context on resumption</li>
-</ul>
-<h3 id="goals-for-cpu-virtualization"><a class="markdownIt-Anchor" href="#goals-for-cpu-virtualization"></a> Goals for CPU Virtualization</h3>
-<ul>
-<li>
-<p>Policy goals</p>
-<ul>
-<li>Virtualize CPU resource using processes</li>
-<li>Reschedule process for fairness? efficiency?</li>
-</ul>
-</li>
-<li>
-<p>Mechanism goals</p>
-<ul>
-<li>Efficiency: Time sharing should not add overhead</li>
-<li>Control: OS should be able to intervene when required</li>
-</ul>
-</li>
-</ul>
-<h2 id="mechanism"><a class="markdownIt-Anchor" href="#mechanism"></a> Mechanism</h2>
-<h3 id="system-call"><a class="markdownIt-Anchor" href="#system-call"></a> System call</h3>
-<ul>
-<li>
-<p>User mode and kernel mode</p>
-<ul>
-<li>User processes run in user mode (restricted mode)</li>
-<li>OS runs in kernel mode (not restricted)</li>
-</ul>
-</li>
-<li>
-<p>System call</p>
-<ul>
-<li>Separate user mode from kernel mode for security</li>
-<li>Use system call to invoke kernel mode functions</li>
-</ul>
-</li>
-<li>
-<p>Procedure for calling read()</p>
-<ol>
-<li>Set system call table index to 6 <code>movl $6, %eax</code></li>
-<li>Call trap with id 64 <code>int $64</code></li>
-</ol>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/7hmjTrj.png" alt=""></p>
-<h3 id="dispatch-mechanism"><a class="markdownIt-Anchor" href="#dispatch-mechanism"></a> Dispatch mechanism</h3>
-<ul>
-<li>
-<p>Dispatch loop</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">while (1) &#123;	</span><br><span class="line">    run	process	A for some time-slice	</span><br><span class="line">    stop process A and save its context	</span><br><span class="line">    load context of another process B	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>Cooperative Multi-tasking</p>
-<ul>
-<li>Trust process to relinquish CPU through traps</li>
-<li>Provide special yield() system call</li>
-<li>Processes can <strong>misbehave</strong></li>
-</ul>
-</li>
-<li>
-<p>Timer-based Multi-tasking</p>
-<ul>
-<li>Hardware generates timer interrupt (CPU or separate chip)</li>
-<li>User must not be able to mask timer interrupt</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/eE325zz.png" alt=""></p>
-<h2 id="policy"><a class="markdownIt-Anchor" href="#policy"></a> Policy</h2>
-<h3 id="vocabulary"><a class="markdownIt-Anchor" href="#vocabulary"></a> Vocabulary</h3>
-<ul>
-<li>Workload: set of jobs (arrival time, run_time)</li>
-<li>Job ~ Current execution of a process</li>
-<li>Scheduler: Decides which ready job to run</li>
-<li>Metric: measurement of scheduling quality</li>
-<li>Turnaround time = completion time - arrival time</li>
-<li>Response time = first run time - arrival time</li>
-</ul>
-<h3 id="fifo-first-in-first-out"><a class="markdownIt-Anchor" href="#fifo-first-in-first-out"></a> FIFO (First In, First Out)</h3>
-<ul>
-<li>Disadvantage: Turnaround time suffers when short jobs must wait for long jobs (Convoy Effect)</li>
-</ul>
-<img src="https://i.imgur.com/p6B5iuB.png" width="75%" style="margin:auto; display: block;">
-<h3 id="sjf-shortest-job-first"><a class="markdownIt-Anchor" href="#sjf-shortest-job-first"></a> SJF (Shortest job first)</h3>
-<ul>
-<li>Disadvantage: Only schedule new job when previous job voluntarily relinquishes CPU</li>
-</ul>
-<img src="https://i.imgur.com/4L0JHF6.png" width="75%" style="margin:auto; display: block;">
-<h3 id="stcf-shortest-time-to-completion-first"><a class="markdownIt-Anchor" href="#stcf-shortest-time-to-completion-first"></a> STCF (Shortest Time-to-Completion First)</h3>
-<ul>
-<li>Preemptive: Schedule different job by taking CPU away from running job</li>
-<li>Always run job that will complete the quickest</li>
-</ul>
-<img src="https://i.imgur.com/F97B6qw.png" width="75%" style="margin:auto; display: block;">
-<h3 id="round-robin"><a class="markdownIt-Anchor" href="#round-robin"></a> Round Robin</h3>
-<ul>
-<li>Goal: reduce response time</li>
-<li>Trade-off: increase turnaround time</li>
-</ul>
-<img src="https://i.imgur.com/aNCUwiF.png" width="75%" style="margin:auto; display: block;">
-<h3 id="io-aware-scheduling"><a class="markdownIt-Anchor" href="#io-aware-scheduling"></a> I/O Aware Scheduling</h3>
-<ul>
-<li>Goal: process won’t hold CPU when doing IO</li>
-</ul>
-<img src="https://i.imgur.com/S8TUga8.png" width="75%" style="margin:auto; display: block;">
-<h3 id="multilevel-feedback-queue"><a class="markdownIt-Anchor" href="#multilevel-feedback-queue"></a> Multilevel Feedback Queue</h3>
-<ul>
-<li>
-<p>Motivation: Run-time of each job is not known</p>
-</li>
-<li>
-<p>Approach</p>
-<ul>
-<li>Multiple levels of round-robin</li>
-<li>Each level has higher priority than lower level</li>
-<li>Can preempt them</li>
-</ul>
-</li>
-<li>
-<p>Rules</p>
-<ol>
-<li>If priority(A) &gt; Priority(B), A runs</li>
-<li>If priority(A) == Priority(B), A &amp; B run in RR</li>
-<li>Processes start at top priority</li>
-<li>If job uses whole slice, demote process (longer time slices at lower priorities)</li>
-</ol>
-</li>
-<li>
-<p>Avoid starvation</p>
-<ul>
-<li>Problem: Low priority job may never get scheduled</li>
-<li>Solution: Periodically boost priority of all jobs (or all jobs thathaven’t been scheduled)</li>
-</ul>
-</li>
-</ul>
-<img src="https://i.imgur.com/RL4PuJC.png" width="50%" style="margin:auto; display: block;">
-<h1 id="memory-virtualization"><a class="markdownIt-Anchor" href="#memory-virtualization"></a> Memory Virtualization</h1>
-<h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
-<h3 id="goals"><a class="markdownIt-Anchor" href="#goals"></a> Goals</h3>
-<ul>
-<li><strong>Transparency</strong>: Process is unaware of sharing</li>
-<li><strong>Protection</strong>: Cannot corrupt OS or other process memory</li>
-<li><strong>Efficiency</strong>: Do not waste memory or slow down processes</li>
-<li><strong>Sharing</strong>: Enable sharing between cooperating processes</li>
-</ul>
-<h3 id="address-space"><a class="markdownIt-Anchor" href="#address-space"></a> Address space</h3>
-<ul>
-<li>Stack: No fragmentation</li>
-<li>Heap: Consists of allocated and free areas (holes)<br>
-<img src="https://i.imgur.com/we79L5F.png" alt=""></li>
-</ul>
-<h3 id="memory-access-example"><a class="markdownIt-Anchor" href="#memory-access-example"></a> Memory Access Example</h3>
-<table>
-<thead>
-<tr>
-<th>Assembly</th>
-<th>Access for Instruction</th>
-<th>Access for Execution</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>0x10: movl 0x8(%rbp), %edi</code></td>
-<td>Fetch instruction at 0x10</td>
-<td>Load from 0x208</td>
-</tr>
-<tr>
-<td><code>0x13: addl $0x3, %edi</code></td>
-<td>Fetch instruction at 0x13</td>
-<td>No memory access</td>
-</tr>
-<tr>
-<td><code>0x19: movl %edi, 0x8(%rbp)</code></td>
-<td>Fetch instruction at 0x19</td>
-<td>Store to 0x208</td>
-</tr>
-</tbody>
-</table>
-<h2 id="basic-mechanisms"><a class="markdownIt-Anchor" href="#basic-mechanisms"></a> Basic Mechanisms</h2>
-<h3 id="time-sharing"><a class="markdownIt-Anchor" href="#time-sharing"></a> Time Sharing</h3>
-<ul>
-<li>On process switch, save current process’s memory to disk and load another process’s memory from disk.</li>
-<li>Ridiculously poor performance</li>
-</ul>
-<h3 id="static-relocation"><a class="markdownIt-Anchor" href="#static-relocation"></a> Static Relocation</h3>
-<ul>
-<li>
-<p>Idea</p>
-<ul>
-<li>OS rewrites each program before loading it as a process in memory</li>
-<li>Each rewrite for different process uses different addresses and pointers</li>
-<li>Change jumps, loads of static data</li>
-</ul>
-</li>
-<li>
-<p>Disadvantage</p>
-<ul>
-<li>Process can destroy OS or other processes</li>
-<li>No privacy</li>
-<li>Cannot move address space after it has been placed</li>
-<li>May not be able to allocate new process</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/840IDak.png" alt=""></p>
-<h3 id="dynamic-relocation-introduction"><a class="markdownIt-Anchor" href="#dynamic-relocation-introduction"></a> Dynamic Relocation: Introduction</h3>
-<ul>
-<li>
-<p>Goal: Protect processes from one another</p>
-</li>
-<li>
-<p>Memory Management Unit (MMU)</p>
-<ul>
-<li>MMU dynamically changes process address at every memory reference</li>
-<li>Process generates <strong>logical</strong> or <strong>virtual</strong> addresses (in their address space)</li>
-<li>Memory hardware uses <strong>physical</strong> or <strong>real</strong> addresses</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/1rZVwO8.png" alt=""></p>
-<ul>
-<li>Two operating modes
-<ul>
-<li>
-<p>Kernel mode</p>
-<ul>
-<li>Can manipulate contents of MMU</li>
-<li>Allows OS to access all of physical memory</li>
-</ul>
-</li>
-<li>
-<p>User mode</p>
-<ul>
-<li>Perform translation of logical address to physical address</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="dynamic-relocation-base-register"><a class="markdownIt-Anchor" href="#dynamic-relocation-base-register"></a> Dynamic Relocation: Base Register</h3>
-<ul>
-<li>Translation on every memory access of user process</li>
-<li>MMU adds base register to logical address to form physical address</li>
-<li>Store offset in base register</li>
-<li>Each process has different value in base register</li>
-<li>Dynamic relocation by changing value of base register.</li>
-</ul>
-<p><img src="https://i.imgur.com/Eika7Rs.png" alt=""></p>
-<ul>
-<li>
-<p>Quiz</p>
-<ul>
-<li>What entity should do translation of addresses with base register? <strong>Hardware</strong></li>
-<li>What entity should modify the base register? <strong>OS</strong></li>
-</ul>
-</li>
-<li>
-<p>Problem: No protection</p>
-</li>
-</ul>
-<h3 id="dynamic-relocation-base-bounds"><a class="markdownIt-Anchor" href="#dynamic-relocation-base-bounds"></a> Dynamic Relocation: Base + Bounds</h3>
-<ul>
-<li>
-<p>Idea</p>
-<ul>
-<li>limit the address space with a bounds register</li>
-<li>Base register: smallest physical addr (or starting location)</li>
-<li>Bounds register: size of this process’s virtual address space</li>
-<li>OS kills process if process loads/stores beyond bounds</li>
-</ul>
-</li>
-<li>
-<p>Implementation</p>
-<ul>
-<li>MMU compares logical address to bounds register</li>
-<li>if logical address is greater, then generate error</li>
-<li>MMU adds base register to logical address to form physical address</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/Qoqdgtb.png" alt=""></p>
-<ul>
-<li>
-<p>Context switch</p>
-<ol>
-<li>Change to privileged mode</li>
-<li>Save base and bounds registers of old process</li>
-<li>Load base and bounds registers of new process</li>
-<li>Change to user mode and jump to new process</li>
-</ol>
-</li>
-<li>
-<p>Advantages</p>
-<ul>
-<li>Provides protection (both read and write) across address spaces</li>
-<li>Supports dynamic relocation</li>
-<li>Simple, inexpensive implementation: Few registers, little logic in MMU</li>
-<li>Fast: Add and compare in parallel</li>
-</ul>
-</li>
-<li>
-<p>Disadvantages</p>
-<ul>
-<li>Each process must be allocated contiguously in physical memory</li>
-<li>Must allocate memory that may not be used by process</li>
-<li>No partial sharing: Cannot share limited parts of address space</li>
-</ul>
-</li>
-</ul>
-<h3 id="segmentation"><a class="markdownIt-Anchor" href="#segmentation"></a> Segmentation</h3>
-<ul>
-<li>
-<p>Idea</p>
-<ul>
-<li>MMU contains Segment Table (per process)</li>
-<li>Each segment has own base and bounds, protection bits</li>
-<li>Example: 14 bit logical address, 4 segments;</li>
-</ul>
-</li>
-<li>
-<p>Example</p>
-<ul>
-<li>
-<p>Segment Table</p>
-<table>
-<thead>
-<tr>
-<th>Segment</th>
-<th>Base</th>
-<th>Bounds</th>
-<th>R W</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>0x2000</td>
-<td>0x6ff</td>
-<td>1 0</td>
-</tr>
-<tr>
-<td>1</td>
-<td>0x0000</td>
-<td>0x4ff</td>
-<td>1 1</td>
-</tr>
-<tr>
-<td>2</td>
-<td>0x3000</td>
-<td>0xfff</td>
-<td>1 1</td>
-</tr>
-<tr>
-<td>3</td>
-<td>0x0000</td>
-<td>0x000</td>
-<td>0 0</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Translation</p>
-<table>
-<thead>
-<tr>
-<th>Logical address</th>
-<th>Segment</th>
-<th>Base</th>
-<th>Physical address</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0x0240</td>
-<td>0</td>
-<td>0x2000</td>
-<td>0x2240</td>
-</tr>
-<tr>
-<td>0x1108</td>
-<td>1</td>
-<td>0x0000</td>
-<td>0x1108</td>
-</tr>
-<tr>
-<td>0x256c</td>
-<td>2</td>
-<td>0x3000</td>
-<td>0x356c</td>
-</tr>
-<tr>
-<td>0x3002</td>
-<td>3</td>
-<td>0x0000</td>
-<td>Fail</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-</li>
-<li>
-<p>Advantages</p>
-<ul>
-<li>No extra memory access</li>
-<li>Enables sparse allocation of address space</li>
-<li>Stack and heap can grow independently</li>
-<li>Enables sharing of selected segments</li>
-<li>Read-only status for code</li>
-<li>Supports dynamic relocation of each segment</li>
-</ul>
-</li>
-<li>
-<p>Disadvantages</p>
-<ul>
-<li>Each segment must be allocated contiguously</li>
-<li>May not have sufficient physical memory for large segments?</li>
-<li>External Fragmentation</li>
-</ul>
-</li>
-</ul>
-<h3 id="summary"><a class="markdownIt-Anchor" href="#summary"></a> Summary</h3>
-<table>
-<thead>
-<tr>
-<th>Description</th>
-<th>Name of approach</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>One process uses RAM at a time</td>
-<td>Time Sharing</td>
-</tr>
-<tr>
-<td>Rewrite code and addresses before running</td>
-<td>Static Relocation</td>
-</tr>
-<tr>
-<td>Add per-process starting location to virt addr to obtain phys addr</td>
-<td>Base</td>
-</tr>
-<tr>
-<td>dynamic approach that verifies address is in valid range</td>
-<td>Base + Bounds</td>
-</tr>
-<tr>
-<td>Several base+bound pairs per process</td>
-<td>Segmentation</td>
-</tr>
-</tbody>
-</table>
-<h2 id="paging"><a class="markdownIt-Anchor" href="#paging"></a> Paging</h2>
-<h3 id="fragmentation"><a class="markdownIt-Anchor" href="#fragmentation"></a> Fragmentation</h3>
-<ul>
-<li>
-<p>Definition</p>
-<ul>
-<li>Free memory that can’t be usefully allocated</li>
-</ul>
-</li>
-<li>
-<p>Types of fragmentation</p>
-<ul>
-<li>External: Visible to allocator (e.g., OS)</li>
-<li>Internal: Visible to requester</li>
-</ul>
-</li>
-</ul>
-<h3 id="introduction-for-paging"><a class="markdownIt-Anchor" href="#introduction-for-paging"></a> Introduction for Paging</h3>
-<ul>
-<li>
-<p>Goal</p>
-<ul>
-<li>Eliminate requirement that address space is contiguous</li>
-<li>Eliminate external fragmentation</li>
-<li>Grow segments as needed</li>
-</ul>
-</li>
-<li>
-<p>Idea</p>
-<ul>
-<li>Divide address spaces and physical memory into fixed-sized pages (usually 4KB)</li>
-</ul>
-</li>
-</ul>
-<h3 id="translation-of-page-addresses"><a class="markdownIt-Anchor" href="#translation-of-page-addresses"></a> Translation of Page Addresses</h3>
-<ul>
-<li>Logical address
-<ul>
-<li>High-order bits of address designate page number</li>
-<li>Low-order bits of address designate offset within page</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/EuMGAwS.png" alt=""></p>
-<ul>
-<li>
-<p>Address Format</p>
-<table>
-<thead>
-<tr>
-<th>Page Size</th>
-<th>Low Bits</th>
-<th>Virt Addr Bits</th>
-<th>High Bits</th>
-<th>Virt Pages</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>16 bytes</td>
-<td>log(16) = 4</td>
-<td>10</td>
-<td>10 - 4 = 6</td>
-<td>2 ^ 6 = 64</td>
-</tr>
-<tr>
-<td>1 KB</td>
-<td>log(1K) = 10</td>
-<td>20</td>
-<td>20 - 10 = 10</td>
-<td>2 ^ 10 = 1024</td>
-</tr>
-<tr>
-<td>1 MB</td>
-<td>log(1M) = 20</td>
-<td>32</td>
-<td>32 - 20 = 12</td>
-<td>2 ^ 12 = 4K</td>
-</tr>
-<tr>
-<td>512 bytes</td>
-<td>log(512) = 9</td>
-<td>16</td>
-<td>16 - 9 = 7</td>
-<td>2 ^ 7 = 128</td>
-</tr>
-<tr>
-<td>4 KB</td>
-<td>log(4K) = 12</td>
-<td>32</td>
-<td>32 -12 = 20</td>
-<td>2 ^ 20 = 1M</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Address Translation</p>
-<ul>
-<li>Number of bits in virtual address <strong>need not equal</strong> number of bits in physical address</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/HZcAtTC.png" alt=""></p>
-<h3 id="pagetables"><a class="markdownIt-Anchor" href="#pagetables"></a> Pagetables</h3>
-<ul>
-<li>
-<p>How should OS translate VPN to PPN?</p>
-<ul>
-<li>Simple solution: Linear page table aka array</li>
-</ul>
-</li>
-<li>
-<p>Example<br>
-<img src="https://i.imgur.com/uWlRJnw.png" alt=""></p>
-<ul>
-<li>Page table for P1: 3, 1, 7, 10</li>
-<li>Page table for P2: 0, 4, 2, 6</li>
-<li>Page table for P3: 8, 5, 9, 11</li>
-</ul>
-</li>
-<li>
-<p>How big is a pagetable</p>
-<ul>
-<li>Given 32-bit address space, 4KB pages, 4 byte entries</li>
-<li>4KB pages =&gt; 12 bit for offset</li>
-<li>32-bit address space =&gt; 20 bit for VPN =&gt; 2 ^ 20 = 1MB entries</li>
-<li>1MB entries * 4 byte per entry = 4MB</li>
-</ul>
-</li>
-<li>
-<p>Where are pagetables stored</p>
-<ul>
-<li>Store each page table in memory</li>
-<li>Hardware finds page table base with register (e.g., CR3 on x86)</li>
-</ul>
-</li>
-<li>
-<p>What happens on a context-switch?</p>
-<ul>
-<li>Change contents of page table base register to newly scheduled process</li>
-<li>Save old page table base register in PCB of descheduled process</li>
-</ul>
-</li>
-<li>
-<p>What other info is in pagetable entries besides translation?</p>
-<ul>
-<li>valid bit</li>
-<li>protection bits</li>
-<li>present bit (needed later)</li>
-<li>reference bit (needed later)</li>
-<li>dirty bit (needed later)</li>
-</ul>
-</li>
-</ul>
-<h3 id="memory-access-with-paging"><a class="markdownIt-Anchor" href="#memory-access-with-paging"></a> Memory Access with Paging</h3>
-<ul>
-<li>
-<p>Given</p>
-<ul>
-<li>Current instruction: <code>0x0010: movl 0x1100, %edi</code></li>
-<li>Assume PT is at phys addr 0x5000</li>
-<li>Assume PTE’s are 4 bytes</li>
-<li>Assume 4KB pages =&gt; 12 bits for offset</li>
-<li>Page table for current process: 2, 0, 80, 99</li>
-</ul>
-</li>
-<li>
-<p>Fetch instruction at logical addr 0x0010</p>
-<ul>
-<li>Access page table to get ppn for vpn 0</li>
-<li>Mem ref 1: 0x5000</li>
-<li>Learn vpn 0 is at ppn 2</li>
-<li>Fetch instruction at 0x2010 (Mem ref 2)</li>
-</ul>
-</li>
-<li>
-<p>Exec, load from logical addr 0x1100</p>
-<ul>
-<li>Access page table to get ppn for vpn 1</li>
-<li>Mem ref 3: 0x5000</li>
-<li>Learn vpn 1 is at ppn 0</li>
-<li>movl from 0x0100 into reg (Mem ref 4)</li>
-</ul>
-</li>
-</ul>
-<h3 id="advantages-of-paging"><a class="markdownIt-Anchor" href="#advantages-of-paging"></a> Advantages of Paging</h3>
-<ul>
-<li>
-<p>No external fragmentation</p>
-<ul>
-<li>Any page can be placed in any frame in physical memory</li>
-</ul>
-</li>
-<li>
-<p>Fast to allocate and free</p>
-<ul>
-<li>Alloc: No searching for suitable free space</li>
-<li>Free: Doesn’t have to coalesce with adjacent free space</li>
-</ul>
-</li>
-<li>
-<p>Simple to swap-out portions of memory to disk (later lecture)</p>
-<ul>
-<li>Page size matches disk block size</li>
-<li>Can run process when some pages are on disk</li>
-<li>Add “present” bit to PTE</li>
-</ul>
-</li>
-</ul>
-<h3 id="disadvantages-of-paging"><a class="markdownIt-Anchor" href="#disadvantages-of-paging"></a> Disadvantages of Paging</h3>
-<ul>
-<li>
-<p>Internal fragmentation: Page size may not match size needed by process</p>
-<ul>
-<li>Wasted memory grows with larger pages</li>
-<li>Tension?</li>
-</ul>
-</li>
-<li>
-<p>Additional memory reference to page table -&gt; Very inefficient</p>
-<ul>
-<li>Page table must be stored in memory</li>
-<li>MMU stores only base address of page table</li>
-</ul>
-</li>
-<li>
-<p>Storage for page tables may be substantial</p>
-<ul>
-<li>Simple page table: Requires PTE for all pages in address space</li>
-<li>Entry needed even if page not allocated?</li>
-</ul>
-</li>
-</ul>
-<h3 id="paging-translation-steps"><a class="markdownIt-Anchor" href="#paging-translation-steps"></a> Paging Translation Steps</h3>
-<ol>
-<li>extract VPN (virt page num) from VA (virt addr)</li>
-<li>calculate addr of PTE (page table entry)</li>
-<li>read PTE from memory</li>
-<li>extract PFN (page frame num)</li>
-<li>build PA (phys addr)</li>
-<li>read contents of PA from memory into register</li>
-</ol>
-<h2 id="tlb"><a class="markdownIt-Anchor" href="#tlb"></a> TLB</h2>
-<h3 id="motivative-example-iterating-array"><a class="markdownIt-Anchor" href="#motivative-example-iterating-array"></a> Motivative Example: Iterating Array</h3>
-<ul>
-<li>
-<p>Code</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)&#123; </span><br><span class="line">    sum += a[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>Memory Access</p>
-<table>
-<thead>
-<tr>
-<th>What virtual addresses?</th>
-<th>What physical addresses?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>load 0x3000</td>
-<td>load 0x100C <br>load 0x7000</td>
-</tr>
-<tr>
-<td>load 0x3004</td>
-<td>load 0x100C <br>load 0x7004</td>
-</tr>
-<tr>
-<td>load 0x3008</td>
-<td>load 0x100C <br>load 0x7008</td>
-</tr>
-<tr>
-<td>load 0x300C</td>
-<td>load 0x100C <br>load 0x7008</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<h3 id="introduction-2"><a class="markdownIt-Anchor" href="#introduction-2"></a> Introduction</h3>
-<ul>
-<li>Strategy: Cache Page Translations</li>
-<li>TLB stands for Translation Lookaside Buffer<br>
-<img src="https://i.imgur.com/mEwtslZ.png" alt=""></li>
-</ul>
-<h3 id="tlb-organization"><a class="markdownIt-Anchor" href="#tlb-organization"></a> TLB Organization</h3>
-<ul>
-<li>
-<p>TLB Entry</p>
-<table>
-<thead>
-<tr>
-<th>Tag (virtual page number)</th>
-<th>Physical page number (page table entry)</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</li>
-<li>
-<p>Fully associative</p>
-<ul>
-<li>Any given translation can be anywhere in the TLB</li>
-<li>Hardware will search the entire TLB in parallel</li>
-</ul>
-</li>
-</ul>
-<h3 id="example-iterating-array-with-tlb"><a class="markdownIt-Anchor" href="#example-iterating-array-with-tlb"></a> Example: Iterating Array with TLB</h3>
-<ul>
-<li>
-<p>Code</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2048</span>; i++)&#123; </span><br><span class="line">    sum += a[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>Page table for current process (starting at 0x0000)</p>
-  <table>
-      <tbody>
-          <tr>
-              <td>PPN</td>
-              <td>1</td>
-              <td>5</td>
-              <td>4</td>
-              <td>…</td>
-          </tr>
-          <tr>
-              <td>VPN</td>
-              <td>0</td>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-          </tr>
-      </tbody>
-  </table>
-</li>
-<li>
-<p>TLB</p>
-<table>
-<thead>
-<tr>
-<th>Valid</th>
-<th>VPN</th>
-<th>PPN</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>1</td>
-<td>5</td>
-</tr>
-<tr>
-<td>1</td>
-<td>2</td>
-<td>4</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Memory Access</p>
-<table>
-<thead>
-<tr>
-<th>What virtual addresses?</th>
-<th>What physical addresses?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>load 0x1000</td>
-<td>load 0x0004 <br>load 0x5000</td>
-</tr>
-<tr>
-<td>load 0x1004</td>
-<td>(TLB hit) <br>load 0x5004</td>
-</tr>
-<tr>
-<td>load 0x1008</td>
-<td>(TLB hit) <br>load 0x5008</td>
-</tr>
-<tr>
-<td>load 0x100C</td>
-<td>(TLB hit) <br>load 0x500C</td>
-</tr>
-<tr>
-<td>…</td>
-<td>…</td>
-</tr>
-<tr>
-<td>load 0x2000</td>
-<td>load 0x0008 <br>load 0x4000</td>
-</tr>
-<tr>
-<td>load 0x2004</td>
-<td>(TLB hit) <br>load 0x4004</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Performance</p>
-<ul>
-<li># TLB lookups = number of accesses to a = 2048</li>
-<li># TLB misses = 2</li>
-<li>Miss rate = 2/2048 = 0.1%</li>
-<li>Hit rate = 1 – miss rate = 99.9%</li>
-</ul>
-</li>
-</ul>
-<h3 id="tlb-replacement-policies"><a class="markdownIt-Anchor" href="#tlb-replacement-policies"></a> TLB Replacement Policies</h3>
-<ul>
-<li>
-<p>Access Patterns</p>
-<ul>
-<li>Sequential array accesses almost always hit in TLB: Very fast!</li>
-<li>Highly random, with no repeat accesses: Slow</li>
-</ul>
-</li>
-<li>
-<p>Code Example</p>
-<table>
-<thead>
-<tr>
-<th>Workload A</th>
-<th>Workload B</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img src="https://i.imgur.com/fg4fYXO.png" alt=""></td>
-<td><img src="https://i.imgur.com/b3eYUnz.png" alt=""></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><img src="https://i.imgur.com/HWMGImG.png" alt=""></td>
-<td><img src="https://i.imgur.com/iMYOS03.png" alt=""></td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Workload Locality</p>
-<ul>
-<li>Spatial Locality: future access will be to nearby addresses</li>
-<li>Temporal Locality: future access will be repeats to the same data</li>
-</ul>
-</li>
-<li>
-<p>What TLB characteristics are best for each type?</p>
-<ul>
-<li>
-<p>Spatial:</p>
-<ul>
-<li>Access same page repeatedly; need same vpn à ppn translation</li>
-<li>Same TLB entry re-used</li>
-</ul>
-</li>
-<li>
-<p>Temporal:</p>
-<ul>
-<li>Access same address near in future</li>
-<li>Same TLB entry re-used in near future</li>
-<li>How near in future? How many TLB entries are there?</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Replacement policies</p>
-<ul>
-<li>LRU: evict Least-Recently Used TLB slot when needed</li>
-<li>Random: Evict randomly choosen entry</li>
-</ul>
-</li>
-</ul>
-<h3 id="context-switches"><a class="markdownIt-Anchor" href="#context-switches"></a> Context Switches</h3>
-<ul>
-<li>
-<p>What happens if a process uses cached TLB entries from another process?</p>
-<ol>
-<li>
-<p>Flush TLB on each switch</p>
-<ul>
-<li>Costly</li>
-<li>lose all recently cached translations</li>
-</ul>
-</li>
-<li>
-<p>Track which entries are for which process</p>
-<ul>
-<li>Address Space Identifier</li>
-<li>Tag each TLB entry with an 8-bit ASID</li>
-</ul>
-</li>
-</ol>
-</li>
-<li>
-<p>TLB Example with ASID</p>
-<ul>
-<li>
-<p>Pagetable</p>
-<ul>
-<li>P1 (ASID 11): 1, 5, 4, …</li>
-<li>P2 (ASID 12): 6, 2, 3, …</li>
-</ul>
-</li>
-<li>
-<p>TLB</p>
-<table>
-<thead>
-<tr>
-<th>Valid</th>
-<th>Virt</th>
-<th>Phys</th>
-<th>ASID</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>1</td>
-<td>9</td>
-<td>11</td>
-</tr>
-<tr>
-<td>1</td>
-<td>1</td>
-<td>5</td>
-<td>11</td>
-</tr>
-<tr>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>12</td>
-</tr>
-<tr>
-<td>1</td>
-<td>0</td>
-<td>1</td>
-<td>11</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Memory access</p>
-<table>
-<thead>
-<tr>
-<th>Virtual</th>
-<th>Physical</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>load 0x1444 with ASID 12</td>
-<td>0x2444</td>
-</tr>
-<tr>
-<td>load 0x1444 with ASID 11</td>
-<td>0x5444</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-</li>
-<li>
-<p>TLB Performance</p>
-<ul>
-<li>
-<p>Context switches are expensive</p>
-</li>
-<li>
-<p>Even with ASID, other processes “pollute” TLB</p>
-<ul>
-<li>Discard process A’s TLB entries for process B’s entries</li>
-</ul>
-</li>
-<li>
-<p>Architectures can have multiple TLBs</p>
-<ul>
-<li>1 TLB for data, 1 TLB for instructions</li>
-<li>1 TLB for regular pages, 1 TLB for “super pages”</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="tlb-misses"><a class="markdownIt-Anchor" href="#tlb-misses"></a> TLB Misses</h3>
-<ul>
-<li>
-<p>Who Handles TLB MISS? Hardware or OS?</p>
-</li>
-<li>
-<p>Hardware: CPU must know where pagetables are</p>
-<ul>
-<li>CR3 register on x86</li>
-<li>Pagetable structure fixed and agreed upon between HW and OS</li>
-<li>HW “walks” the pagetable and fills TLB</li>
-</ul>
-</li>
-<li>
-<p>OS: “Software-managed TLB”</p>
-<ul>
-<li>CPU traps into OS upon TLB miss</li>
-<li>OS interprets pagetables as it chooses</li>
-<li>Modifying TLB entries is privileged</li>
-<li>Need same protection bits in TLB as pagetable - rwx</li>
-</ul>
-</li>
-</ul>
-<h3 id="summary-2"><a class="markdownIt-Anchor" href="#summary-2"></a> Summary</h3>
-<ul>
-<li>
-<p>Pages are great, but accessing page tables for every memory access is slow</p>
-</li>
-<li>
-<p>Cache recent page translations -&gt; TLB</p>
-<ul>
-<li>Hardware performs TLB lookup on every memory access</li>
-</ul>
-</li>
-<li>
-<p>TLB performance depends strongly on workload</p>
-<ul>
-<li>Sequential workloads perform well</li>
-<li>Workloads with temporal locality can perform well</li>
-</ul>
-</li>
-<li>
-<p>In different systems, hardware or OS handles TLB misses</p>
-</li>
-<li>
-<p>TLBs increase cost of context switches</p>
-<ul>
-<li>Flush TLB on every context switch</li>
-<li>Add ASID to every TLB entry</li>
-</ul>
-</li>
-</ul>
-<h2 id="smaller-page-tables"><a class="markdownIt-Anchor" href="#smaller-page-tables"></a> Smaller Page Tables</h2>
-<h3 id="motivation"><a class="markdownIt-Anchor" href="#motivation"></a> Motivation</h3>
-<ul>
-<li>
-<p>How big are page tables</p>
-<ol>
-<li>
-<p>PTE’s are 2 bytes, and 32 possible virtual page numbers</p>
-<ul>
-<li>2 bytes * 32 = 64 bytes</li>
-</ul>
-</li>
-<li>
-<p>PTE’s are 2 bytes, virtual addrs are 24 bits, pages are 16 bytes</p>
-<ul>
-<li>16 bytes page =&gt; 4 bit offset =&gt; 20 bit VPN</li>
-<li>=&gt; 2^20 Pages =&gt;  2^20 * 2 = 2MB for page tables</li>
-</ul>
-</li>
-<li>
-<p>PTE’s are 4 bytes, virtual addrs are 32 bits, and pages are 4 KB</p>
-<ul>
-<li>4KB page =&gt; 12 bit offset =&gt; 20 bit VPN</li>
-<li>=&gt; 2^20 Pages =&gt;  2^20 * 4 = 4MB for page tables</li>
-</ul>
-</li>
-<li>
-<p>PTE’s are 4 bytes, virtual addrs are 64 bits, and pages are 4 KB</p>
-<ul>
-<li>4KB page =&gt; 12 bit offset =&gt; 52 bit VPN</li>
-<li>=&gt; 2^52 Pages =&gt;  2^52 * 4 = 18.0143985 PB for page tables</li>
-</ul>
-</li>
-</ol>
-</li>
-<li>
-<p>Why are Page Tables so Large?</p>
-<ul>
-<li>Many invalid PT entries</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/hw6UrkL.png" alt=""></p>
-<ul>
-<li>Summary
-<ul>
-<li>
-<p>Storage for page tables may be substantial</p>
-</li>
-<li>
-<p>Simple page table: Requires PTE for all pages in address space</p>
-</li>
-<li>
-<p>Entry needed even if page not allocated.</p>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="smaller-page-tables-2"><a class="markdownIt-Anchor" href="#smaller-page-tables-2"></a> Smaller Page Tables</h3>
-<ul>
-<li>
-<p>Use more complex page tables, instead of just big array</p>
-</li>
-<li>
-<p>Any data structure is possible with software-managed TLB</p>
-<ul>
-<li>
-<p>Hardware looks for vpn in TLB on every memory access</p>
-</li>
-<li>
-<p>If TLB does not contain vpn, TLB miss</p>
-<ul>
-<li>Trap into OS and let OS find vpn-&gt;ppn translation</li>
-<li>OS notifies TLB of vpn-&gt;ppn for future accesses</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Other approaches</p>
-<ol>
-<li>
-<p>Segmented Pagetables</p>
-</li>
-<li>
-<p>Multi-level Pagetables</p>
-<ul>
-<li>Page the page tables</li>
-<li>Page the pagetables of page tables…</li>
-</ul>
-</li>
-<li>
-<p>Inverted Pagetables</p>
-</li>
-</ol>
-</li>
-</ul>
-<h3 id="paging-with-segmentation"><a class="markdownIt-Anchor" href="#paging-with-segmentation"></a> Paging with Segmentation</h3>
-<ul>
-<li>
-<p>Idea</p>
-<ul>
-<li>
-<p>Divide address space into segments (code, heap, stack)</p>
-</li>
-<li>
-<p>Divide each segment into fixed-sized pages</p>
-</li>
-<li>
-<p>Logical address divided into three portions</p>
-<table>
-<thead>
-<tr>
-<th>seg # (4 bits)</th>
-<th>page number (8 bits)</th>
-<th>page offset (12 bits)</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</li>
-</ul>
-</li>
-<li>
-<p>Implementation</p>
-<ul>
-<li>Each segment has a page table</li>
-<li>Each segment track base (physical address) and bounds of the page table</li>
-</ul>
-</li>
-<li>
-<p>Quiz</p>
-<ul>
-<li>
-<p>Logical address layout</p>
-<table>
-<thead>
-<tr>
-<th>seg # (4 bits)</th>
-<th>page number (8 bits)</th>
-<th>page offset (12 bits)</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</li>
-<li>
-<p>Segment Table</p>
-<table>
-<thead>
-<tr>
-<th>Segment</th>
-<th>Base</th>
-<th>Bounds</th>
-<th>R W</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>0x002000</td>
-<td>0xff</td>
-<td>1 0</td>
-</tr>
-<tr>
-<td>1</td>
-<td>0x000000</td>
-<td>0x00</td>
-<td>0 0</td>
-</tr>
-<tr>
-<td>2</td>
-<td>0x001000</td>
-<td>0x0f</td>
-<td>1 1</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Translation</p>
-<table>
-<thead>
-<tr>
-<th>Virtual</th>
-<th>Seg</th>
-<th>Base</th>
-<th>Offset</th>
-<th>PPN</th>
-<th>Physical</th>
-<th>Note</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0x002070 R</td>
-<td>0</td>
-<td>0x002000</td>
-<td>2</td>
-<td>0x004</td>
-<td>0x004070</td>
-<td></td>
-</tr>
-<tr>
-<td>0x202016 R</td>
-<td>2</td>
-<td>0x001000</td>
-<td>2</td>
-<td>0x003</td>
-<td>0x003016</td>
-<td></td>
-</tr>
-<tr>
-<td>0x104c84 R</td>
-<td>1</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>R = 0</td>
-</tr>
-<tr>
-<td>0x010424 W</td>
-<td>0</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>W = 0</td>
-</tr>
-<tr>
-<td>0x210014 W</td>
-<td>2</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>bounds</td>
-</tr>
-<tr>
-<td>0x203568 W</td>
-<td>2</td>
-<td>0x001000</td>
-<td>3</td>
-<td>0x02a</td>
-<td>0x02a568</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-</li>
-<li>
-<p>Advantages</p>
-<ul>
-<li>
-<p>Advantages of Segments</p>
-<ul>
-<li>Supports sparse address spaces.</li>
-<li>Decreases size of page tables. If segment not used, not need for page table</li>
-</ul>
-</li>
-<li>
-<p>Advantages of Pages</p>
-<ul>
-<li>No external fragmentation</li>
-<li>Segments can grow without any reshuffling</li>
-<li>Can run process when some pages are swapped to disk (next lecture)</li>
-</ul>
-</li>
-<li>
-<p>Advantages of Both</p>
-<ul>
-<li>Increases flexibility of sharing: Share either single page or entire segment</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Disadvantages</p>
-<ul>
-<li>Potentially large page tables (for each segment)</li>
-<li>Must allocate each page table contiguously</li>
-<li>More problematic with more address bits</li>
-</ul>
-</li>
-</ul>
-<h3 id="multilevel-page-tables"><a class="markdownIt-Anchor" href="#multilevel-page-tables"></a> Multilevel Page Tables</h3>
-<ul>
-<li>
-<p>Goal: Allow each page tables to be allocated non-contiguously</p>
-</li>
-<li>
-<p>Idea: Page the page tables</p>
-<ul>
-<li>Creates multiple levels of page tables; outer level “page directory”</li>
-<li>Only allocate page tables for pages in use</li>
-<li>Used in x86 architectures (hardware can walk known structure)</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://i.imgur.com/9bSULQI.png" alt=""></p>
-<ul>
-<li>
-<p>Multilevel Pagetable Translation</p>
-<ul>
-<li>
-<p>Page directory and page tables</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>0x0</th>
-<th>0x1</th>
-<th>…</th>
-<th>0xE</th>
-<th>0xF</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Page directory</td>
-<td>0x3</td>
-<td>-</td>
-<td>…</td>
-<td>-</td>
-<td>0x92</td>
-</tr>
-<tr>
-<td>PT @PPN 0x3</td>
-<td>0x10</td>
-<td>0x23</td>
-<td>…</td>
-<td>-</td>
-<td>-</td>
-</tr>
-<tr>
-<td>PT @PPN 0x92</td>
-<td>-</td>
-<td>-</td>
-<td>…</td>
-<td>0x55</td>
-<td>0x45</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Address layout</p>
-<table>
-<thead>
-<tr>
-<th>outer page (4)</th>
-<th>inner page (4)</th>
-<th>page offset (12)</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</li>
-</ul>
-<ol>
-<li>
-<p>Translate 0x01ABC</p>
-<ul>
-<li>Outer page = 0x0 =&gt; Use page table at 0x3</li>
-<li>Inner page = 0x1 =&gt; PPN = 0x23</li>
-<li>Physical address = 0x23ABC</li>
-</ul>
-</li>
-<li>
-<p>Translate 0xFEED0</p>
-<ul>
-<li>Outer page = 0xF =&gt; Use page table at 0x92</li>
-<li>Inner page = 0xE =&gt; PPN = 0x55</li>
-<li>Physical address = 0x55ED0</li>
-</ul>
-</li>
-</ol>
-</li>
-<li>
-<p>Address Format for Multilevel Paging</p>
-<ul>
-<li>Given 30-bit address with 4KB page size</li>
-<li>#bits for page offset = log(4K) = 12</li>
-<li>4 bytes per PTE =&gt; 1K entries per page =&gt; #bits for inner page = log(1K) = 10</li>
-<li>#bits for outer page = 30 - 10 - 12 = 8</li>
-</ul>
-</li>
-<li>
-<p>Pagetable with 3 levels</p>
-<ul>
-<li>
-<p>Problem</p>
-<ul>
-<li>Page directories (outer level) may not fit in a page</li>
-</ul>
-</li>
-<li>
-<p>Solution</p>
-<ul>
-<li>Split page directories into pieces</li>
-<li>Use another page dir to refer to the page dir pieces.</li>
-</ul>
-</li>
-<li>
-<p>Memory Addressability Comparison</p>
-<ul>
-<li>1 level = 2<sup>10</sup> * 2<sup>12</sup> = 4MB</li>
-<li>2 level = (2<sup>10</sup>)<sup>2</sup> * 2<sup>12</sup> = 4GB</li>
-<li>3 level = (2<sup>10</sup>)<sup>3</sup> * 2<sup>12</sup> = 4TB</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Quiz: Count Memory Access</p>
-<ul>
-<li>
-<p>Assumption</p>
-<ul>
-<li>3-level page table</li>
-<li>256-byte pages</li>
-<li>16-bit addresses</li>
-<li>ASIC of current process is 211</li>
-</ul>
-</li>
-<li>
-<p>TLB</p>
-<table>
-<thead>
-<tr>
-<th>ASID</th>
-<th>VPN</th>
-<th>PFN</th>
-<th>Valid</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>211</td>
-<td>0xbb</td>
-<td>0x91</td>
-<td>1</td>
-</tr>
-<tr>
-<td>211</td>
-<td>0xff</td>
-<td>0x23</td>
-<td>1</td>
-</tr>
-<tr>
-<td>122</td>
-<td>0x05</td>
-<td>0x91</td>
-<td>1</td>
-</tr>
-<tr>
-<td>211</td>
-<td>0x05</td>
-<td>0x12</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<ol>
-<li>
-<p>0xAA10: movl 0x1111, %edi</p>
-<ul>
-<li>
-<p>TLB miss for 0xAA10 =&gt; 3 memory accesses for page table + 1 more to get the instruction</p>
-</li>
-<li>
-<p>TLB miss for 0x1111 =&gt; 3 memory accesses for page table + 1 more to get the instruction</p>
-</li>
-<li>
-<p>Total: 4 memory accesses</p>
-</li>
-</ul>
-</li>
-<li>
-<p>0xBB13: addl $0x3, %edi</p>
-<ul>
-<li>TLB hit for 0xBB13 =&gt; 1 access more to get the instruction</li>
-</ul>
-</li>
-<li>
-<p>0x0519: movl %edi, 0xFF10</p>
-<ul>
-<li>
-<p>TLB miss for 0x0519 =&gt; 3 memory access for page table + 1 more to get the instruction</p>
-</li>
-<li>
-<p>TLB hit for 0xFF10 =&gt; 1 access more to get the instruction</p>
-</li>
-<li>
-<p>Total: 5 memory accesses</p>
-</li>
-</ul>
-</li>
-</ol>
-</li>
-</ul>
-<h3 id="inverted-page-table"><a class="markdownIt-Anchor" href="#inverted-page-table"></a> Inverted Page Table</h3>
-<ul>
-<li>
-<p>Only need entries for virtual pages w/ valid physical mappings</p>
-</li>
-<li>
-<p>Naïve approach:</p>
-<ul>
-<li>Search through data structure &lt;ppn, vpn+asid&gt; to find match</li>
-<li>Too much time to search entire table</li>
-</ul>
-</li>
-<li>
-<p>Better:</p>
-<ul>
-<li>Find possible matches entries by hashing vpn+asid</li>
-<li>Smaller number of entries to search for exact match</li>
-</ul>
-</li>
-<li>
-<p>Managing inverted page table requires software-controlled TLB</p>
-</li>
-</ul>
-<h2 id="swapping"><a class="markdownIt-Anchor" href="#swapping"></a> Swapping</h2>
-<h3 id="motivation-2"><a class="markdownIt-Anchor" href="#motivation-2"></a> Motivation</h3>
-<ul>
-<li>Support processes when not enough physical memory</li>
-<li>Single process with very large address space</li>
-<li>Multiple processes with combined address spaces</li>
-</ul>
-<h3 id="idea"><a class="markdownIt-Anchor" href="#idea"></a> Idea</h3>
-<ul>
-<li>
-<p>OS keeps unreferenced pages on disk</p>
-<ul>
-<li>Slower, cheaper backing store than memory</li>
-</ul>
-</li>
-<li>
-<p>Process can run when not all pages are loaded into main memory</p>
-</li>
-<li>
-<p>OS and hardware cooperate to make large disk seem like memory</p>
-<ul>
-<li>Same behavior as if all of address space in main memory</li>
-</ul>
-</li>
-</ul>
-<h3 id="locality-of-reference"><a class="markdownIt-Anchor" href="#locality-of-reference"></a> Locality of Reference</h3>
-<ul>
-<li>
-<p>Leverage locality of reference within processes</p>
-<ul>
-<li>Spatial: reference memory addresses near previously referenced addresses</li>
-<li>Temporal: reference memory addresses that have referenced in the past</li>
-<li>Processes spend majority of time in small portion of code</li>
-</ul>
-</li>
-<li>
-<p>Implication:</p>
-<ul>
-<li>Process only uses small amount of address space at any moment</li>
-<li>Only small amount of address space must be resident in physical memory</li>
-</ul>
-</li>
-<li>
-<p>Memory Hierarchy</p>
-<p><img src="https://i.imgur.com/pi58bfR.png" alt=""></p>
-</li>
-</ul>
-<h3 id="mechanism-2"><a class="markdownIt-Anchor" href="#mechanism-2"></a> Mechanism</h3>
-<ul>
-<li>
-<p>Each page in virtual address space maps to one of three locations:</p>
-<ul>
-<li>Physical main memory: Small, fast, expensive</li>
-<li>Disk (backing store): Large, slow, cheap</li>
-<li>Nothing (error): Free</li>
-</ul>
-</li>
-<li>
-<p>Extend page tables with an extra bit: present</p>
-<ul>
-<li>permissions (r/w), valid, present</li>
-<li>Page in memory: present bit set in PTE</li>
-<li>Page on disk: present bit cleared
-<ul>
-<li>PTE points to block on disk</li>
-<li>Causes trap into OS when page is referenced</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Procedure</p>
-  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Hardware checks TLB</span><br><span class="line"><span class="keyword">if</span> TLB hit</span><br><span class="line">    address translation is done</span><br><span class="line">    page in physical memory</span><br><span class="line"><span class="keyword">else</span> <span class="comment">// TLB miss</span></span><br><span class="line">    Hardware <span class="keyword">or</span> OS walk page tables</span><br><span class="line">    <span class="keyword">if</span> PTE designates page is present</span><br><span class="line">        page in physical memory (i.e., present bit is cleared)</span><br><span class="line">    <span class="keyword">else</span> <span class="comment">// page fault</span></span><br><span class="line">        Trap into OS (<span class="keyword">not</span> handled by hardware)</span><br><span class="line">        OS selects victim page in memory to replace</span><br><span class="line">        <span class="keyword">if</span> victim page is modified</span><br><span class="line">            write victim page out to disk</span><br><span class="line">        OS reads referenced page from disk into memory</span><br><span class="line">        Page table is updated, present bit is <span class="built_in">set</span></span><br><span class="line">        Process continues execution</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="policy-page-selection"><a class="markdownIt-Anchor" href="#policy-page-selection"></a> Policy: Page selection</h3>
-<ul>
-<li>
-<p>When should a page on disk be brought into memory?</p>
-</li>
-<li>
-<p>Demand paging: Load page only when page fault occurs</p>
-<ul>
-<li>Intuition: Wait until page must absolutely be in memory</li>
-<li>When process starts: No pages are loaded in memory</li>
-<li>Problems: Pay cost of page fault for every newly accessed page</li>
-</ul>
-</li>
-<li>
-<p>Prepaging (anticipatory, prefetching): Load page before referenced</p>
-<ul>
-<li>OS predicts future accesses (oracle) and brings pages into memory early</li>
-<li>Works well for some access patterns (e.g., sequential)</li>
-</ul>
-</li>
-<li>
-<p>Hints: Combine above with user-supplied hints about page references</p>
-<ul>
-<li>User specifies: may need page in future, don’t need this page anymore, or sequential access pattern, …</li>
-<li>Example: madvise() in Unix</li>
-</ul>
-</li>
-</ul>
-<h3 id="policy-page-replacement"><a class="markdownIt-Anchor" href="#policy-page-replacement"></a> Policy: Page replacement</h3>
-<ul>
-<li>
-<p>Which resident page in memory should be thrown out to disk?</p>
-</li>
-<li>
-<p>OPT: Replace page not used for longest time in future</p>
-<ul>
-<li>Advantages: Guaranteed to minimize number of page faults</li>
-<li>Disadvantages: Requires that OS predict the future; Not practical, but good for comparison</li>
-</ul>
-</li>
-<li>
-<p>FIFO: Replace page that has been in memory the longest</p>
-<ul>
-<li>Intuition: First referenced long time ago, done with it now</li>
-<li>Advantages: Fair: All pages receive equal residency; Easy to implement</li>
-<li>Disadvantage: Some pages may always be needed</li>
-</ul>
-</li>
-<li>
-<p>LRU: Replace page not used for longest time in past</p>
-<ul>
-<li>Intuition: Use past to predict the future</li>
-<li>Advantages: With locality, LRU approximates OPT</li>
-<li>Disadvantages: Harder to implement and does not handle all workloads well</li>
-</ul>
-</li>
-<li>
-<p>Comparison</p>
-<table>
-<thead>
-<tr>
-<th>LRU, OPT</th>
-<th>FIFO</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Guaranteed to  have fewer page faults<br>Smaller memory sizes ⊆ larger memory sizes<br>Smaller cache ⊆ bigger cache</td>
-<td>Usually have fewer page faults <br>May actually have more page faults!</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<h3 id="implementing-lru"><a class="markdownIt-Anchor" href="#implementing-lru"></a> Implementing LRU</h3>
-<ul>
-<li>
-<p>Software Perfect LRU</p>
-<ul>
-<li>OS maintains ordered list of physical pages by reference time</li>
-<li>When page is referenced: Move page to front of list</li>
-<li>When need victim: Pick page at back of list</li>
-<li>Trade-off: Slow on memory reference, fast on replacement</li>
-</ul>
-</li>
-<li>
-<p>Hardware Perfect LRU</p>
-<ul>
-<li>Associate timestamp register with each page</li>
-<li>When page is referenced: Store system clock in register</li>
-<li>When need victim: Scan through registers to find oldest clock</li>
-<li>Trade-off: Fast on memory reference, slow on replacement (especially as size of memory grows)</li>
-</ul>
-</li>
-<li>
-<p>Approximating LRU: Clock Algorithm</p>
-<ul>
-<li>
-<p>Hardware</p>
-<ul>
-<li>Keep use (or reference) bit for each page frame</li>
-<li>When page is referenced: set use bit (page was used recently)</li>
-</ul>
-</li>
-<li>
-<p>Operating System</p>
-<ul>
-<li>Page replacement: Look for page with use bit cleared (has not been referenced for a while)</li>
-</ul>
-<ol>
-<li>Keep pointer to last examined page frame</li>
-<li>Traverse pages in circular buffer</li>
-<li>Clear use bits as search</li>
-<li>Stop when find page with already cleared use bit, replace this page</li>
-</ol>
-</li>
-</ul>
-</li>
-</ul>
-<img src="https://i.imgur.com/WYNCIhZ.png" style="margin:auto; display: block;">
-<h2 id="summary-3"><a class="markdownIt-Anchor" href="#summary-3"></a> Summary</h2>
-<ul>
-<li>
-<p>Abstraction: Virtual address space with code, heap, stack</p>
-</li>
-<li>
-<p>Address translation</p>
-<ul>
-<li>Contiguous memory: base, bounds, segmentation</li>
-<li>Using fixed sizes pages with page tables</li>
-</ul>
-</li>
-<li>
-<p>Challenges with paging</p>
-<ul>
-<li>Extra memory references: avoid with TLB</li>
-<li>Page table size: avoid with multi-level paging, inverted page tables etc.</li>
-</ul>
-</li>
-<li>
-<p>Larger address spaces: Swapping mechanisms, policies (LRU, Clock)</p>
-</li>
-</ul>
-
-      
-      <!-- reward -->
-      
-    </div>
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/">OS</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-
-</article>
-    
   </article>
   
 
@@ -7455,7 +6217,7 @@ when collisions happen increment k value and maps it elsewhere</p>
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Suche">
+      <a class="nav-item-link nav-item-search"  title="Search">
         <i class="ri-search-line"></i>
       </a>
       
