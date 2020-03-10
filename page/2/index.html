@@ -61,6 +61,99 @@
     
     
     
+    <article id="post-Threaded Binary Tree and Morris Traversal" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/03/23/Threaded Binary Tree and Morris Traversal/"
+    >Threaded Binary Tree and Morris Traversal</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/03/23/Threaded Binary Tree and Morris Traversal/" class="article-date">
+  <time datetime="2019-03-22T20:58:08.000Z" itemprop="datePublished">2019-03-22</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="threaded-binary-tree-and-morris-traversal"><a class="markdownIt-Anchor" href="#threaded-binary-tree-and-morris-traversal"></a> Threaded Binary Tree and Morris Traversal</h1>
+<h2 id="motivation"><a class="markdownIt-Anchor" href="#motivation"></a> Motivation</h2>
+<p>对于有着空的左孩子右孩子指针的节点 内存被浪费了，所以在TBT里我们利用这些内存来储存一些地址</p>
+<h2 id="transform-a-normal-binary-tree-to-tbt"><a class="markdownIt-Anchor" href="#transform-a-normal-binary-tree-to-tbt"></a> Transform a normal binary tree to TBT</h2>
+<ol>
+<li>最左边最右边的空指针不改动</li>
+<li>将其他的空指针改为：
+<ul>
+<li>
+<pre><code>Left ptr = inorder predecessor 因为该节点没有inorder predecessor 中序遍历第一个节点
+</code></pre>
+</li>
+<li>
+<pre><code>Right ptr = inorder successor 因为该节点没有inorder successor 中序遍历最后一个节点
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://i.imgur.com/sr6MQQ7.jpg" alt=""><br>
+我们可以在节点里加入两个flag来代表左指针右指针指向的是ancestor还是child<br>
+最后对于中序遍历的起点和终点的左右指针 连向dummy node flag设为ancestor<br>
+<img src="https://i.imgur.com/OE9qckF.png" alt=""></p>
+<p>莫里斯遍历利用线段树的概念可以实现iterative inorder traversal of tree without using stack TIME O(N) SPACE O(1)<br>
+Pseudocode</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Initialize current as root </span><br><span class="line">While current is not NULL</span><br><span class="line">   If current does not has a left child</span><br><span class="line">      a) access current&apos;s data</span><br><span class="line">      b) Go to the right, i.e., current = current-&gt;right</span><br><span class="line">   Else</span><br><span class="line">      a) Make current as right child of the rightmost </span><br><span class="line">         node in current&apos;s left subtree</span><br><span class="line">      b) Go to that left child, i.e., current = current-&gt;left  (set current&apos;s left to be null)</span><br></pre></td></tr></table></figure>
+<p>LeetCode94: use above method to achieve inorder traversal</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    public List&lt;Integer&gt; inorderTraversal(TreeNode node) &#123;</span><br><span class="line">        List&lt;Integer&gt; list = new ArrayList();</span><br><span class="line"></span><br><span class="line">        while(node != null) &#123;</span><br><span class="line">            if(node.left == null) &#123;</span><br><span class="line">                list.add(node.val);</span><br><span class="line">                node = node.right;</span><br><span class="line">            &#125;</span><br><span class="line">            else &#123;</span><br><span class="line">                TreeNode nextNode = node.left;</span><br><span class="line">                TreeNode p = node.left;</span><br><span class="line">                while(p.right != null) p = p.right;</span><br><span class="line">                p.right = node;//p:rightmost node in the leftsubtree</span><br><span class="line">                node.left = null;</span><br><span class="line">                node = nextNode;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return list;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+      <!-- reward -->
+      
+    </div>
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm-and-Data-Structures/">Algorithm and Data Structures</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
     <article id="post-Database" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
@@ -3336,77 +3429,6 @@ Engineering a compiler. [Keith_D._Cooper_Linda_Torczon]</p>
 
 </article>
     
-    <article id="post-algorithm" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2018/05/06/algorithm/"
-    >CS577 Algorithm Notesheet</a
-  >
-</h2>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2018/05/06/algorithm/" class="article-date">
-  <time datetime="2018-05-06T00:00:01.000Z" itemprop="datePublished">2018-05-05</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <img width="1000" src="/img_algo/1.png">
-<img width="1000" src="/img_algo/2.png">
-<img width="1000" src="/img_algo/3.png">
-<img width="1000" src="/img_algo/4.png">
-<img width="1000" src="/img_algo/5.png">
-<img width="1000" src="/img_algo/6.png">
-
-      
-      <!-- reward -->
-      
-    </div>
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/">Math</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-
-</article>
-    
   </article>
   
 
@@ -3476,12 +3498,12 @@ Engineering a compiler. [Keith_D._Cooper_Linda_Torczon]</p>
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Search">
+      <a class="nav-item-link nav-item-search"  title="Rechercher">
         <i class="ri-search-line"></i>
       </a>
       
       
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="Flux RSS">
         <i class="ri-rss-line"></i>
       </a>
       
